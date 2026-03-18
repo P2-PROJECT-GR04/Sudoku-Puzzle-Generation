@@ -12,7 +12,7 @@ export let EmptySudokuGrid = [
     [0,0,0,0,0,0,0,0,0],
 ]
 
-generateSimpleSolvedSudoku();
+generateSimpleSolvedSudoku(EmptySudokuGrid);
 
 
 for (let i = 0; i < EmptySudokuGrid.length; i++) {
