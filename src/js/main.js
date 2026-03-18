@@ -14,3 +14,7 @@ export let EmptySudokuGrid = [
 
 generateSimpleSolvedSudoku();
 
+
+for (let i = 0; i < EmptySudokuGrid.length; i++) {
+    console.log(EmptySudokuGrid[i]);
+}
