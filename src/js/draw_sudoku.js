@@ -4,13 +4,13 @@ export function draw_sudoku(grid) {
     let board = document.getElementById('sudoku')
     console.log(board.className)
     board.style = 'grid-template-columns: ' + 'auto'.repeat(grid.region_height)
-
+    /*
     for (let i = 0; i < (grid.size * grid.size) / 1.5; i++) {
         let row = Math.floor(Math.random() * grid.size)
         let col = Math.floor(Math.random() * grid.size)
         grid.grid[row][col].num = null
     }
-
+    */
     let regions = []
     for (let i = 0; i < grid.region_height; i++) {
         for (let j = 0; j < grid.region_width; j++) {

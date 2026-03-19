@@ -15,13 +15,22 @@ export class Sudoku {
 }
 
 // Example function
-// export function make_full_grid(sudoku) {
-//     for (let r = 0; r < sudoku.size; r++) {
-//         for (let c = 0; c < sudoku.size; c++) {
-//             sudoku.grid[r][c] = new Cell(1, true)
-//         }
-//     }
-// }
+ export function make_full_grid(sudoku) {
+     for (let r = 0; r < sudoku.size; r++) {
+         for (let c = 0; c < sudoku.size; c++) {
+             sudoku.grid[r][c] = new Cell(1, true)
+         }
+     }
+ }
+
+// Example function
+ export function make_simple_solved_grid(sudoku) {
+     for (let r = 0; r < sudoku.size; r++) {
+         for (let c = 0; c < sudoku.size; c++) {
+             sudoku.grid[r][c] = new Cell((3 * ( r % 3) + Math.floor(r / 3) + c) % 9 + 1, true)
+         }
+     }
+ }
 
 export class Cell {
     constructor(
