@@ -23,8 +23,25 @@
     justify-content: center;
 }
 
+.sudoku-num {
+    font-size: 2em;
+    justify-content: center;
+}
+
 .sudoku-num.hint {
     font-weight: bold;
-    justify-content: center;
-    font-size: 2em;
+}
+
+.sudoku-cell:has(.sudoku-num.hint) {
+    background-color: LightGrey;
+}
+
+.sudoku-cell:has(.sudoku-num.marked) {
+    background-color: rgba(95, 35, 71, 0.5);
+    /* background-color: #c8e6c9; */
+}
+
+.sudoku-cell:has(.sudoku-num.marked-assoc) {
+    background-color: rgba(95, 35, 71, 0.25);
+    /* background-color: #c8e6c9; */
 }
