@@ -1,12 +1,14 @@
 /// Draws a Sudoku grid
+
+import { Sudoku } from './sudoku'
+
 /// Needs a div with the id "sudoku" and the class "sudoku-grid"
-export function draw_sudoku(grid) {
-    let board = document.getElementById('sudoku')
-    console.log(board.className)
+export function draw_sudoku(grid: Sudoku) {
+    let board: HTMLElement = document.getElementById('sudoku')
     board.style =
         'grid-template-columns: ' + 'auto '.repeat(grid.region_height) + ';'
 
-    let regions = []
+    let regions: HTMLDivElement[] = []
     for (let i = 0; i < grid.region_height; i++) {
         for (let j = 0; j < grid.region_width; j++) {
             let region = document.createElement('div')

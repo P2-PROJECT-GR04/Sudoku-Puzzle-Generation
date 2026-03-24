@@ -1,5 +1,10 @@
 export class Sudoku {
-    constructor(region_width, region_height) {
+    size: number
+    region_width: number
+    region_height: number
+    grid: (Cell | null)[][]
+
+    public constructor(region_width: number, region_height: number) {
         this.size = region_width * region_height
         this.region_width = region_width
         this.region_height = region_height
@@ -15,37 +20,48 @@ export class Sudoku {
 }
 
 // Example function
- export function make_full_grid(sudoku) {
-     for (let r = 0; r < sudoku.size; r++) {
-         for (let c = 0; c < sudoku.size; c++) {
-             sudoku.grid[r][c] = new Cell(1, true)
-         }
-     }
- }
+export function make_full_grid(sudoku: Sudoku) {
+    for (let r = 0; r < sudoku.size; r++) {
+        for (let c = 0; c < sudoku.size; c++) {
+            sudoku.grid[r][c] = new Cell(1, true)
+        }
+    }
+}
 
 // Example function
- export function make_simple_solved_grid(sudoku) {
-     for (let r = 0; r < sudoku.size; r++) {
-         for (let c = 0; c < sudoku.size; c++) {
-             sudoku.grid[r][c] = new Cell((3 * ( r % 3) + Math.floor(r / 3) + c) % 9 + 1, true)
-         }
-     }
- }
+export function make_simple_solved_grid(sudoku: Sudoku) {
+    for (let r = 0; r < sudoku.size; r++) {
+        for (let c = 0; c < sudoku.size; c++) {
+            sudoku.grid[r][c] = new Cell(
+                ((3 * (r % 3) + Math.floor(r / 3) + c) % 9) + 1,
+                true
+            )
+        }
+    }
+}
 
 export class Cell {
+    num: number
+    is_hint: boolean
+    to_html: () => HTMLElement
+
     constructor(
-        num,
-        is_hint = false,
+        num: number,
+        is_hint: boolean = false,
         to_html_fn = () => default_to_html(this)
     ) {
         this.num = num
         this.is_hint = is_hint
-        this.is_collapsed = () => this.num != null
 
         this.to_html = to_html_fn
     }
+
+    public is_collapsed(): boolean {
+        return this.num != null
+    }
 }
-function default_to_html(cell) {
+
+function default_to_html(cell: Cell | null): HTMLElement {
     if (cell.is_collapsed()) {
         let span = document.createElement('span')
 
