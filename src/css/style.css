@@ -1,0 +1,30 @@
+.sudoku-grid {
+    display: grid;
+    width: 1px;
+    /* grid-template-columns: auto auto auto; */
+    background: black;
+}
+
+.sudoku-region {
+    display: grid;
+    /* grid-template-columns: auto auto auto; */
+    border: solid 0.1em black;
+}
+
+.sudoku-cell {
+    display: flex;
+    height: 4.5em;
+    width: 4.5em;
+    border: solid 0.01em gray;
+    background: white;
+    align-items: center;
+
+    text-align: center;
+    justify-content: center;
+}
+
+.sudoku-num.hint {
+    font-weight: bold;
+    justify-content: center;
+    font-size: 2em;
+}
