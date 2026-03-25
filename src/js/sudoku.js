@@ -82,7 +82,7 @@ function default_to_html(cell) {
         span.className += ' marked'
     }
 
-    if (cell.is_assoc_marked) {
+    if (cell.is_assoc_marked && cell.num != null) {
         span.className += ' marked-assoc'
     }
 
