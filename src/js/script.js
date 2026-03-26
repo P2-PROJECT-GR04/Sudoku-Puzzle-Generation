@@ -1,7 +1,10 @@
 import { draw_sudoku } from './draw_sudoku.js'
 import { make_simple_solved_grid, Sudoku } from './sudoku.js'
+import { createNumpad } from './numpad.js'
 
-let sudoku = new Sudoku(3, 3)
+export let sudoku = new Sudoku(3, 3)
+
+createNumpad(sudoku.size)
 
 make_simple_solved_grid(sudoku)
 
@@ -14,7 +17,7 @@ for (let i = 0; i < 50; i++) {
 draw_sudoku(sudoku)
 
 // TODO: Make this a field of Sudoku, and make it all work without global variables.
-let marked_cell = null
+export let marked_cell = null
 
 export function mark_cell(coord) {
     if (marked_cell != null)
@@ -50,10 +53,9 @@ document.addEventListener('keydown', function (event) {
     draw_sudoku(sudoku)
 })
 
-function set_cell(r, c, num) {
+export function set_cell(r, c, num) {
     if (!sudoku.grid[r][c].is_hint) {
         console.log(`Setting (${r}, ${c}) to ${num}`)
         sudoku.grid[r][c].num = num
     }
 }
-
