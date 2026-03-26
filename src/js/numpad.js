@@ -7,17 +7,17 @@ export function createNumpad(size) {
     const numpad = document.getElementById('sudoku-numpad')
     const numpadColumn = 3
     const keys = []
-    let currentRow = []
+    let currentRow = [] //This is used to insert paired elements in numpad keys array
 
     for (let i = 1; i <= size; i++) {
         currentRow.push(i.toString())
         if (currentRow.length === numpadColumn) {
             keys.push(currentRow)
-            currentRow = []
+            currentRow = [] //Resets the currentRow for each Column it creates
         }
     }
     if (currentRow.length > 0) keys.push(currentRow)
-    currentRow = ['DEL', 'Show Hint']
+    currentRow = ['DEL', 'Show Hint', 'Check board'] //Creates the DEL and Show Hint buttons
     keys.push(currentRow)
     console.log(keys)
 
@@ -33,14 +33,16 @@ export function createNumpad(size) {
                 btn.classList.add('del-btn')
             }
             if (key === 'Show Hint') {
-                td.colSpan = numpadColumn
+                //td.colSpan = numpadColumn
                 btn.classList.add('show-hint-btn')
             }
-
+            if (key === 'Check board') {
+                td.colSpan = numpadColumn
+                btn.classList.add('check-board-btn')
+            }
             td.appendChild(btn)
             tr.appendChild(td)
         })
-
         numpad.appendChild(tr)
     })
 
