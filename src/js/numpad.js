@@ -17,8 +17,8 @@ export function createNumpad(size) {
         }
     }
     if (currentRow.length > 0) keys.push(currentRow)
-    keys.push(['DEL'])
-    keys.push(['Show Hint'])
+    currentRow = ['DEL', 'Show Hint']
+    keys.push(currentRow)
     console.log(keys)
 
     keys.forEach((row) => {
@@ -26,9 +26,10 @@ export function createNumpad(size) {
         row.forEach((key) => {
             const td = document.createElement('td')
             const btn = document.createElement('button')
+            btn.className = 'numpad-cell'
             btn.textContent = key
             if (key === 'DEL') {
-                td.colSpan = numpadColumn
+                //td.colSpan = numpadColumn
                 btn.classList.add('del-btn')
             }
             if (key === 'Show Hint') {
