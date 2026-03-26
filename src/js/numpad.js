@@ -50,7 +50,7 @@ export function createNumpad(size) {
     numpad.onclick = (event) => {
         if (event.target.tagName !== 'BUTTON') return
         const numpadValue = event.target.textContent
-        if (marked_cell != null && numpadValue === 'Check board') {
+        if (marked_cell != null && numpadValue !== 'Check board') {
             let cell = marked_cell
             mark_cell(null)
             if (numpadValue === 'DEL') {
