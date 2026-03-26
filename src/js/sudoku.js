@@ -55,9 +55,11 @@ export class Cell {
     constructor(
         num,
         is_hint = false,
-        to_html_fn = () => default_to_html(this)
+        to_html_fn = () => default_to_html(this),
+        solution
     ) {
         this.num = num
+        this.solution = num
         this.is_hint = is_hint
         this.is_collapsed = () => this.num != null
         this.is_marked = false
@@ -91,4 +93,21 @@ function default_to_html(cell) {
     }
 
     return span
+}
+
+export function check_board(sudoku) {
+    for (let r = 0; r < sudoku.size; r++) {
+        for (let c = 0; c < sudoku.size; c++) {
+            if (sudoku.grid[r][c].is_hint == false) {
+                if (sudoku.grid[r][c].num == sudoku.grid[r][c].solution) {
+                    continue
+                } else {
+                    alert('ERROR - The Sudoku is not correct ):')
+                    return false
+                }
+            }
+        }
+    }
+    alert('Hurray! The Sudoku is correct!')
+    return true
 }

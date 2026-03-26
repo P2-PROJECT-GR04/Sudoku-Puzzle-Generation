@@ -1,6 +1,7 @@
 import { draw_sudoku } from './draw_sudoku.js'
 import { mark_cell, set_cell, marked_cell } from './script.js'
 import { sudoku } from './script.js'
+import { check_board } from './sudoku.js'
 
 export function createNumpad(size) {
     const display = document.getElementById('sudoku-numpad-display')
@@ -49,16 +50,18 @@ export function createNumpad(size) {
     numpad.onclick = (event) => {
         if (event.target.tagName !== 'BUTTON') return
         const numpadValue = event.target.textContent
-        if (marked_cell != null) {
+        if (marked_cell != null && numpadValue === 'Check board') {
+            let cell = marked_cell
+            mark_cell(null)
             if (numpadValue === 'DEL') {
-                let cell = marked_cell
-                mark_cell(null)
                 set_cell(cell[0], cell[1], null)
             } else {
-                let cell = marked_cell
-                mark_cell(null)
                 set_cell(cell[0], cell[1], numpadValue)
             }
+        }
+        if (numpadValue === 'Check board') {
+            console.log('Checking board')
+            check_board(sudoku)
         }
         draw_sudoku(sudoku)
     }
