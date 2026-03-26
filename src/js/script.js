@@ -24,10 +24,21 @@ export function mark_cell(coord) {
         sudoku.mark_cell(marked_cell[0], marked_cell[1], false)
     // sudoku.grid[marked_cell[0]][marked_cell[1]].set_marked(false)
 
+    if (
+        //This checks first if coord is a null, and then if the same cell has just been marked. Then it demarks it.
+        !coord ||
+        (marked_cell &&
+            marked_cell[0] == coord[0] &&
+            marked_cell[1] == coord[1])
+    ) {
+        sudoku.mark_cell(marked_cell[0], marked_cell[1], false)
+        marked_cell = null
+        draw_sudoku(sudoku)
+        return
+    }
     marked_cell = coord
     if (marked_cell != null)
         sudoku.mark_cell(marked_cell[0], marked_cell[1], true)
-    // sudoku.grid[marked_cell[0]][marked_cell[1]].set_marked(true)
 
     console.debug(`MARKED: ${marked_cell}`)
 
