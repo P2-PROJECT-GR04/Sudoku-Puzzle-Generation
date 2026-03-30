@@ -56,7 +56,8 @@ export class Cell {
         num,
         is_hint = false,
         to_html_fn = () => default_to_html(this),
-        solution
+        solution,
+        candidates = []
     ) {
         this.num = num
         this.solution = num
