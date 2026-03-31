@@ -62,6 +62,7 @@ export class Cell {
         this.num = num
         this.solution = num
         this.is_hint = is_hint
+        this.candidates = candidates
         this.is_collapsed = () => this.num != null
         this.is_marked = false
         // If the cell is marked by associativity
