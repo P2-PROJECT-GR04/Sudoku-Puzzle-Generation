@@ -1,3 +1,6 @@
+import { stopTimer } from "./timer_function.js";
+
+
 export class Sudoku {
     constructor(region_width, region_height) {
         this.size = region_width * region_height
@@ -108,6 +111,7 @@ export function check_board(sudoku) {
             }
         }
     }
+    const totalMs = stopTimer(); // Temporary time stopper.
     alert('Hurray! The Sudoku is correct!')
     return true
 }
