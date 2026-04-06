@@ -1,7 +1,12 @@
 /// Draws a Sudoku grid
+
+import { mark_cell } from './script.js'
+
 /// Needs a div with the id "sudoku" and the class "sudoku-grid"
 export function draw_sudoku(grid) {
     let board = document.getElementById('sudoku')
+
+    board.innerText = ''
     board.style =
         'grid-template-columns: ' + 'auto '.repeat(grid.region_height) + ';'
 
@@ -20,9 +25,10 @@ export function draw_sudoku(grid) {
 
     for (let r = 0; r < grid.size; r++) {
         for (let c = 0; c < grid.size; c++) {
-            let cell = document.createElement('div')
+            let cell = document.createElement('button')
 
             cell.className = 'sudoku-cell'
+            cell.onclick = () => mark_cell([r, c])
             cell.appendChild(grid.grid[r][c].to_html())
 
             let raw_idx = r * grid.size + c

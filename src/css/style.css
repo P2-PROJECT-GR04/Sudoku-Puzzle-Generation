@@ -1,8 +1,8 @@
 .sudoku-grid {
     display: grid;
-    width: 1px;
+    /*width: 1px;*/
     /* grid-template-columns: auto auto auto; */
-    background: black;
+    /*background: black;*/
 }
 
 .sudoku-region {
@@ -23,8 +23,60 @@
     justify-content: center;
 }
 
+.sudoku-num {
+    font-size: 2em;
+    justify-content: center;
+}
+
 .sudoku-num.hint {
     font-weight: bold;
+}
+
+.sudoku-cell:has(.sudoku-num.hint) {
+    background-color: LightGrey;
+}
+
+.sudoku-cell:has(.sudoku-num.marked) {
+    background-color: rgba(95, 35, 71, 0.5);
+    /* background-color: #c8e6c9; */
+}
+
+.sudoku-cell:has(.sudoku-num.marked-assoc) {
+    background-color: rgba(95, 35, 71, 0.25);
+    /* background-color: #c8e6c9; */
+}
+
+#wrapper {
+    display: flex;
+    height: auto;
+    align-items: center;
+}
+#sudoku {
+    padding-right: auto;
+}
+#sudoku-numpad {
+    padding-left: 20px;
+    place-items: center;
     justify-content: center;
-    font-size: 2em;
+    align-items: center;
+    margin: 0;
+}
+
+.numpad-cell {
+    display: flex;
+    height: 4.5em;
+    width: 4.5em;
+    border: solid 0.01em gray;
+    background: yellow;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+}
+
+.numpad-cell.del-btn {
+    background: red !important;
+}
+
+.numpad-cell.show-hint-btn {
+    background: green !important;
 }
