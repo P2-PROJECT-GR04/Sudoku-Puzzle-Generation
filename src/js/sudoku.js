@@ -36,17 +36,24 @@ export function make_simple_solved_grid(sudoku) {
 }
 
 export function make_solved_grid(sudoku) {
+    console.log(`W: ${sudoku.region_width}; H: ${sudoku.region_height}`)
     for (let r = 0; r < sudoku.size; r++) {
         for (let c = 0; c < sudoku.size; c++) {
-            sudoku.grid[r][c] = new Cell(
-                ((3 * (r % 3) + Math.floor(r / 3) + c) % 9) + 1,
-                true
-            )
+            // (w * (r % h) + floor(r / h) + c) % s
+            const cell =
+                ((sudoku.region_width * (r % sudoku.region_height) +
+                    Math.floor(r / sudoku.region_height) +
+                    c) %
+                    sudoku.size) +
+                1
+
+            console.log(`(${r},${c}) = ${cell}`)
+            sudoku.grid[r][c] = new Cell(cell, true)
         }
     }
 
-    // Switch cols n² times
-    for (let i = 0; i < sudoku.size * sudoku.size; i++) {
+    // Switch cols 2 * n² times
+    for (let i = 0; i < 2 * sudoku.size * sudoku.size; i++) {
         let region_idx = Math.floor(Math.random() * sudoku.region_height)
         let from =
             region_idx * sudoku.region_width +
@@ -62,8 +69,8 @@ export function make_solved_grid(sudoku) {
         }
     }
 
-    // Switch rows n² times
-    for (let i = 0; i < sudoku.size * sudoku.size; i++) {
+    // Switch rows 2 * n² times
+    for (let i = 0; i < 2 * sudoku.size * sudoku.size; i++) {
         let region_idx = Math.floor(Math.random() * sudoku.region_width)
         let from =
             region_idx * sudoku.region_height +
