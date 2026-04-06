@@ -2,12 +2,11 @@ import { createNumpad } from './numpad.js'
 import { draw_sudoku } from './draw_sudoku.js'
 import { make_solved_grid, Sudoku } from './sudoku.js'
 
-
 export let sudoku = new Sudoku(3, 3)
 
 createNumpad(sudoku.size)
 
-make_solved_grid(sudoku /* seed, leave null for random */ null)
+make_solved_grid(sudoku, /* seed, leave null for random */ null)
 
 for (let i = 0; i < 50; i++) {
     let r = Math.floor(Math.random() * sudoku.size)
@@ -71,3 +70,4 @@ export function set_cell(r, c, num) {
         sudoku.grid[r][c].num = num
     }
 }
+
