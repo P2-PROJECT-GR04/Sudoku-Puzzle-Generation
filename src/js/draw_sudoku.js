@@ -2,7 +2,6 @@
 /// Needs a div with the id "sudoku" and the class "sudoku-grid"
 export function draw_sudoku(grid) {
     let board = document.getElementById('sudoku')
-    console.log(board.className)
     board.style =
         'grid-template-columns: ' + 'auto '.repeat(grid.region_height) + ';'
 

@@ -36,7 +36,6 @@ export function make_simple_solved_grid(sudoku) {
 }
 
 export function make_solved_grid(sudoku) {
-    console.log(`W: ${sudoku.region_width}; H: ${sudoku.region_height}`)
     for (let r = 0; r < sudoku.size; r++) {
         for (let c = 0; c < sudoku.size; c++) {
             // (w * (r % h) + floor(r / h) + c) % s
@@ -47,7 +46,6 @@ export function make_solved_grid(sudoku) {
                     sudoku.size) +
                 1
 
-            console.log(`(${r},${c}) = ${cell}`)
             sudoku.grid[r][c] = new Cell(cell, true)
         }
     }
