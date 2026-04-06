@@ -1,3 +1,5 @@
+import { Rng } from "./rand.js"
+
 export class Sudoku {
     constructor(region_width, region_height) {
         this.size = region_width * region_height
@@ -35,7 +37,7 @@ export function make_simple_solved_grid(sudoku) {
     }
 }
 
-export function make_solved_grid(sudoku) {
+export function make_solved_grid(sudoku, seed = null) {
     for (let r = 0; r < sudoku.size; r++) {
         for (let c = 0; c < sudoku.size; c++) {
             // (w * (r % h) + floor(r / h) + c) % s
@@ -50,15 +52,19 @@ export function make_solved_grid(sudoku) {
         }
     }
 
+    let rand = new Rng(seed)
+
     // Switch cols 2 * n² times
     for (let i = 0; i < 2 * sudoku.size * sudoku.size; i++) {
-        let region_idx = Math.floor(Math.random() * sudoku.region_height)
+        let region_idx = rand.nextRange(0, sudoku.region_height)
+
         let from =
             region_idx * sudoku.region_width +
-            Math.floor(Math.random() * sudoku.region_width)
+            rand.nextRange(0, sudoku.region_width)
+
         let to =
             region_idx * sudoku.region_width +
-            Math.floor(Math.random() * sudoku.region_width)
+            rand.nextRange(0, sudoku.region_width)
 
         for (let r = 0; r < sudoku.size; r++) {
             let tmp = sudoku.grid[r][to]
@@ -69,13 +75,15 @@ export function make_solved_grid(sudoku) {
 
     // Switch rows 2 * n² times
     for (let i = 0; i < 2 * sudoku.size * sudoku.size; i++) {
-        let region_idx = Math.floor(Math.random() * sudoku.region_width)
+        let region_idx = rand.nextRange(0, sudoku.region_width)
+
         let from =
             region_idx * sudoku.region_height +
-            Math.floor(Math.random() * sudoku.region_height)
+            rand.nextRange(0, sudoku.region_height)
+
         let to =
             region_idx * sudoku.region_height +
-            Math.floor(Math.random() * sudoku.region_height)
+            rand.nextRange(0, sudoku.region_height)
 
         let tmp = sudoku.grid[to]
         sudoku.grid[to] = sudoku.grid[from]
