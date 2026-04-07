@@ -2,7 +2,7 @@ import { draw_sudoku } from './draw_sudoku.js'
 import { mark_cell, set_cell, marked_cell } from './script.js'
 import { sudoku } from './script.js'
 import { check_board } from './sudoku.js'
-import { show_hint } from './check-hint.js'
+import { find_candidates_for_grid } from './check-hint.js'
 
 export function createNumpad(size) {
     const display = document.getElementById('sudoku-numpad-display')
@@ -70,7 +70,7 @@ export function createNumpad(size) {
         }
         if (numpadValue == 'Show hint') {
             console.log('Show hints')
-            show_hint(sudoku)
+            find_candidates_for_grid(sudoku)
         }
         draw_sudoku(sudoku)
     }

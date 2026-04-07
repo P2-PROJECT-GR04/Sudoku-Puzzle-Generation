@@ -1,4 +1,4 @@
-export function show_hint(sudoku) {
+export function find_candidates_for_grid(sudoku) {
     for (let r = 0; r < sudoku.size; r++) {
         for (let c = 0; c < sudoku.size; c++) {
             if (sudoku.grid[r][c].num == null) {
