@@ -17,14 +17,20 @@ export function show_hint(sudoku) {
                 //console.log(candidates)
                 for (let inner_r = 0; inner_r < sudoku.size; inner_r++) {
                     //This checks the row of a cell
-                    if (candidates.indexOf(sudoku.grid[inner_r][c].num) != -1) {
+                    if (
+                        candidates.indexOf(
+                            Number(sudoku.grid[inner_r][c].num)
+                        ) != -1
+                    ) {
                         /*console.log(
                             candidates[
                                 candidates.indexOf(sudoku.grid[inner_r][c].num)
                             ]
                         )*/
                         candidates.splice(
-                            candidates.indexOf(sudoku.grid[inner_r][c].num),
+                            candidates.indexOf(
+                                Number(sudoku.grid[inner_r][c].num)
+                            ),
                             1
                         )
                         //console.log(candidates)
@@ -32,14 +38,20 @@ export function show_hint(sudoku) {
                 }
                 for (let inner_c = 0; inner_c < sudoku.size; inner_c++) {
                     //This checks the colum of a cell
-                    if (candidates.indexOf(sudoku.grid[r][inner_c].num) != -1) {
+                    if (
+                        candidates.indexOf(
+                            Number(sudoku.grid[r][inner_c].num)
+                        ) != -1
+                    ) {
                         /*console.log(
                             candidates[
                                 candidates.indexOf(sudoku.grid[r][inner_c].num)
                             ]
                         )*/
                         candidates.splice(
-                            candidates.indexOf(sudoku.grid[r][inner_c].num),
+                            candidates.indexOf(
+                                Number(sudoku.grid[r][inner_c].num)
+                            ),
                             1
                         )
                         //console.log(candidates)
@@ -57,12 +69,13 @@ export function show_hint(sudoku) {
                         inner_c++
                     ) {
                         if (
-                            candidates.indexOf(sudoku.grid[r][inner_c].num) !=
-                            -1
+                            candidates.indexOf(
+                                Number(sudoku.grid[inner_r][inner_c].num)
+                            ) != -1
                         ) {
                             candidates.splice(
                                 candidates.indexOf(
-                                    sudoku.grid[inner_r][inner_c].num
+                                    Number(sudoku.grid[inner_r][inner_c].num)
                                 ),
                                 1
                             )
