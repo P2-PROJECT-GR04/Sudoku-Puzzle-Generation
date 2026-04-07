@@ -1,16 +1,25 @@
 import { createNumpad } from './numpad.js'
 import { draw_sudoku } from './draw_sudoku.js'
 import { make_solved_grid, Sudoku } from './sudoku.js'
+import { Rng } from './rand.js'
+
+const queryString = window.location.search
+console.log(`PARAMS: ${queryString}`)
+const urlParams = new URLSearchParams(queryString)
+
+let seed = Number(urlParams.get('seed'))
+console.log(`SEED: ${seed}`)
+let rand = new Rng(seed)
 
 export let sudoku = new Sudoku(3, 3)
 
 createNumpad(sudoku.size)
 
-make_solved_grid(sudoku, /* seed, leave null for random */ null)
+make_solved_grid(sudoku, rand)
 
 for (let i = 0; i < 50; i++) {
-    let r = Math.floor(Math.random() * sudoku.size)
-    let c = Math.floor(Math.random() * sudoku.size)
+    let r = rand.nextRange(0, sudoku.size)
+    let c = rand.nextRange(0, sudoku.size)
     sudoku.grid[r][c].is_hint = false
 }
 
@@ -70,4 +79,3 @@ export function set_cell(r, c, num) {
         sudoku.grid[r][c].num = num
     }
 }
-
