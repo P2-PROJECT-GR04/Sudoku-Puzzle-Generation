@@ -74,27 +74,42 @@ export class Cell {
     }
 }
 function default_to_html(cell) {
-    let span = document.createElement('span')
+    let container = document.createElement('span')
+    if (cell.is_collapsed()) {
+        container.className = 'sudoku-num'
 
-    span.className = 'sudoku-num'
+        container.innerText = `${cell.num}`
+    } else if (cell.candidates.length > 0) {
+        container = document.createElement('div')
+        container.className = 'sudoku-candidates'
+
+        // TODO: Make the cell know how big the parent sudoku is.
+        // This can be done in multiple ways:
+        // - By giving the parent as a field on each cell ( cell.parent.size )
+        // - By giving the size as a field on each cell ( cell.parent_size )
+        // - By giving the sudoku as a parameter to this function ( cell.to_html(sudoku) )
+        for (let i = 0; i < 9; i++) {
+            let cand = document.createElement('span')
+            cand.className = 'sudoku-candidate'
+
+            if (cell.candidates.includes(i + 1)) cand.innerText = i + 1
+            container.appendChild(cand)
+        }
+    }
 
     if (cell.is_hint) {
-        span.className += ' hint'
+        container.className += ' hint'
     }
 
     if (cell.is_marked) {
-        span.className += ' marked'
+        container.className += ' marked'
     }
 
     if (cell.is_assoc_marked && cell.num != null) {
-        span.className += ' marked-assoc'
+        container.className += ' marked-assoc'
     }
 
-    if (cell.is_collapsed()) {
-        span.innerText = `${cell.num}`
-    }
-
-    return span
+    return container
 }
 
 export function check_board(sudoku) {
