@@ -5,9 +5,8 @@ import { mark_cell } from './script.js'
 /// Needs a div with the id "sudoku" and the class "sudoku-grid"
 export function draw_sudoku(grid) {
     let board = document.getElementById('sudoku')
-    board.innerText = ''
 
-    console.log(board.className)
+    board.innerText = ''
     board.style =
         'grid-template-columns: ' + 'auto '.repeat(grid.region_height) + ';'
 
@@ -34,9 +33,9 @@ export function draw_sudoku(grid) {
 
             let raw_idx = r * grid.size + c
             let idx =
-                Math.floor(c / grid.region_height) +
-                grid.region_width *
-                    Math.floor(raw_idx / (grid.size * grid.region_width))
+                Math.floor(c / grid.region_width) +
+                grid.region_height *
+                    Math.floor(raw_idx / (grid.size * grid.region_height))
 
             regions[idx].appendChild(cell)
         }
