@@ -1,5 +1,3 @@
-import { Rng } from "./rand.js"
-
 export class Sudoku {
     constructor(region_width, region_height) {
         this.size = region_width * region_height
@@ -53,7 +51,7 @@ export function make_simple_solved_grid(sudoku) {
     }
 }
 
-export function make_solved_grid(sudoku, seed = null) {
+export function make_solved_grid(sudoku, rand) {
     for (let r = 0; r < sudoku.size; r++) {
         for (let c = 0; c < sudoku.size; c++) {
             // (w * (r % h) + floor(r / h) + c) % s
@@ -68,43 +66,72 @@ export function make_solved_grid(sudoku, seed = null) {
         }
     }
 
-    let rand = new Rng(seed)
-
-    // Switch cols 2 * n² times
-    for (let i = 0; i < 2 * sudoku.size * sudoku.size; i++) {
-        let region_idx = rand.nextRange(0, sudoku.region_height)
-
-        let from =
-            region_idx * sudoku.region_width +
-            rand.nextRange(0, sudoku.region_width)
-
-        let to =
-            region_idx * sudoku.region_width +
-            rand.nextRange(0, sudoku.region_width)
-
-        for (let r = 0; r < sudoku.size; r++) {
-            let tmp = sudoku.grid[r][to]
-            sudoku.grid[r][to] = sudoku.grid[r][from]
-            sudoku.grid[r][from] = tmp
+    // Transform 20 * n² times
+    for (let i = 0; i < 20 * sudoku.size * sudoku.size; i++) {
+        let choice = rand.nextRange(0, 3)
+        if (choice == 0) {
+            switch_rows(sudoku, rand)
+        } else if (choice == 1) {
+            switch_columns(sudoku, rand)
+        } else if (choice == 2) {
+            switch_nums(sudoku, rand)
         }
     }
+}
 
-    // Switch rows 2 * n² times
-    for (let i = 0; i < 2 * sudoku.size * sudoku.size; i++) {
-        let region_idx = rand.nextRange(0, sudoku.region_width)
+function switch_rows(sudoku, rand) {
+    let region_idx = rand.nextRange(0, sudoku.region_width)
 
-        let from =
-            region_idx * sudoku.region_height +
-            rand.nextRange(0, sudoku.region_height)
+    let from =
+        region_idx * sudoku.region_height +
+        rand.nextRange(0, sudoku.region_height)
 
-        let to =
-            region_idx * sudoku.region_height +
-            rand.nextRange(0, sudoku.region_height)
+    let to =
+        region_idx * sudoku.region_height +
+        rand.nextRange(0, sudoku.region_height)
 
-        let tmp = sudoku.grid[to]
-        sudoku.grid[to] = sudoku.grid[from]
-        sudoku.grid[from] = tmp
+    let tmp = sudoku.grid[to]
+    sudoku.grid[to] = sudoku.grid[from]
+    sudoku.grid[from] = tmp
+}
+
+function switch_columns(sudoku, rand) {
+    let region_idx = rand.nextRange(0, sudoku.region_height)
+
+    let from =
+        region_idx * sudoku.region_width +
+        rand.nextRange(0, sudoku.region_width)
+
+    let to =
+        region_idx * sudoku.region_width +
+        rand.nextRange(0, sudoku.region_width)
+
+    for (let r = 0; r < sudoku.size; r++) {
+        let tmp = sudoku.grid[r][to]
+        sudoku.grid[r][to] = sudoku.grid[r][from]
+        sudoku.grid[r][from] = tmp
     }
+}
+
+function switch_nums(sudoku, rand) {
+    let from = rand.nextRange(0, sudoku.size) + 1
+    let to = rand.nextRange(0, sudoku.size) + 1
+
+    let replaced = []
+    for (let r = 0; r < sudoku.size; r++) {
+        for (let c = 0; c < sudoku.size; c++) {
+            if (sudoku.grid[r][c].num == to) {
+                sudoku.grid[r][c].num = from
+            } else if (sudoku.grid[r][c].num == from) {
+                sudoku.grid[r][c].num = to
+            }
+        }
+    }
+    // for (let i = 0; i < replaced.length; i++) {
+    //     let r = replaced[i][0]
+    //     let c = replaced[i][1]
+    //     sudoku.grid[r][c].num =
+    // }
 }
 
 export class Cell {
