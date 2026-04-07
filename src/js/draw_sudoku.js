@@ -37,6 +37,18 @@ export function draw_sudoku(grid) {
                 grid.region_height *
                     Math.floor(raw_idx / (grid.size * grid.region_height))
 
+            let candidateContainer = document.createElement('div')
+            candidateContainer.className = 'candidate-grid'
+            for (let cr = 0; cr < grid.size / sudoku.size; cr++)
+                for (let cc = 0; cc < grid.size / sudoku.size; cc++) {
+                    let candidate = document.createElement('span')
+                    candidate.className = 'sudoku-cell-candidate'
+
+                    let candidateNum = cr * grid.region_width + cc + 1
+                    candidate.innerText = candidateNum
+                    candidateContainer.appendChild(candidate)
+                }
+            cell.appendChild(candidateContainer)
             regions[idx].appendChild(cell)
         }
     }
