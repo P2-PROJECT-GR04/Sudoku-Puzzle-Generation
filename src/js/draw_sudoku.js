@@ -28,7 +28,8 @@ export function draw_sudoku(grid) {
             let cell = document.createElement('button')
 
             cell.className = 'sudoku-cell'
-            cell.onclick = () => mark_cell([r, c])
+            cell.onclick = () => mark_cell(grid, [r, c])
+
             cell.appendChild(grid.grid[r][c].to_html())
 
             let raw_idx = r * grid.size + c

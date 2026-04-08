@@ -10,7 +10,8 @@ export class Rng {
         this.a = 1103515245
         this.c = 12345
 
-        this.state = seed ? seed : Math.floor(Math.random() * (this.m - 1))
+        this.state = seed ? seed : newSeed()
+        this.seed = this.state
     }
     nextInt() {
         this.state = (this.a * this.state + this.c) % this.m
@@ -30,4 +31,8 @@ export class Rng {
     choice(array) {
         return array[this.nextRange(0, array.length)]
     }
+}
+
+export function newSeed() {
+    return Math.floor(Math.random() * (0x80000000 - 1))
 }

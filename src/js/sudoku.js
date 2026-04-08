@@ -8,11 +8,13 @@ export class Sudoku {
         for (let r = 0; r < this.size; r++) {
             this.grid.push([])
             for (let c = 0; c < this.size; c++) {
-                this.grid[r].push(null)
+                this.grid[r].push(new Cell(null))
             }
         }
 
+        this.marked_cell = null
         this.mark_cell = (row, col, is_marked = true) => {
+            this.marked_cell = [row, col]
             this.is_marked = is_marked
             this.grid[row][col].is_marked = is_marked
 
@@ -48,6 +50,15 @@ export function make_simple_solved_grid(sudoku) {
                 true
             )
         }
+    }
+}
+
+export function remove_cells(sudoku, rand) {
+    for (let i = 0; i < 50; i++) {
+        let r = rand.nextRange(0, sudoku.size)
+        let c = rand.nextRange(0, sudoku.size)
+        sudoku.grid[r][c].num = null
+        sudoku.grid[r][c].is_hint = false
     }
 }
 
@@ -117,7 +128,6 @@ function switch_nums(sudoku, rand) {
     let from = rand.nextRange(0, sudoku.size) + 1
     let to = rand.nextRange(0, sudoku.size) + 1
 
-    let replaced = []
     for (let r = 0; r < sudoku.size; r++) {
         for (let c = 0; c < sudoku.size; c++) {
             if (sudoku.grid[r][c].num == to) {
@@ -127,11 +137,6 @@ function switch_nums(sudoku, rand) {
             }
         }
     }
-    // for (let i = 0; i < replaced.length; i++) {
-    //     let r = replaced[i][0]
-    //     let c = replaced[i][1]
-    //     sudoku.grid[r][c].num =
-    // }
 }
 
 export class Cell {
