@@ -1,4 +1,5 @@
 import { createNumpad } from './numpad.js'
+import { startTimer } from './timer_function.js'
 import { draw_sudoku } from './draw_sudoku.js'
 import { make_solved_grid, Sudoku } from './sudoku.js'
 import { Rng } from './rand.js'
@@ -79,3 +80,8 @@ export function set_cell(r, c, num) {
         sudoku.grid[r][c].num = num
     }
 }
+
+//temporary timer start trigger
+window.addEventListener('DOMContentLoaded', () => {
+    startTimer();
+});
