@@ -1,6 +1,9 @@
 import { Rng } from './rand.js'
 import { make_solved_grid, remove_cells, Sudoku, Cell } from './sudoku.js'
 
+// Holds the state of the game.
+// There should only ever be one State object at once.
+// Please use the global `state` variable instead of creating a new one
 export class State {
     constructor(sudoku, rand) {
         this.sudoku = sudoku
@@ -12,6 +15,7 @@ export class State {
 // This can be global, as it is only used to manipulate the global search bar
 export let state = getState()
 
+// Update the saved state in the URL
 export function updateState(state) {
     const queryString = window.location.search
     const urlParams = new URLSearchParams(queryString)
@@ -22,15 +26,21 @@ export function updateState(state) {
 
     if (state.sudoku != null) {
         let sudoku_state = encodeSudoku(state.sudoku)
+        // URL's need to make sure there are no special characters.
+        // So any special character needs to be converted to hex (e.g. %FF)
         let uri_encoded = encodeURI(sudoku_state)
         urlParams.set('state', uri_encoded)
     }
 
+    // Only update the bar if the state has changed
+    // urlParams.toString() is the url parameters, without the ?, while
+    // queryString has the ?, so this adds a ? to check if they're equal
     if (`?${urlParams.toString()}` != queryString) {
         history.pushState(null, '', `?${urlParams.toString()}`)
     }
 }
 
+// Get the state from the URL bar. Optimally this should only be run once at startup
 export function getState() {
     const queryString = window.location.search
     const urlParams = new URLSearchParams(queryString)
@@ -48,6 +58,7 @@ export function getState() {
     let sudoku_state = urlParams.get('state')
 
     if (sudoku_state != null) {
+        // Decode URL hex characters (e.g. %20) to normal characters before decoding the sudoku
         let uri_decoded = decodeURI(sudoku_state)
         sudoku_state = decodeSudoku(rand, uri_decoded)
     }
@@ -55,6 +66,7 @@ export function getState() {
     return new State(sudoku_state, rand)
 }
 
+// Decode the sudoku from the encoded text state
 function decodeSudoku(rand, text) {
     rand = new Rng(rand.seed)
 
@@ -133,6 +145,7 @@ function decodeSudoku(rand, text) {
     return sudoku
 }
 
+/// Convert the Sudoku to an encoded text string for the URL
 function encodeSudoku(sudoku) {
     let raw_str = ''
     raw_str += `${sudoku.region_width}x${sudoku.region_height}`

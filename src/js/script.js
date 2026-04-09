@@ -4,6 +4,7 @@ import { make_solved_grid, remove_cells, Sudoku } from './sudoku.js'
 import { newSeed, Rng } from './rand.js'
 import { state, updateState } from './state.js'
 
+/// Load a new Sudoku from the original state
 function loadSudoku(state) {
     if (state.seed == null) {
         state.seed = newSeed()
@@ -25,6 +26,7 @@ function loadSudoku(state) {
     updateState(state)
 }
 
+/// Create a new random Sudoku and update the state
 function newSudoku() {
     state.seed = newSeed()
     state.rand = new Rng(state.seed)
