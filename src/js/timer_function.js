@@ -1,35 +1,35 @@
-let startTime = null;
-let timerId = null;
+let startTime = null
+let timerId = null
 
 export function startTimer() {
-  startTime = performance.now();
+    startTime = performance.now()
 
-  function tick() {
-    const now = performance.now();
-    const elapsed = now - startTime;
+    function tick() {
+        const now = performance.now()
+        const elapsed = now - startTime
 
-    const minutes = Math.floor(elapsed / 60000);
-    const seconds = Math.floor((elapsed % 60000) / 1000);
-    const millis = Math.floor(elapsed % 1000);
+        const minutes = Math.floor(elapsed / 60000)
+        const seconds = Math.floor((elapsed % 60000) / 1000)
+        const millis = Math.floor(elapsed % 1000)
 
-    const formatted =
-      `${String(minutes).padStart(2, '0')}:` +
-      `${String(seconds).padStart(2, '0')}.` +
-      `${String(millis).padStart(3, '0')}`;
+        const formatted =
+            `${String(minutes).padStart(2, '0')}:` +
+            `${String(seconds).padStart(2, '0')}` //+
+        //`${String(millis).padStart(3, '0')}`
 
-    document.getElementById("timerDisplay").textContent = formatted;
+        document.getElementById('timerDisplay').textContent = formatted
 
-    timerId = setTimeout(tick, 10);
-  }
+        timerId = setTimeout(tick, 500)
+    }
 
-  tick();
+    tick()
 }
 
 export function stopTimer() {
-  clearTimeout(timerId);
+    clearTimeout(timerId)
 
-  const totalMs = performance.now() - startTime;
-  startTime = null;
+    const totalMs = performance.now() - startTime
+    startTime = null
 
-  return totalMs;
+    return totalMs
 }
