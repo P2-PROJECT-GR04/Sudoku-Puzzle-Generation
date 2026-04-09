@@ -13,7 +13,12 @@ export function has_one_solution(sudoku) {
         if (cell.candidates.length == 0) {
             sudoku = trace.pop()
         } else if (cell.candidates.length == 1) {
-            sudoku.grid[cell.r][cell.c].candidates.pop()
+            sudoku.grid[cell.r][cell.c].num =
+                sudoku.grid[cell.r][cell.c].candidates.pop()
+        } else {
+            let candidate = pop(cell.candidates)
+            trace.push({ ...sudoku })
+            cell = candidate
         }
     }
 }
