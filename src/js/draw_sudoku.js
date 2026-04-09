@@ -5,9 +5,8 @@ import { mark_cell } from './script.js'
 /// Needs a div with the id "sudoku" and the class "sudoku-grid"
 export function draw_sudoku(grid) {
     let board = document.getElementById('sudoku')
-    board.innerText = ''
 
-    console.log(board.className)
+    board.innerText = ''
     board.style =
         'grid-template-columns: ' + 'auto '.repeat(grid.region_height) + ';'
 
@@ -34,10 +33,22 @@ export function draw_sudoku(grid) {
 
             let raw_idx = r * grid.size + c
             let idx =
-                Math.floor(c / grid.region_height) +
-                grid.region_width *
-                    Math.floor(raw_idx / (grid.size * grid.region_width))
+                Math.floor(c / grid.region_width) +
+                grid.region_height *
+                    Math.floor(raw_idx / (grid.size * grid.region_height))
 
+            let candidateContainer = document.createElement('div')
+            candidateContainer.className = 'candidate-grid'
+            for (let cr = 0; cr < grid.size / sudoku.size; cr++)
+                for (let cc = 0; cc < grid.size / sudoku.size; cc++) {
+                    let candidate = document.createElement('span')
+                    candidate.className = 'sudoku-cell-candidate'
+
+                    let candidateNum = cr * grid.region_width + cc + 1
+                    candidate.innerText = candidateNum
+                    candidateContainer.appendChild(candidate)
+                }
+            cell.appendChild(candidateContainer)
             regions[idx].appendChild(cell)
         }
     }
