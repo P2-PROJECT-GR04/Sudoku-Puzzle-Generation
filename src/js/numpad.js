@@ -3,6 +3,7 @@ import { mark_cell, set_cell, marked_cell } from './script.js'
 import { sudoku } from './script.js'
 import { check_board } from './sudoku.js'
 import { find_candidates_for_grid } from './check-hint.js'
+import { has_one_solution } from './has_one_solution.js'
 
 export function createNumpad(size) {
     const display = document.getElementById('sudoku-numpad-display')
@@ -66,7 +67,13 @@ export function createNumpad(size) {
         }
         if (numpadValue == 'Check board') {
             console.log('Checking board')
-            check_board(sudoku)
+            //check_board(sudoku)
+
+            if (has_one_solution(sudoku)) {
+                console.log('has one solution')
+            } else {
+                console.log('has no or more solutions')
+            }
         }
         if (numpadValue == 'Show hint') {
             console.log('Show hints')

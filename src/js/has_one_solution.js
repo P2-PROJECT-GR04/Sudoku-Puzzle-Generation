@@ -1,5 +1,5 @@
 import { draw_sudoku } from './draw_sudoku.js'
-import { sudoku } from './script.js'
+import { Sudoku, Cell } from './sudoku.js'
 import {
     find_candidates_for_grid,
     find_candidates_for_cell,
@@ -10,6 +10,7 @@ export function has_one_solution(sudoku) {
     let currentSudoku = deepCopy(sudoku)
     let found_solution = false
     while (!full_grid(currentSudoku) || trace.length != 0) {
+        console.log(trace.length)
         let cell = lowest_candidates(currentSudoku)
         if (cell.candidates.length == 0) {
             if (trace.length == 0) {
@@ -21,7 +22,7 @@ export function has_one_solution(sudoku) {
             currentSudoku.grid[cell.r][cell.c].num =
                 currentSudoku.grid[cell.r][cell.c].candidates.pop()
         } else {
-            let candidate = pop(cell.candidates)
+            let candidate = cell.candidates.pop()
             trace.push(deepCopy(currentSudoku))
             cell = candidate
         }
@@ -59,23 +60,33 @@ function lowest_candidates(sudoku) {
     }
     for (let r = 0; r < sudoku.size; r++) {
         for (let c = 0; c < sudoku.size; c++) {
-            if (sudoku.grid[r][c].is_collapsed() == true) {
+            if (sudoku.grid[r][c].is_collapsed()) {
                 continue
             }
-            let candidates_for_cell = find_candidates_for_cell(sudoku, r, c)
+            find_candidates_for_cell(sudoku, r, c)
             if (
                 currentLowest.candidates == null ||
-                currentLowest.candidates.length > candidates_for_cell.length
+                currentLowest.candidates.length >
+                    sudoku.grid[r][c].candidates.length
             ) {
                 currentLowest.r = r
                 currentLowest.c = c
-                currentLowest.candidates = candidates_for_cell
+                currentLowest.candidates = sudoku.grid[r][c].candidates
             }
         }
     }
     return currentLowest
 }
 
-function deepCopy(data) {
-    return JSON.parse(JSON.stringify(data))
+function deepCopy(sudoku) {
+    let new_sudoku = new Sudoku(sudoku.region_width, sudoku.region_height)
+
+    for (let r = 0; r < sudoku.size; r++) {
+        for (let c = 0; c < sudoku.size; c++) {
+            new_sudoku.grid[r][c] = new Cell(sudoku.grid[r][c].num)
+            new_sudoku.grid[r][c].candidates = [...sudoku.grid[r][c].candidates]
+        }
+    }
+
+    return new_sudoku
 }

@@ -16,11 +16,18 @@ export let sudoku = new Sudoku(3, 3)
 createNumpad(sudoku.size)
 
 make_solved_grid(sudoku, rand)
-
+/*
 for (let i = 0; i < 50; i++) {
     let r = rand.nextRange(0, sudoku.size)
     let c = rand.nextRange(0, sudoku.size)
     sudoku.grid[r][c].is_hint = false
+}*/
+
+for (let r = 5; r < sudoku.size; r++) {
+    for (let c = 0; c < sudoku.size; c++) {
+        sudoku.grid[r][c].is_hint = false
+        sudoku.grid[r][c].num = null
+    }
 }
 
 draw_sudoku(sudoku)

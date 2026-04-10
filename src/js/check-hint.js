@@ -93,6 +93,7 @@ export function find_candidates_for_grid(sudoku) {
 }
 
 export function find_candidates_for_cell(sudoku, r, c) {
+    let candidates = []
     if (sudoku.grid[r][c].num == null) {
         let region_r_min =
             Math.floor(r / sudoku.region_height) * sudoku.region_height
@@ -101,8 +102,6 @@ export function find_candidates_for_cell(sudoku, r, c) {
         let region_c_min =
             Math.floor(c / sudoku.region_width) * sudoku.region_width
         let region_c_max = region_c_min + sudoku.region_width - 1
-
-        let candidates = []
         for (let s = 1; s <= sudoku.size; s++) {
             candidates.push(s)
         }
