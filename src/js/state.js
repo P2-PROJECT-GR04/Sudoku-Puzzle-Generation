@@ -1,5 +1,6 @@
 import { Rng } from './rand.js'
-import { make_solved_grid, remove_cells, Sudoku, Cell } from './sudoku.js'
+import { make_solved_grid, remove_cells, Sudoku } from './sudoku.js'
+import { Cell } from './cell.js'
 
 /**
  * Holds the state of the game.
