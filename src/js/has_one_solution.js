@@ -7,20 +7,37 @@ import {
 
 export function has_one_solution(sudoku) {
     let trace = []
+    let currentSudoku = deepCopy(sudoku)
     let found_solution = false
-    while (!full_grid(sudoku) || trace.length != 0) {
-        let cell = lowest_candidates(sudoku)
+    while (!full_grid(currentSudoku) || trace.length != 0) {
+        let cell = lowest_candidates(currentSudoku)
         if (cell.candidates.length == 0) {
-            sudoku = trace.pop()
+            if (trace.length == 0) {
+                // -> No solution found
+                return false
+            }
+            currentSudoku = trace.pop()
         } else if (cell.candidates.length == 1) {
-            sudoku.grid[cell.r][cell.c].num =
-                sudoku.grid[cell.r][cell.c].candidates.pop()
+            currentSudoku.grid[cell.r][cell.c].num =
+                currentSudoku.grid[cell.r][cell.c].candidates.pop()
         } else {
             let candidate = pop(cell.candidates)
-            trace.push({ ...sudoku })
+            trace.push(deepCopy(currentSudoku))
             cell = candidate
         }
+        if (full_grid(currentSudoku)) {
+            if (found_solution) {
+                return false
+            } else {
+                found_solution = true
+                if (trace.length == 0) {
+                    break
+                }
+                currentSudoku = trace.pop()
+            }
+        }
     }
+    return true
 }
 
 function full_grid(sudoku) {
@@ -57,4 +74,8 @@ function lowest_candidates(sudoku) {
         }
     }
     return currentLowest
+}
+
+function deepCopy(data) {
+    return JSON.parse(JSON.stringify(data))
 }

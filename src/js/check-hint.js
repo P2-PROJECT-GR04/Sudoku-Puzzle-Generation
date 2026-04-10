@@ -160,5 +160,6 @@ export function find_candidates_for_cell(sudoku, r, c) {
             }
         }
     }
-    return candidates
+    sudoku.grid[r][c].candidates = [] //Reset the candidates for the cell
+    sudoku.grid[r][c].candidates = candidates //Here the candidates we've found is getting into the cell class in the sudoku
 }
