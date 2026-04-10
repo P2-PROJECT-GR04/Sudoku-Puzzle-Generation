@@ -3,9 +3,13 @@ import { startTimer } from './timer_function.js'
 import { draw_sudoku } from './draw_sudoku.js'
 import { make_solved_grid, remove_cells, Sudoku } from './sudoku.js'
 import { newSeed, Rng } from './rand.js'
-import { state, updateState } from './state.js'
+import { State, state, updateState } from './state.js'
 
-/// Load a new Sudoku from the original state
+/**
+ * Load a new Sudoku from a state
+ * @modifies {state}
+ * @param {State} state - The state to use
+ */
 function loadSudoku(state) {
     if (state.seed == null) {
         state.seed = newSeed()
@@ -27,7 +31,10 @@ function loadSudoku(state) {
     updateState(state)
 }
 
-/// Create a new random Sudoku and update the state
+/**
+ * Create a new random Sudoku and update the state
+ * @modifies {state}
+ */
 function newSudoku() {
     state.seed = newSeed()
     state.rand = new Rng(state.seed)
@@ -49,6 +56,12 @@ document
 
 loadSudoku(state)
 
+/**
+ * Mark a cell in a sudoku
+ * @modifies {sudoku}
+ * @param {Sudoku} sudoku - The sudoku to modify
+ * @param {number[]} coord - The coordinate for the cell to mark, given with [r,c]
+ */
 export function mark_cell(sudoku, coord) {
     if (sudoku.marked_cell != null)
         sudoku.mark_cell(sudoku.marked_cell[0], sudoku.marked_cell[1], false)
@@ -75,6 +88,14 @@ export function mark_cell(sudoku, coord) {
     draw_sudoku(sudoku)
 }
 
+/**
+ * Give a value to a cell, and update the global state
+ * @modifies {sudoku, state}
+ * @param {Sudoku} sudoku - The sudoku to modify
+ * @param {number} r - The row to set
+ * @param {number} c - The column to set
+ * @param {number | null} num - The new value of the cell
+ */
 export function set_cell(sudoku, r, c, num) {
     if (!sudoku.grid[r][c].is_hint) {
         console.log(`Setting (${r}, ${c}) to ${num}`)
@@ -85,5 +106,6 @@ export function set_cell(sudoku, r, c, num) {
 
 //temporary timer start trigger
 window.addEventListener('DOMContentLoaded', () => {
-    startTimer();
-});
+    startTimer()
+})
+
