@@ -1,10 +1,11 @@
-import { draw_sudoku } from './draw_sudoku.js'
 import { Sudoku, Cell } from './sudoku.js'
-import {
-    find_candidates_for_grid,
-    find_candidates_for_cell,
-} from './check-hint.js'
+import { find_candidates_for_cell } from './check-hint.js'
 
+/**
+ * Checks if a Sudoku has only one solution.
+ * @param {Sudoku} sudoku
+ * @returns {boolean}
+ */
 export function has_one_solution(sudoku) {
     let trace = []
     let currentSudoku = deepCopy(sudoku)
@@ -22,9 +23,9 @@ export function has_one_solution(sudoku) {
             currentSudoku.grid[cell.r][cell.c].num =
                 currentSudoku.grid[cell.r][cell.c].candidates.pop()
         } else {
-            let candidate = cell.candidates.pop()
+            let candidate = currentSudoku.grid[cell.r][cell.c].candidates.pop()
             trace.push(deepCopy(currentSudoku))
-            cell = candidate
+            currentSudoku.grid[cell.r][cell.c].num = candidate
         }
         if (full_grid(currentSudoku)) {
             if (found_solution) {
@@ -41,6 +42,11 @@ export function has_one_solution(sudoku) {
     return true
 }
 
+/**
+ * Checks if a Sudoku has a collapsed number in all of its cells
+ * @param {Sudoku} sudoku
+ * @returns {boolean}
+ */
 function full_grid(sudoku) {
     for (let r = 0; r < 9; r++) {
         for (let c = 0; c < 9; c++) {
@@ -52,7 +58,20 @@ function full_grid(sudoku) {
     return true
 }
 
+/**
+ * @typedef {Object} CellRef - Reference a cell
+ * @property {number} r - The row of the referenced cell
+ * @property {number} c - The column of the referenced cell
+ * @property {number[]} candidates - The candidates of the referenced cell
+ */
+
+/**
+ * Finds the cell with the lowest amount of candidates
+ * @param {Sudoku} sudoku
+ * @returns {CellRef}
+ */
 function lowest_candidates(sudoku) {
+    /** @type {CellRef} */
     let currentLowest = {
         r: null,
         c: null,
@@ -78,6 +97,11 @@ function lowest_candidates(sudoku) {
     return currentLowest
 }
 
+/**
+ * Deep copies a given Sudoku
+ * @param {Sudoku} sudoku - The sudoku to copy
+ * @returns {Sudoku} The copied sudoku
+ */
 function deepCopy(sudoku) {
     let new_sudoku = new Sudoku(sudoku.region_width, sudoku.region_height)
 
