@@ -1,6 +1,9 @@
 let startTime = null
 let timerId = null
 
+/**
+ * Start the timer
+ */
 export function startTimer() {
     startTime = performance.now()
 
@@ -25,6 +28,10 @@ export function startTimer() {
     tick()
 }
 
+/**
+ * Stop the timer and reset its time
+ * @returns {number} The number of ms since the timer started
+ */
 export function stopTimer() {
     clearTimeout(timerId)
 
