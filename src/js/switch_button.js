@@ -1,7 +1,7 @@
 import { state, updateState } from './state.js'
 import { draw_sudoku } from './draw_sudoku.js'
 
-let notesMode = false
+let noteMode = false
 
 function createSwitchButton() {
     const button = document.createElement('button')
@@ -9,9 +9,9 @@ function createSwitchButton() {
     button.textContent = 'Notes Mode: OFF'
 
     function toggle() {
-        notesMode = !notesMode
-        button.textContent = `Notes Mode: ${notesMode ? 'ON' : 'OFF'}`
-        button.classList.toggle('notes-active', notesMode)
+        noteMode = !noteMode
+        button.textContent = `Notes Mode: ${noteMode ? 'ON' : 'OFF'}`
+        button.classList.toggle('notes-active', noteMode)
     }
 
     button.addEventListener('click', toggle)
@@ -38,7 +38,7 @@ function toggleCandidate(cell, num) {
 }
 
 document.addEventListener('keydown', (event) => {
-    if (!notesMode) return
+    if (!noteMode) return
     if (!state.sudoku || !state.sudoku.marked_cell) return
 
     const [r, c] = state.sudoku.marked_cell
@@ -63,7 +63,7 @@ document.addEventListener('keydown', (event) => {
 }, true)
 
 document.addEventListener('click', (event) => {
-    if (!notes_mode) return
+    if (!noteMode) return
     if (!event.target.closest('#sudoku-numpad')) return
     if (event.target.tagName !== 'BUTTON') return
     if (!state.sudoku || !state.sudoku.marked_cell) return
@@ -91,22 +91,6 @@ document.addEventListener('click', (event) => {
     draw_sudoku(state.sudoku)
     updateState(state)
 }, true)
-
-const style = document.createElement('style')
-style.textContent = `
-    #notes-mode-btn {
-        display: block;
-        margin: 10px auto;
-        padding: 10px 24px;
-        font-size: 1em;
-        cursor: pointer;
-        background: #ddd;
-    }
-    #notes-mode-btn.notes-active {
-        background: #4CAF50;
-    }
-`
-document.head.appendChild(style)
 
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', createSwitchButton)
