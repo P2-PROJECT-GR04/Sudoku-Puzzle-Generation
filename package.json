@@ -1,0 +1,28 @@
+{
+    "name": "sudoku-puzzle-generation",
+    "version": "1.0.0",
+    "description": "A web-based Sudoku generator built with JavaScript, HTML, and CSS. Developed as a 2nd-semester project by Group 4 at Aalborg University (AAU). The project focuses on algorithmic generation and interactive web design.",
+    "main": "index.js",
+    "directories": {
+        "test": "test"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/P2-PROJECT-GR04/Sudoku-Puzzle-Generation.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "type": "commonjs",
+    "bugs": {
+        "url": "https://github.com/P2-PROJECT-GR04/Sudoku-Puzzle-Generation/issues"
+    },
+    "homepage": "https://github.com/P2-PROJECT-GR04/Sudoku-Puzzle-Generation#readme",
+    "devDependencies": {
+        "jest": "^30.3.0",
+        "jest-environment-jsdom": "^30.3.0"
+    }
+}
