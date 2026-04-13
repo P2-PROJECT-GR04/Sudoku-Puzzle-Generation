@@ -101,14 +101,9 @@ style.textContent = `
         font-size: 1em;
         cursor: pointer;
         background: #ddd;
-        border: 2px solid #999;
-        border-radius: 6px;
-        transition: background 0.2s, color 0.2s;
     }
     #notes-mode-btn.notes-active {
         background: #4CAF50;
-        color: white;
-        border-color: #2e7d32;
     }
 `
 document.head.appendChild(style)
