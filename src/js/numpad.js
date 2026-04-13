@@ -1,10 +1,14 @@
 import { draw_sudoku } from './draw_sudoku.js'
 import { mark_cell, set_cell } from './script.js'
-import { check_board } from './sudoku.js'
+import { check_board, Sudoku } from './sudoku.js'
 import { show_hint } from './check-hint.js'
 
+/**
+ * Creates a numpad and inserts it into the HTMl document.
+ * Needs a table with the id "sudoku-numpad"
+ * @param {Sudoku} sudoku
+ */
 export function createNumpad(sudoku) {
-    const display = document.getElementById('sudoku-numpad-display')
     const numpad = document.getElementById('sudoku-numpad')
     numpad.innerText = ''
     const numpadColumn = 3
