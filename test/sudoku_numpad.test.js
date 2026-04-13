@@ -2,6 +2,7 @@
 const script = require('../src/js/script.js')
 const sudokuFile = require('../src/js/sudoku.js')
 const checkBoard = require('../src/js/sudoku.js')
+
 const draw = require('../src/js/draw_sudoku.js')
 const checkHint = require('../src/js/check-hint.js')
 
