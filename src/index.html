@@ -1,6 +1,13 @@
 <!doctype html>
 <html lang="en">
     <head>
+        <style>
+            .sudoku-number-blur {
+                filter: blur(5px);
+                user-select: none;
+                pointer-events: none;
+                }
+         </style>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
@@ -9,9 +16,12 @@
         <link rel="icon" href="./favicon.ico" type="image/x-icon" />
     </head>
     <body>
-        <main>
+        <main id="gameArea">
             <h1>Welcome to My Website</h1>
+            <button id="pauseBtn">Pause</button>
+            <button id="resumeBtn" style="display:none;">Resume</button>
             <p>Timer: <span id="timerDisplay">00:00.000</span></p>
+           
             <div id="wrapper">
                 <button id="gen-sudoku-button">New sudoku</button>
                 <div class="sudoku-grid" id="sudoku"></div>

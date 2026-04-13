@@ -4,6 +4,8 @@ import { draw_sudoku } from './draw_sudoku.js'
 import { make_solved_grid, remove_cells, Sudoku } from './sudoku.js'
 import { newSeed, Rng } from './rand.js'
 import { State, state, updateState } from './state.js'
+import { pauseTimer, resumeTimer } from "./timer_function.js"
+
 
 /**
  * Load a new Sudoku from a state
@@ -30,6 +32,7 @@ function loadSudoku(state) {
     draw_sudoku(state.sudoku)
     updateState(state)
 }
+
 
 /**
  * Create a new random Sudoku and update the state
@@ -109,3 +112,17 @@ window.addEventListener('DOMContentLoaded', () => {
     startTimer()
 })
 
+const pauseBtn = document.getElementById("pauseBtn")
+const resumeBtn = document.getElementById("resumeBtn")
+
+pauseBtn.addEventListener("click", () => {
+    pauseTimer()
+    pauseBtn.style.display = "none"
+    resumeBtn.style.display = "inline-block"
+})
+
+resumeBtn.addEventListener("click", () => {
+    resumeTimer()
+    resumeBtn.style.display = "none"
+    pauseBtn.style.display = "inline-block"
+})
