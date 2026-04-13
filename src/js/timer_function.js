@@ -3,6 +3,12 @@ let timerId = null
 let elapsedBeforePause = 0
 let isPaused = false
 
+//Loads saved time, updates every 500 ms so should be pretty good.
+let saved = localStorage.getItem("sudokuTimer")
+if (saved !== null) {
+    elapsedBeforePause = Number(saved)
+}
+
 /**
  * Start the timer
  */
@@ -17,6 +23,8 @@ export function startTimer() {
             return
         const now = performance.now()
         const elapsed = now - startTime
+        localStorage.setItem("sudokuTimer", elapsed)
+
 
         const minutes = Math.floor(elapsed / 60000)
         const seconds = Math.floor((elapsed % 60000) / 1000)
@@ -43,11 +51,15 @@ export function pauseTimer() {
     clearTimeout(timerId)
     elapsedBeforePause = performance.now() - startTime
 
+    //Blurs all Numbers/Candidates
    document.querySelectorAll("#sudoku *").forEach(el => {
     if (el.childNodes.length === 1 && el.childNodes[0].nodeType === 3) {
         el.classList.add("sudoku-number-blur")}
     })
 
+    // Disables new sudoku button + numpad
+    document.getElementById("gen-sudoku-button").classList.add("disabled")
+    document.getElementById("sudoku-numpad").classList.add("disabled")
 }
 
 export function resumeTimer() {
@@ -55,10 +67,25 @@ export function resumeTimer() {
         return
     isPaused = false
 
+    // Removes the blurred Numbers/Candidates
     document.querySelectorAll(".sudoku-number-blur").forEach(el =>
     el.classList.remove("sudoku-number-blur"))
 
+    // Re-enables new sudoku button + numpad
+    document.getElementById("gen-sudoku-button").classList.remove("disabled")
+    document.getElementById("sudoku-numpad").classList.remove("disabled")
+
     startTimer()
+}
+
+export function resetTimer() {
+    clearTimeout(timerId)
+    startTime = null
+    elapsedBeforePause = 0
+    localStorage.removeItem("sudokuTimer")
+
+    const el = document.getElementById("timerDisplay")
+    if (el) el.textContent = "00:00"
 }
 
 /**

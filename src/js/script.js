@@ -4,8 +4,7 @@ import { draw_sudoku } from './draw_sudoku.js'
 import { make_solved_grid, remove_cells, Sudoku } from './sudoku.js'
 import { newSeed, Rng } from './rand.js'
 import { State, state, updateState } from './state.js'
-import { pauseTimer, resumeTimer } from "./timer_function.js"
-
+import { pauseTimer, resumeTimer, resetTimer } from "./timer_function.js"
 
 /**
  * Load a new Sudoku from a state
@@ -41,6 +40,10 @@ function loadSudoku(state) {
 function newSudoku() {
     state.seed = newSeed()
     state.rand = new Rng(state.seed)
+
+    //Resets the timer when new sudokus are made.
+    resetTimer()
+    startTimer()
 
     state.sudoku = new Sudoku(3, 3)
     make_solved_grid(state.sudoku, state.rand)
@@ -107,7 +110,8 @@ export function set_cell(sudoku, r, c, num) {
     updateState(state)
 }
 
-//temporary timer start trigger
+
+//Timer start trigger
 window.addEventListener('DOMContentLoaded', () => {
     startTimer()
 })
