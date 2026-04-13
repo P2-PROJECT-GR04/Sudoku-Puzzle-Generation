@@ -44,6 +44,7 @@
 .sudoku-cell:has(.marked-assoc) {
     background-color: rgba(95, 35, 71, 0.25);
     /* background-color: #c8e6c9; */
+    background-color: var(--cream)
 }
 
 .sudoku-candidates {
