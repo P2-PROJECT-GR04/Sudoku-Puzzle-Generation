@@ -13,8 +13,8 @@ if (saved !== null) {
  * Start the timer
  */
 export function startTimer() {
-     if (startTime !== null) 
-         return
+    if (timerId !== null)
+        return
 
     startTime = performance.now() - elapsedBeforePause
 
@@ -49,6 +49,7 @@ export function pauseTimer() {
     isPaused = true
 
     clearTimeout(timerId)
+    timerId = null
     elapsedBeforePause = performance.now() - startTime
 
     //Blurs all Numbers/Candidates
@@ -75,11 +76,14 @@ export function resumeTimer() {
     document.getElementById("gen-sudoku-button").classList.remove("disabled")
     document.getElementById("sudoku-numpad").classList.remove("disabled")
 
+    startTime = performance.now() - elapsedBeforePause
+
     startTimer()
 }
 
 export function resetTimer() {
     clearTimeout(timerId)
+    timerId = null
     startTime = null
     elapsedBeforePause = 0
     localStorage.removeItem("sudokuTimer")
@@ -94,6 +98,7 @@ export function resetTimer() {
  */
 export function stopTimer() {
     clearTimeout(timerId)
+    timerId = null
 
     const totalMs = performance.now() - startTime
     startTime = null
