@@ -1,21 +1,18 @@
 import { draw_sudoku } from './draw_sudoku.js'
-import { mark_cell, set_cell } from './script.js'
-import { check_board, Sudoku } from './sudoku.js'
-import { show_hint } from './check-hint.js'
+import { mark_cell, set_cell, marked_cell } from './script.js'
+import { sudoku } from './script.js'
+import { check_board } from './sudoku.js'
+import { find_candidates_for_grid } from './check-hint.js'
+import { has_one_solution } from './has_one_solution.js'
 
-/**
- * Creates a numpad and inserts it into the HTMl document.
- * Needs a table with the id "sudoku-numpad"
- * @param {Sudoku} sudoku
- */
-export function createNumpad(sudoku) {
+export function createNumpad(size) {
+    const display = document.getElementById('sudoku-numpad-display')
     const numpad = document.getElementById('sudoku-numpad')
-    numpad.innerText = ''
     const numpadColumn = 3
     const keys = []
     let currentRow = [] //This is used to insert paired elements in numpad keys array
 
-    for (let i = 1; i <= sudoku.size; i++) {
+    for (let i = 1; i <= size; i++) {
         currentRow.push(i.toString())
         if (currentRow.length === numpadColumn) {
             keys.push(currentRow)
@@ -56,16 +53,16 @@ export function createNumpad(sudoku) {
         if (event.target.tagName !== 'BUTTON') return
         const numpadValue = event.target.textContent
         if (
-            sudoku.marked_cell != null &&
+            marked_cell != null &&
             numpadValue !== 'Check board' &&
             numpadValue !== 'Show hint'
         ) {
-            let cell = sudoku.marked_cell
-            mark_cell(sudoku, null)
+            let cell = marked_cell
+            mark_cell(null)
             if (numpadValue === 'DEL') {
-                set_cell(sudoku, cell[0], cell[1], null)
+                set_cell(cell[0], cell[1], null)
             } else {
-                set_cell(sudoku, cell[0], cell[1], numpadValue)
+                set_cell(cell[0], cell[1], numpadValue)
             }
         }
         if (numpadValue == 'Check board') {
@@ -84,23 +81,4 @@ export function createNumpad(sudoku) {
         }
         draw_sudoku(sudoku)
     }
-
-    document.addEventListener('keydown', function (event) {
-        console.log(`GOT INPUT: ${event.key}`)
-        if (sudoku.marked_cell != null) {
-            if (event.key === 'Delete' || event.key === 'Backspace') {
-                let cell = sudoku.marked_cell
-                mark_cell(sudoku, null)
-                set_cell(sudoku, cell[0], cell[1], null)
-            } else {
-                let num = Number.parseInt(event.key)
-                if (isNaN(num) || num == 0 || num > sudoku.size) return
-
-                let cell = sudoku.marked_cell
-                mark_cell(sudoku, null)
-                set_cell(sudoku, cell[0], cell[1], event.key)
-            }
-        }
-        draw_sudoku(sudoku)
-    })
 }
