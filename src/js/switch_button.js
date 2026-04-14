@@ -29,7 +29,7 @@ function createSwitchButton() {
 
 function toggleCandidate(cell, num) {
     if (cell.candidates.includes(num)) {
-        cell.candidates = cell.candidates.filter(n => n !== num)
+        cell.candidates = cell.candidates.filter((n) => n !== num)
     } else {
         cell.num = null
         cell.candidates.push(num)
@@ -37,60 +37,68 @@ function toggleCandidate(cell, num) {
     }
 }
 
-document.addEventListener('keydown', (event) => {
-    if (!noteMode) return
-    if (!state.sudoku || !state.sudoku.marked_cell) return
+document.addEventListener(
+    'keydown',
+    (event) => {
+        if (!noteMode) return
+        if (!state.sudoku || !state.sudoku.marked_cell) return
 
-    const [r, c] = state.sudoku.marked_cell
-    const cell = state.sudoku.grid[r][c]
-    if (cell.is_hint) return
+        const [r, c] = state.sudoku.marked_cell
+        const cell = state.sudoku.grid[r][c]
+        if (cell.is_hint) return
 
-    if (event.key === 'Delete' || event.key === 'Backspace') {
+        if (event.key === 'Delete' || event.key === 'Backspace') {
+            event.stopImmediatePropagation()
+            cell.candidates = []
+            draw_sudoku(state.sudoku)
+            updateState(state)
+            return
+        }
+
+        const num = Number.parseInt(event.key)
+        if (isNaN(num) || num < 1 || num > state.sudoku.size) return
+
         event.stopImmediatePropagation()
-        cell.candidates = []
+        toggleCandidate(cell, num)
         draw_sudoku(state.sudoku)
         updateState(state)
-        return
-    }
+    },
+    true
+)
 
-    const num = Number.parseInt(event.key)
-    if (isNaN(num) || num < 1 || num > state.sudoku.size) return
+document.addEventListener(
+    'click',
+    (event) => {
+        if (!noteMode) return
+        if (!event.target.closest('#sudoku-numpad')) return
+        if (event.target.tagName !== 'BUTTON') return
+        if (!state.sudoku || !state.sudoku.marked_cell) return
 
-    event.stopImmediatePropagation()
-    toggleCandidate(cell, num)
-    draw_sudoku(state.sudoku)
-    updateState(state)
-}, true)
+        const value = event.target.textContent
 
-document.addEventListener('click', (event) => {
-    if (!noteMode) return
-    if (!event.target.closest('#sudoku-numpad')) return
-    if (event.target.tagName !== 'BUTTON') return
-    if (!state.sudoku || !state.sudoku.marked_cell) return
+        if (value === 'Check board' || value === 'Show hint') return
 
-    const value = event.target.textContent
+        const [r, c] = state.sudoku.marked_cell
+        const cell = state.sudoku.grid[r][c]
+        if (cell.is_hint) return
 
-    if (value === 'Check board' || value === 'Show hint') return
+        event.stopImmediatePropagation()
 
-    const [r, c] = state.sudoku.marked_cell
-    const cell = state.sudoku.grid[r][c]
-    if (cell.is_hint) return
-
-    event.stopImmediatePropagation()
-
-    if (value === 'DEL') {
-        cell.candidates = []
-        cell.num = null
-    } else {
-        const num = Number.parseInt(value)
-        if (!isNaN(num) && num >= 1 && num <= state.sudoku.size) {
-            toggleCandidate(cell, num)
+        if (value === 'DEL') {
+            cell.candidates = []
+            cell.num = null
+        } else {
+            const num = Number.parseInt(value)
+            if (!isNaN(num) && num >= 1 && num <= state.sudoku.size) {
+                toggleCandidate(cell, num)
+            }
         }
-    }
 
-    draw_sudoku(state.sudoku)
-    updateState(state)
-}, true)
+        draw_sudoku(state.sudoku)
+        updateState(state)
+    },
+    true
+)
 
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', createSwitchButton)
