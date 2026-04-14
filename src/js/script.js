@@ -4,7 +4,14 @@ import { draw_sudoku } from './draw_sudoku.js'
 import { make_solved_grid, remove_cells, Sudoku } from './sudoku.js'
 import { newSeed, Rng } from './rand.js'
 import { initState, State, state, updateState } from './state.js'
-import { pauseTimer, resumeTimer, resetTimer, updateTimerDisplayFromState, reapplyDisable, reapplyPauseButtons } from "./timer_function.js"
+import {
+    pauseTimer,
+    resumeTimer,
+    resetTimer,
+    updateTimerDisplayFromState,
+    reapplyDisable,
+    reapplyPauseButtons,
+} from './timer_function.js'
 
 initState()
 /**
@@ -68,9 +75,8 @@ if (!state.isPaused) {
     updateTimerDisplayFromState()
     reapplyBlur()
     reapplyDisable()
-    reapplyPauseButtons() 
+    reapplyPauseButtons()
 }
-
 
 /**
  * Mark a cell in a sudoku
@@ -102,6 +108,7 @@ export function mark_cell(sudoku, coord) {
     console.debug(`MARKED: ${sudoku.marked_cell}`)
 
     draw_sudoku(sudoku)
+    reapplyBlur()
 }
 
 /**
@@ -120,39 +127,37 @@ export function set_cell(sudoku, r, c, num) {
     updateState(state)
 }
 
-const pauseBtn = document.getElementById("pauseBtn")
-const resumeBtn = document.getElementById("resumeBtn")
+const pauseBtn = document.getElementById('pauseBtn')
+const resumeBtn = document.getElementById('resumeBtn')
 
-pauseBtn.addEventListener("click", () => {
+pauseBtn.addEventListener('click', () => {
     pauseTimer()
-    pauseBtn.style.display = "none"
-    resumeBtn.style.display = "inline-block"
+    pauseBtn.style.display = 'none'
+    resumeBtn.style.display = 'inline-block'
 })
 
-resumeBtn.addEventListener("click", () => {
+resumeBtn.addEventListener('click', () => {
     resumeTimer()
-    resumeBtn.style.display = "none"
-    pauseBtn.style.display = "inline-block"
+    resumeBtn.style.display = 'none'
+    pauseBtn.style.display = 'inline-block'
 })
 
 document.addEventListener('keydown', (e) => {
     const sudoku = state.sudoku
-    if (!sudoku || sudoku.marked_cell == null)
-        return
+    if (!sudoku || sudoku.marked_cell == null) return
 
     const [r, c] = sudoku.marked_cell
     const size = sudoku.size
 
     const moves = {
-        ArrowUp:    [-1,  0],
-        ArrowDown:  [ 1,  0],
-        ArrowLeft:  [ 0, -1],
-        ArrowRight: [ 0,  1],
+        ArrowUp: [-1, 0],
+        ArrowDown: [1, 0],
+        ArrowLeft: [0, -1],
+        ArrowRight: [0, 1],
     }
 
     const delta = moves[e.key]
-    if (!delta)
-        return
+    if (!delta) return
 
     e.preventDefault()
 
@@ -163,3 +168,4 @@ document.addEventListener('keydown', (e) => {
         mark_cell(sudoku, [newR, newC])
     }
 })
+
