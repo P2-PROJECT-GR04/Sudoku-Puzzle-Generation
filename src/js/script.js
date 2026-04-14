@@ -134,3 +134,32 @@ resumeBtn.addEventListener("click", () => {
     resumeBtn.style.display = "none"
     pauseBtn.style.display = "inline-block"
 })
+
+document.addEventListener('keydown', (e) => {
+    const sudoku = state.sudoku
+    if (!sudoku || sudoku.marked_cell == null)
+        return
+
+    const [r, c] = sudoku.marked_cell
+    const size = sudoku.size
+
+    const moves = {
+        ArrowUp:    [-1,  0],
+        ArrowDown:  [ 1,  0],
+        ArrowLeft:  [ 0, -1],
+        ArrowRight: [ 0,  1],
+    }
+
+    const delta = moves[e.key]
+    if (!delta)
+        return
+
+    e.preventDefault()
+
+    const newR = r + delta[0]
+    const newC = c + delta[1]
+
+    if (newR >= 0 && newR < size && newC >= 0 && newC < size) {
+        mark_cell(sudoku, [newR, newC])
+    }
+})

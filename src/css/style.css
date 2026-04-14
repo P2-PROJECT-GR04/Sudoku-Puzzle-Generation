@@ -1,3 +1,11 @@
+:root {
+    --cream: #FFF1D3;
+    --peach: #FFB090;
+    --pink: #CA5995;
+    --purple: #C8A2C8;
+    --text-dark: #221d24;
+}
+
 .sudoku-grid {
     display: grid;
     /*width: 1px;*/
@@ -37,13 +45,12 @@
 }
 
 .sudoku-cell:has(.marked) {
-    background-color: rgba(95, 35, 71, 0.5);
-    /* background-color: #c8e6c9; */
+    background-color: var(--purple);
 }
 
 .sudoku-cell:has(.marked-assoc) {
-    background-color: rgba(95, 35, 71, 0.25);
-    /* background-color: #c8e6c9; */
+    background-color: var(--cream)
+    
 }
 
 .sudoku-candidates {
@@ -59,11 +66,6 @@
     height: 100%;
 }
 
-#wrapper {
-    display: flex;
-    height: auto;
-    align-items: center;
-}
 #sudoku {
     padding-right: auto;
 }
@@ -76,22 +78,39 @@
 }
 
 .numpad-cell {
-    display: flex;
-    height: 4.5em;
-    width: 4.5em;
-    border: solid 0.01em gray;
-    background: yellow;
-    align-items: center;
-    text-align: center;
-    justify-content: center;
+    width: 100px;
+    height: 70px;
+    border: none;
+    border-radius: 15px;
+    background: #ffb090;
+    color: #2b1b2f;
+    font-size: 1.4rem;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+    transition: all 0.15s ease;
 }
 
+.numpad-cell:hover {
+    transform: translateY(-5px);
+    background: #CA5995;
+    color: white;
+}
+
+.numpad-cell:active {
+    transform: scale(0.95);
+}
+
+.numpad-cell.active {
+    background: #B57EDC;
+    color: white;
+}
 .numpad-cell.del-btn {
-    background: red !important;
+    background: rgb(230, 125, 55);
 }
 
 .numpad-cell.show-hint-btn {
-    background: green !important;
+    background: rgb(211, 190, 56);
 }
 
 .sudoku-number-blur {
@@ -104,3 +123,52 @@
     pointer-events: none;
     opacity: 0.5; /* optional visual feedback */
 }
+
+.numpad-cell.check-board-btn {
+    background: rgb(99, 176, 114);
+}
+
+h1 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-family: "Playwrite IE", cursive;
+    font-size: 3rem;
+    font-weight: 400;
+    letter-spacing: 2px;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;  
+    align-items: center;      
+    background-color: #f7f4f6;
+}
+
+main {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+ #notes-mode-btn {
+        display: block;
+        margin: 10px auto;
+        padding: 10px 24px;
+        font-size: 1em;
+        cursor: pointer;
+        background: #ddd;
+    }
+
+#notes-mode-btn.notes-active {
+        background: #4CAF50;
+    }

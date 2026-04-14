@@ -3,6 +3,7 @@ import { mark_cell, set_cell } from './script.js'
 import { check_board, Sudoku } from './sudoku.js'
 import { show_hint } from './check-hint.js'
 import { reapplyBlur } from './timer_function.js'
+import { state } from './state.js'
 
 /**
  * Creates a numpad and inserts it into the HTMl document.
@@ -57,47 +58,47 @@ export function createNumpad(sudoku) {
         if (event.target.tagName !== 'BUTTON') return
         const numpadValue = event.target.textContent
         if (
-            sudoku.marked_cell != null &&
+            state.sudoku.marked_cell != null &&
             numpadValue !== 'Check board' &&
             numpadValue !== 'Show hint'
         ) {
-            let cell = sudoku.marked_cell
-            mark_cell(sudoku, null)
+            let cell = state.sudoku.marked_cell
+            mark_cell(state.sudoku, null)
             if (numpadValue === 'DEL') {
-                set_cell(sudoku, cell[0], cell[1], null)
+                set_cell(state.sudoku, cell[0], cell[1], null)
             } else {
-                set_cell(sudoku, cell[0], cell[1], numpadValue)
+                set_cell(state.sudoku, cell[0], cell[1], numpadValue)
             }
         }
         if (numpadValue == 'Check board') {
             console.log('Checking board')
-            check_board(sudoku)
+            check_board(state.sudoku)
         }
         if (numpadValue == 'Show hint') {
             console.log('Show hints')
-            show_hint(sudoku)
+            show_hint(state.sudoku)
         }
-        draw_sudoku(sudoku)
+        draw_sudoku(state.sudoku)
         reapplyBlur()
     }
 
     document.addEventListener('keydown', function (event) {
         console.log(`GOT INPUT: ${event.key}`)
-        if (sudoku.marked_cell != null) {
+        if (state.sudoku.marked_cell != null) {
             if (event.key === 'Delete' || event.key === 'Backspace') {
-                let cell = sudoku.marked_cell
-                mark_cell(sudoku, null)
-                set_cell(sudoku, cell[0], cell[1], null)
+                let cell = state.sudoku.marked_cell
+                mark_cell(state.sudoku, null)
+                set_cell(state.sudoku, cell[0], cell[1], null)
             } else {
                 let num = Number.parseInt(event.key)
-                if (isNaN(num) || num == 0 || num > sudoku.size) return
+                if (isNaN(num) || num == 0 || num > state.sudoku.size) return
 
-                let cell = sudoku.marked_cell
-                mark_cell(sudoku, null)
-                set_cell(sudoku, cell[0], cell[1], event.key)
+                let cell = state.sudoku.marked_cell
+                mark_cell(state.sudoku, null)
+                set_cell(state.sudoku, cell[0], cell[1], event.key)
             }
         }
-        draw_sudoku(sudoku)
+        draw_sudoku(state.sudoku)
         reapplyBlur()
     })
 }
