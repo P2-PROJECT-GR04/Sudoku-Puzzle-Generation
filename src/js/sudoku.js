@@ -1,18 +1,46 @@
+import { stopTimer } from './timer_function.js'
+import { Rng } from './rand.js'
+import { Cell } from './cell.js'
+
+/**
+ * A Sudoku board represented by a 2D-grid
+ * @class
+ * @property {number} size - The max number that can be in the Sudoku. This is the same as the height and width of the sudoku
+ * @property {number} region_width - The number of columns in a region
+ * @property {number} region_height - The number of rows in a region
+ * @property {Cell[][]} grid - The 2D-grid representing the cells of the Sudoku
+ * @property {number[] | null} marked_cell - The cell that is currently marked by the user. This is null if no cell is marked
+ * @property {(row: number, col: Number, is_marked: boolean) => void} mark_cell - Mark a given cell
+ */
 export class Sudoku {
+    /**
+     * Constructs a new Sudoku
+     * @constructor
+     * @param {number} region_width - The number of columns in a region
+     * @param {number} region_height - The number of rows in a region
+     */
     constructor(region_width, region_height) {
+        /** @readonly */
         this.size = region_width * region_height
+        /** @readonly */
         this.region_width = region_width
+        /** @readonly */
         this.region_height = region_height
 
+        /** @type {Cell[][]} */
         this.grid = []
         for (let r = 0; r < this.size; r++) {
             this.grid.push([])
             for (let c = 0; c < this.size; c++) {
-                this.grid[r].push(null)
+                this.grid[r].push(new Cell(null))
             }
         }
 
+        /** @type {number[] | null} */
+        this.marked_cell = null
+        /** @readonly */
         this.mark_cell = (row, col, is_marked = true) => {
+            this.marked_cell = [row, col]
             this.is_marked = is_marked
             this.grid[row][col].is_marked = is_marked
 
@@ -30,27 +58,26 @@ export class Sudoku {
     }
 }
 
-// Example function
-export function make_full_grid(sudoku) {
-    for (let r = 0; r < sudoku.size; r++) {
-        for (let c = 0; c < sudoku.size; c++) {
-            sudoku.grid[r][c] = new Cell(1, true)
-        }
+/**
+ * Removes hint cells from a fully formed valid Sudoky grid
+ * @modifies {sudoku}
+ * @param {Sudoku} sudoku - The Sudoku to remove from
+ * @param {Rng} rand - The random number generator to use
+ */
+export function remove_cells(sudoku, rand) {
+    for (let i = 0; i < sudoku.size * sudoku.size; i++) {
+        let r = rand.nextRange(0, sudoku.size)
+        let c = rand.nextRange(0, sudoku.size)
+        sudoku.grid[r][c].num = null
+        sudoku.grid[r][c].is_hint = false
     }
 }
 
-// Example function
-export function make_simple_solved_grid(sudoku) {
-    for (let r = 0; r < sudoku.size; r++) {
-        for (let c = 0; c < sudoku.size; c++) {
-            sudoku.grid[r][c] = new Cell(
-                ((3 * (r % 3) + Math.floor(r / 3) + c) % 9) + 1,
-                true
-            )
-        }
-    }
-}
-
+/**
+ * Converts a Sudoku into a random solved grid
+ * @param {Sudoku} sudoku - The Sudoku to convert to a solved grid
+ * @param {Rng} rand - The random number generator to use
+ */
 export function make_solved_grid(sudoku, rand) {
     for (let r = 0; r < sudoku.size; r++) {
         for (let c = 0; c < sudoku.size; c++) {
@@ -79,6 +106,12 @@ export function make_solved_grid(sudoku, rand) {
     }
 }
 
+/**
+ * Randomly switches two rows in a random region, from a given Sudoku
+ * @modifies {sudoku}
+ * @param {Sudoku} sudoku - The Sudoku
+ * @param {Rng} rand - The random number generator to use
+ */
 function switch_rows(sudoku, rand) {
     let region_idx = rand.nextRange(0, sudoku.region_width)
 
@@ -95,6 +128,12 @@ function switch_rows(sudoku, rand) {
     sudoku.grid[from] = tmp
 }
 
+/**
+ * Randomly switches two columns in a random region, from a given Sudoku
+ * @modifies {sudoku}
+ * @param {Sudoku} sudoku - The Sudoku
+ * @param {Rng} rand - The random number generator to use
+ */
 function switch_columns(sudoku, rand) {
     let region_idx = rand.nextRange(0, sudoku.region_height)
 
@@ -113,88 +152,33 @@ function switch_columns(sudoku, rand) {
     }
 }
 
+/**
+ * Randomly switches two numbers from a given Sudoku
+ * @modifies {sudoku}
+ * @param {Sudoku} sudoku - The Sudoku
+ * @param {Rng} rand - The random number generator to use
+ */
 function switch_nums(sudoku, rand) {
     let from = rand.nextRange(0, sudoku.size) + 1
     let to = rand.nextRange(0, sudoku.size) + 1
 
-    let replaced = []
     for (let r = 0; r < sudoku.size; r++) {
         for (let c = 0; c < sudoku.size; c++) {
             if (sudoku.grid[r][c].num == to) {
                 sudoku.grid[r][c].num = from
+                sudoku.grid[r][c].solution = from
             } else if (sudoku.grid[r][c].num == from) {
                 sudoku.grid[r][c].num = to
+                sudoku.grid[r][c].solution = to
             }
         }
     }
-    // for (let i = 0; i < replaced.length; i++) {
-    //     let r = replaced[i][0]
-    //     let c = replaced[i][1]
-    //     sudoku.grid[r][c].num =
-    // }
 }
 
-export class Cell {
-    constructor(
-        num,
-        is_hint = false,
-        to_html_fn = () => default_to_html(this),
-        solution,
-        candidates = []
-    ) {
-        this.num = num
-        this.solution = num
-        this.is_hint = is_hint
-        this.candidates = candidates
-        this.is_collapsed = () => this.num != null
-        this.is_marked = false
-        // If the cell is marked by associativity
-        this.is_assoc_marked = false
-
-        this.set_marked = (is_marked) => (this.is_marked = is_marked)
-
-        this.to_html = to_html_fn
-    }
-}
-function default_to_html(cell) {
-    let container = document.createElement('span')
-    if (cell.is_collapsed()) {
-        container.className = 'sudoku-num'
-
-        container.innerText = `${cell.num}`
-    } else if (cell.candidates.length > 0) {
-        container = document.createElement('div')
-        container.className = 'sudoku-candidates'
-
-        // TODO: Make the cell know how big the parent sudoku is.
-        // This can be done in multiple ways:
-        // - By giving the parent as a field on each cell ( cell.parent.size )
-        // - By giving the size as a field on each cell ( cell.parent_size )
-        // - By giving the sudoku as a parameter to this function ( cell.to_html(sudoku) )
-        for (let i = 0; i < 9; i++) {
-            let cand = document.createElement('span')
-            cand.className = 'sudoku-candidate'
-
-            if (cell.candidates.includes(i + 1)) cand.innerText = i + 1
-            container.appendChild(cand)
-        }
-    }
-
-    if (cell.is_hint) {
-        container.className += ' hint'
-    }
-
-    if (cell.is_marked) {
-        container.className += ' marked'
-    }
-
-    if (cell.is_assoc_marked && cell.num != null) {
-        container.className += ' marked-assoc'
-    }
-
-    return container
-}
-
+/**
+ * Checks if a Sudoku is correct
+ * @param {Sudoku} sudoku - The Sudoku to check
+ */
 export function check_board(sudoku) {
     for (let r = 0; r < sudoku.size; r++) {
         for (let c = 0; c < sudoku.size; c++) {
@@ -208,6 +192,7 @@ export function check_board(sudoku) {
             }
         }
     }
+    stopTimer() // Temporary time stopper.
     alert('Hurray! The Sudoku is correct!')
     return true
 }
