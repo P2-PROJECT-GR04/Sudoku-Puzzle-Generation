@@ -1,110 +1,88 @@
 import { createNumpad } from './numpad.js'
-import { startTimer } from './timer_function.js'
 import { draw_sudoku } from './draw_sudoku.js'
-import { make_solved_grid, remove_cells, Sudoku } from './sudoku.js'
-import { newSeed, Rng } from './rand.js'
-import { State, state, updateState } from './state.js'
+import { make_solved_grid, Sudoku } from './sudoku.js'
+import { Rng } from './rand.js'
 
-/**
- * Load a new Sudoku from a state
- * @modifies {state}
- * @param {State} state - The state to use
- */
-function loadSudoku(state) {
-    if (state.seed == null) {
-        state.seed = newSeed()
-        console.warn(`No given seed. New seed is ${state.seed}`)
+const queryString = window.location.search
+console.log(`PARAMS: ${queryString}`)
+const urlParams = new URLSearchParams(queryString)
+
+let seed = Number(urlParams.get('seed'))
+console.log(`SEED: ${seed}`)
+let rand = new Rng(seed)
+
+export let sudoku = new Sudoku(3, 3)
+
+createNumpad(sudoku.size)
+
+make_solved_grid(sudoku, rand)
+/*
+for (let i = 0; i < 50; i++) {
+    let r = rand.nextRange(0, sudoku.size)
+    let c = rand.nextRange(0, sudoku.size)
+    sudoku.grid[r][c].is_hint = false
+}*/
+
+for (let r = 5; r < sudoku.size; r++) {
+    for (let c = 0; c < sudoku.size; c++) {
+        sudoku.grid[r][c].is_hint = false
+        sudoku.grid[r][c].num = null
     }
-
-    let rand = new Rng(state.seed)
-
-    if (state.sudoku == null) {
-        console.warn('No given state. Starting new board')
-        state.sudoku = new Sudoku(3, 3)
-        make_solved_grid(state.sudoku, rand)
-        remove_cells(state.sudoku, rand)
-    }
-
-    createNumpad(state.sudoku)
-
-    draw_sudoku(state.sudoku)
-    updateState(state)
 }
 
-/**
- * Create a new random Sudoku and update the state
- * @modifies {state}
- */
-function newSudoku() {
-    state.seed = newSeed()
-    state.rand = new Rng(state.seed)
+draw_sudoku(sudoku)
 
-    state.sudoku = new Sudoku(3, 3)
-    make_solved_grid(state.sudoku, state.rand)
+// TODO: Make this a field of Sudoku, and make it all work without global variables.
+export let marked_cell = null
 
-    createNumpad(state.sudoku)
-
-    remove_cells(state.sudoku, state.rand)
-
-    draw_sudoku(state.sudoku)
-    updateState(state)
-}
-
-document
-    .getElementById('gen-sudoku-button')
-    .addEventListener('click', newSudoku)
-
-loadSudoku(state)
-
-/**
- * Mark a cell in a sudoku
- * @modifies {sudoku}
- * @param {Sudoku} sudoku - The sudoku to modify
- * @param {number[]} coord - The coordinate for the cell to mark, given with [r,c]
- */
-export function mark_cell(sudoku, coord) {
-    if (sudoku.marked_cell != null)
-        sudoku.mark_cell(sudoku.marked_cell[0], sudoku.marked_cell[1], false)
-    // sudoku.grid[sudoku.marked_cell[0]][sudoku.marked_cell[1]].set_marked(false)
+export function mark_cell(coord) {
+    if (marked_cell != null)
+        sudoku.mark_cell(marked_cell[0], marked_cell[1], false)
+    // sudoku.grid[marked_cell[0]][marked_cell[1]].set_marked(false)
 
     if (
         //This checks first if coord is a not null, and then if the same cell has just been marked. Then it demarks it.
         !coord ||
-        (sudoku.marked_cell &&
-            sudoku.marked_cell[0] == coord[0] &&
-            sudoku.marked_cell[1] == coord[1])
+        (marked_cell &&
+            marked_cell[0] == coord[0] &&
+            marked_cell[1] == coord[1])
     ) {
-        sudoku.mark_cell(sudoku.marked_cell[0], sudoku.marked_cell[1], false)
-        sudoku.marked_cell = null
+        sudoku.mark_cell(marked_cell[0], marked_cell[1], false)
+        marked_cell = null
         draw_sudoku(sudoku)
         return
     }
-    sudoku.marked_cell = coord
-    if (sudoku.marked_cell != null)
-        sudoku.mark_cell(sudoku.marked_cell[0], sudoku.marked_cell[1], true)
+    marked_cell = coord
+    if (marked_cell != null)
+        sudoku.mark_cell(marked_cell[0], marked_cell[1], true)
 
-    console.debug(`MARKED: ${sudoku.marked_cell}`)
+    console.debug(`MARKED: ${marked_cell}`)
 
     draw_sudoku(sudoku)
 }
 
-/**
- * Give a value to a cell, and update the global state
- * @modifies {sudoku, state}
- * @param {Sudoku} sudoku - The sudoku to modify
- * @param {number} r - The row to set
- * @param {number} c - The column to set
- * @param {number | null} num - The new value of the cell
- */
-export function set_cell(sudoku, r, c, num) {
+document.addEventListener('keydown', function (event) {
+    console.log(`GOT INPUT: ${event.key}`)
+    if (marked_cell != null) {
+        if (event.key === 'Delete' || event.key === 'Backspace') {
+            let cell = marked_cell
+            mark_cell(null)
+            set_cell(cell[0], cell[1], null)
+        } else {
+            let num = Number.parseInt(event.key)
+            if (isNaN(num) || num == 0 || num > sudoku.size) return
+
+            let cell = marked_cell
+            mark_cell(null)
+            set_cell(cell[0], cell[1], event.key)
+        }
+    }
+    draw_sudoku(sudoku)
+})
+
+export function set_cell(r, c, num) {
     if (!sudoku.grid[r][c].is_hint) {
         console.log(`Setting (${r}, ${c}) to ${num}`)
         sudoku.grid[r][c].num = num
     }
-    updateState(state)
 }
-
-//temporary timer start trigger
-window.addEventListener('DOMContentLoaded', () => {
-    startTimer()
-})
