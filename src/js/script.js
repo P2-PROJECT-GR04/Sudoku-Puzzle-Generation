@@ -3,9 +3,10 @@ import { reapplyBlur, startTimer } from './timer_function.js'
 import { draw_sudoku } from './draw_sudoku.js'
 import { make_solved_grid, remove_cells, Sudoku } from './sudoku.js'
 import { newSeed, Rng } from './rand.js'
-import { State, state, updateState } from './state.js'
+import { initState, State, state, updateState } from './state.js'
 import { pauseTimer, resumeTimer, resetTimer } from "./timer_function.js"
 
+initState()
 /**
  * Load a new Sudoku from a state
  * @modifies {state}
@@ -32,7 +33,6 @@ function loadSudoku(state) {
     updateState(state)
 }
 
-
 /**
  * Create a new random Sudoku and update the state
  * @modifies {state}
@@ -54,13 +54,20 @@ function newSudoku() {
 
     draw_sudoku(state.sudoku)
     updateState(state)
+    reapplyBlur()
 }
 
 document
     .getElementById('gen-sudoku-button')
     .addEventListener('click', newSudoku)
-
 loadSudoku(state)
+
+if (!state.isPaused) {
+    startTimer()
+} else {
+    reapplyBlur()
+}
+
 
 /**
  * Mark a cell in a sudoku
@@ -92,7 +99,6 @@ export function mark_cell(sudoku, coord) {
     console.debug(`MARKED: ${sudoku.marked_cell}`)
 
     draw_sudoku(sudoku)
-    reapplyBlur()
 }
 
 /**
@@ -110,12 +116,6 @@ export function set_cell(sudoku, r, c, num) {
     }
     updateState(state)
 }
-
-
-//Timer start trigger
-window.addEventListener('DOMContentLoaded', () => {
-    startTimer()
-})
 
 const pauseBtn = document.getElementById("pauseBtn")
 const resumeBtn = document.getElementById("resumeBtn")

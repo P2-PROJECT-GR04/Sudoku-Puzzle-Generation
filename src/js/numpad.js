@@ -78,6 +78,7 @@ export function createNumpad(sudoku) {
             show_hint(sudoku)
         }
         draw_sudoku(sudoku)
+        reapplyBlur()
     }
 
     document.addEventListener('keydown', function (event) {

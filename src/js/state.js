@@ -12,10 +12,12 @@ import { Cell } from './cell.js'
  * @property {Rng} - The random number generator made from the current seed
  */
 export class State {
-    constructor(sudoku, rand) {
+    constructor(sudoku, rand, time, isPaused) {
         this.sudoku = sudoku
         this.seed = rand.seed
         this.rand = rand
+        this.time = time
+        this.isPaused = isPaused
     }
 }
 
@@ -24,7 +26,11 @@ export class State {
  * This can be global, as it is only used to manipulate the global search bar
  * @type {State}
  */
-export let state = getState()
+export let state = null
+
+export function initState() {
+    state = getState()
+}
 
 /**
  * Save the current state
@@ -46,6 +52,14 @@ export function updateState(state) {
         let uri_encoded = encodeURI(sudoku_state)
         urlParams.set('state', uri_encoded)
     }
+
+    // Save time
+    if (state.time != null) {
+        urlParams.set('time', state.time)
+    }
+
+    // Saves pause state
+     urlParams.set('paused', state.isPaused ? '1' : '0')
 
     // Only update the bar if the state has changed
     // urlParams.toString() is the url parameters, without the ?, while
@@ -81,7 +95,13 @@ export function getState() {
         sudoku_state = decodeSudoku(rand, uri_decoded)
     }
 
-    return new State(sudoku_state, rand)
+     // Restores the timer time
+    let time = Number(urlParams.get('time')) || 0
+
+    // Restores the pause state
+    let isPaused = urlParams.get('paused') === '1'
+
+    return new State(sudoku_state, rand, time, isPaused)
 }
 
 /**
@@ -164,7 +184,6 @@ function decodeSudoku(rand, text) {
             sudoku.grid[r][c] = cell
         }
     }
-
     return sudoku
 }
 

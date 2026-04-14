@@ -61,4 +61,5 @@ export function draw_sudoku(sudoku) {
     for (let i = 0; i < regions.length; i++) {
         board.appendChild(regions[i])
     }
+
 }
