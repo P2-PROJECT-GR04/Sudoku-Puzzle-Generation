@@ -4,7 +4,7 @@ import { draw_sudoku } from './draw_sudoku.js'
 import { make_solved_grid, remove_cells, Sudoku } from './sudoku.js'
 import { newSeed, Rng } from './rand.js'
 import { initState, State, state, updateState } from './state.js'
-import { pauseTimer, resumeTimer, resetTimer } from "./timer_function.js"
+import { pauseTimer, resumeTimer, resetTimer, updateTimerDisplayFromState, reapplyDisable, reapplyPauseButtons } from "./timer_function.js"
 
 initState()
 /**
@@ -65,7 +65,10 @@ loadSudoku(state)
 if (!state.isPaused) {
     startTimer()
 } else {
+    updateTimerDisplayFromState()
     reapplyBlur()
+    reapplyDisable()
+    reapplyPauseButtons() 
 }
 
 

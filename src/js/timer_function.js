@@ -5,7 +5,6 @@ let timerId = null
 
 
 let elapsedBeforePause = state?.time || 0
-let isPaused = state?.isPaused || false
 
 /**
  * Start the timer
@@ -18,7 +17,7 @@ export function startTimer() {
     startTime = performance.now() - elapsedBeforePause
 
     function tick() {
-        if (isPaused) 
+        if (state?.isPaused) 
             return
 
         const now = performance.now()
@@ -44,10 +43,26 @@ export function startTimer() {
     tick()
 }
 
+// Updates time when gamestate is paused. 
+export function updateTimerDisplayFromState() {
+    const elapsed = state?.time || 0
+
+    const minutes = Math.floor(elapsed / 60000)
+    const seconds = Math.floor((elapsed % 60000) / 1000)
+
+    const formatted =
+        `${String(minutes).padStart(2, '0')}:` +
+        `${String(seconds).padStart(2, '0')}`
+
+    document.getElementById('timerDisplay').textContent = formatted
+}
+
+
+
 export function pauseTimer() {
-    if (isPaused) 
+    if (state?.isPaused) 
         return
-    isPaused = true
+    state.isPaused = true
     state.isPaused = true
     updateState(state)
 
@@ -67,9 +82,8 @@ export function pauseTimer() {
 }
 
 export function resumeTimer() {
-    if (!isPaused) 
+    if (!state?.isPaused) 
         return
-    isPaused = false
     state.isPaused = false
     updateState(state)
 
@@ -120,11 +134,32 @@ export function stopTimer() {
 }
 
 export function reapplyBlur(){
-    if (!isPaused) 
+    if (!state?.isPaused) 
         return;
 
        document.querySelectorAll("#sudoku *").forEach(el => {
     if (el.childNodes.length === 1 && el.childNodes[0].nodeType === 3) {
         el.classList.add("sudoku-number-blur")}
     })
+}
+
+export function reapplyDisable() {
+    if (!state?.isPaused)
+        return
+
+    document.getElementById("gen-sudoku-button").classList.add("disabled")
+    document.getElementById("sudoku-numpad").classList.add("disabled")
+}
+
+export function reapplyPauseButtons() {
+    const pauseBtn = document.getElementById("pauseBtn")
+    const resumeBtn = document.getElementById("resumeBtn")
+
+    if (state?.isPaused) {
+        pauseBtn.style.display = "none"
+        resumeBtn.style.display = "inline-block"
+    } else {
+        pauseBtn.style.display = "inline-block"
+        resumeBtn.style.display = "none"
+    }
 }
