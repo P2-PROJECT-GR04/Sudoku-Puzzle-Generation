@@ -2,29 +2,47 @@ import { Sudoku, Cell } from './sudoku.js'
 import { find_candidates_for_cell } from './check-hint.js'
 
 /**
+ * @typedef {Object} Trace
+ * @property {number[]} candidates
+ * @property {Sudoku} sudoku
+ */
+
+/**
  * Checks if a Sudoku has only one solution.
  * @param {Sudoku} sudoku
  * @returns {boolean}
  */
 export function has_one_solution(sudoku) {
+    /** @type {Trace[]} */
     let trace = []
+    let currentCandidates = null
     let currentSudoku = deepCopy(sudoku)
     let found_solution = false
     while (!full_grid(currentSudoku) || trace.length != 0) {
         console.log(trace.length)
         let cell = lowest_candidates(currentSudoku)
+        if (currentCandidates != null) {
+            currentSudoku.grid[cell.r][cell.c].candidates = [
+                ...currentCandidates,
+            ]
+        }
         if (cell.candidates.length == 0) {
             if (trace.length == 0) {
                 // -> No solution found
                 return false
             }
-            currentSudoku = trace.pop()
+            let t = trace.pop()
+            currentSudoku = t.sudoku
+            currentCandidates = t.candidates
         } else if (cell.candidates.length == 1) {
             currentSudoku.grid[cell.r][cell.c].num =
                 currentSudoku.grid[cell.r][cell.c].candidates.pop()
         } else {
             let candidate = currentSudoku.grid[cell.r][cell.c].candidates.pop()
-            trace.push(deepCopy(currentSudoku))
+            trace.push({
+                sudoku: deepCopy(currentSudoku),
+                candidates: [...currentSudoku.grid[cell.r][cell.c].candidates],
+            })
             currentSudoku.grid[cell.r][cell.c].num = candidate
         }
         if (full_grid(currentSudoku)) {
@@ -35,7 +53,9 @@ export function has_one_solution(sudoku) {
                 if (trace.length == 0) {
                     break
                 }
-                currentSudoku = trace.pop()
+                let t = trace.pop()
+                currentSudoku = t.sudoku
+                currentCandidates = t.candidates
             }
         }
     }
