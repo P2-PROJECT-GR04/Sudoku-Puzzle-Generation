@@ -2,6 +2,7 @@ import { draw_sudoku } from './draw_sudoku.js'
 import { mark_cell, set_cell } from './script.js'
 import { check_board, Sudoku } from './sudoku.js'
 import { show_hint } from './check-hint.js'
+import { reapplyBlur } from './timer_function.js'
 
 /**
  * Creates a numpad and inserts it into the HTMl document.
@@ -96,5 +97,6 @@ export function createNumpad(sudoku) {
             }
         }
         draw_sudoku(sudoku)
+        reapplyBlur()
     })
 }

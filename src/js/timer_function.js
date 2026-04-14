@@ -109,3 +109,13 @@ export function stopTimer() {
 
     return totalMs
 }
+
+export function reapplyBlur(){
+    if (!isPaused) 
+        return;
+
+       document.querySelectorAll("#sudoku *").forEach(el => {
+    if (el.childNodes.length === 1 && el.childNodes[0].nodeType === 3) {
+        el.classList.add("sudoku-number-blur")}
+    })
+}
