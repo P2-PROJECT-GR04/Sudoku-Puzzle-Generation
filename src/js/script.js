@@ -1,5 +1,5 @@
 import { createNumpad } from './numpad.js'
-import { startTimer } from './timer_function.js'
+import { reapplyBlur, startTimer } from './timer_function.js'
 import { draw_sudoku } from './draw_sudoku.js'
 import { make_solved_grid, remove_cells, Sudoku } from './sudoku.js'
 import { newSeed, Rng } from './rand.js'
@@ -92,6 +92,7 @@ export function mark_cell(sudoku, coord) {
     console.debug(`MARKED: ${sudoku.marked_cell}`)
 
     draw_sudoku(sudoku)
+    reapplyBlur()
 }
 
 /**
