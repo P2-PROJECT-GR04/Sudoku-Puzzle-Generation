@@ -1,10 +1,19 @@
 import { createNumpad } from './numpad.js'
-import { startTimer } from './timer_function.js'
+import { reapplyBlur, startTimer } from './timer_function.js'
 import { draw_sudoku } from './draw_sudoku.js'
 import { make_solved_grid, remove_cells, Sudoku } from './sudoku.js'
 import { newSeed, Rng } from './rand.js'
-import { State, state, updateState } from './state.js'
+import { initState, State, state, updateState } from './state.js'
+import {
+    pauseTimer,
+    resumeTimer,
+    resetTimer,
+    updateTimerDisplayFromState,
+    reapplyDisable,
+    reapplyPauseButtons,
+} from './timer_function.js'
 
+initState()
 /**
  * Load a new Sudoku from a state
  * @modifies {state}
@@ -39,6 +48,10 @@ function newSudoku() {
     state.seed = newSeed()
     state.rand = new Rng(state.seed)
 
+    //Resets the timer when new sudokus are made.
+    resetTimer()
+    startTimer()
+
     state.sudoku = new Sudoku(3, 3)
     make_solved_grid(state.sudoku, state.rand)
 
@@ -48,13 +61,22 @@ function newSudoku() {
 
     draw_sudoku(state.sudoku)
     updateState(state)
+    reapplyBlur()
 }
 
 document
     .getElementById('gen-sudoku-button')
     .addEventListener('click', newSudoku)
-
 loadSudoku(state)
+
+if (!state.isPaused) {
+    startTimer()
+} else {
+    updateTimerDisplayFromState()
+    reapplyBlur()
+    reapplyDisable()
+    reapplyPauseButtons()
+}
 
 /**
  * Mark a cell in a sudoku
@@ -86,6 +108,7 @@ export function mark_cell(sudoku, coord) {
     console.debug(`MARKED: ${sudoku.marked_cell}`)
 
     draw_sudoku(sudoku)
+    reapplyBlur()
 }
 
 /**
@@ -104,29 +127,37 @@ export function set_cell(sudoku, r, c, num) {
     updateState(state)
 }
 
-//temporary timer start trigger
-window.addEventListener('DOMContentLoaded', () => {
-    startTimer()
+const pauseBtn = document.getElementById('pauseBtn')
+const resumeBtn = document.getElementById('resumeBtn')
+
+pauseBtn.addEventListener('click', () => {
+    pauseTimer()
+    pauseBtn.style.display = 'none'
+    resumeBtn.style.display = 'inline-block'
+})
+
+resumeBtn.addEventListener('click', () => {
+    resumeTimer()
+    resumeBtn.style.display = 'none'
+    pauseBtn.style.display = 'inline-block'
 })
 
 document.addEventListener('keydown', (e) => {
     const sudoku = state.sudoku
-    if (!sudoku || sudoku.marked_cell == null)
-        return
+    if (!sudoku || sudoku.marked_cell == null) return
 
     const [r, c] = sudoku.marked_cell
     const size = sudoku.size
 
     const moves = {
-        ArrowUp:    [-1,  0],
-        ArrowDown:  [ 1,  0],
-        ArrowLeft:  [ 0, -1],
-        ArrowRight: [ 0,  1],
+        ArrowUp: [-1, 0],
+        ArrowDown: [1, 0],
+        ArrowLeft: [0, -1],
+        ArrowRight: [0, 1],
     }
 
     const delta = moves[e.key]
-    if (!delta)
-        return
+    if (!delta) return
 
     e.preventDefault()
 

@@ -2,6 +2,7 @@ import { draw_sudoku } from './draw_sudoku.js'
 import { mark_cell, set_cell } from './script.js'
 import { check_board, Sudoku } from './sudoku.js'
 import { show_hint } from './check-hint.js'
+import { reapplyBlur } from './timer_function.js'
 import { state } from './state.js'
 
 /**
@@ -78,6 +79,7 @@ export function createNumpad(sudoku) {
             show_hint(state.sudoku)
         }
         draw_sudoku(state.sudoku)
+        reapplyBlur()
     }
 
     document.addEventListener('keydown', function (event) {
@@ -97,5 +99,6 @@ export function createNumpad(sudoku) {
             }
         }
         draw_sudoku(state.sudoku)
+        reapplyBlur()
     })
 }
