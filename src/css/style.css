@@ -148,3 +148,16 @@ main {
     justify-content: center;
     gap: 20px;
 }
+
+ #notes-mode-btn {
+        display: block;
+        margin: 10px auto;
+        padding: 10px 24px;
+        font-size: 1em;
+        cursor: pointer;
+        background: #ddd;
+    }
+
+#notes-mode-btn.notes-active {
+        background: #4CAF50;
+    }
