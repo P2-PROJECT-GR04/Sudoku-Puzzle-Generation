@@ -65,7 +65,7 @@ export class Sudoku {
  * @param {Rng} rand - The random number generator to use
  */
 export function remove_cells(sudoku, rand) {
-    for (let i = 0; i < sudoku.size * sudoku.size; i++) {
+    for (let i = 0; i < (sudoku.size * sudoku.size) / 2; i++) {
         let r = rand.nextRange(0, sudoku.size)
         let c = rand.nextRange(0, sudoku.size)
         sudoku.grid[r][c].num = null
