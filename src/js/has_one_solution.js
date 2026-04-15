@@ -20,22 +20,26 @@ export function has_one_solution(sudoku) {
     let currentSudoku = deepCopy(sudoku)
     let found_solution = false
     while (!full_grid(currentSudoku) || trace.length != 0) {
-        console.log(trace.length)
+        if (trace.length >= 3000) {
+            throw new Error('Infinite loop detected')
+        }
         let cell = lowest_candidates(currentSudoku)
         if (currentCandidates != null) {
             currentSudoku.grid[cell.r][cell.c].candidates = [
                 ...currentCandidates,
             ]
+            currentCandidates = null
         }
-        if (cell.candidates.length == 0) {
+        if (currentSudoku.grid[cell.r][cell.c].candidates.length == 0) {
             if (trace.length == 0) {
                 // -> No solution found
                 return false
             }
             let t = trace.pop()
-            currentSudoku = t.sudoku
-            currentCandidates = t.candidates
-        } else if (cell.candidates.length == 1) {
+            currentSudoku = deepCopy(t.sudoku)
+            currentCandidates = [...t.candidates]
+            continue
+        } else if (currentSudoku.grid[cell.r][cell.c].candidates.length == 1) {
             currentSudoku.grid[cell.r][cell.c].num =
                 currentSudoku.grid[cell.r][cell.c].candidates.pop()
         } else {
@@ -52,11 +56,11 @@ export function has_one_solution(sudoku) {
             } else {
                 found_solution = true
                 if (trace.length == 0) {
-                    break
+                    return true
                 }
                 let t = trace.pop()
-                currentSudoku = t.sudoku
-                currentCandidates = t.candidates
+                currentSudoku = deepCopy(t.sudoku)
+                currentCandidates = [...t.candidates]
             }
         }
     }
