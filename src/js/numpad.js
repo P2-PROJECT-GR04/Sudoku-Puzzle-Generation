@@ -35,7 +35,9 @@ export function createNumpad(sudoku) {
         row.forEach((key) => {
             const td = document.createElement('td')
             const btn = document.createElement('button')
-            btn.className = 'numpad-cell'
+
+            btn.classList.add('interactable-btn')
+            btn.classList.add('numpad-cell')
             btn.textContent = key
             if (key === 'DEL') {
                 //td.colSpan = numpadColumn

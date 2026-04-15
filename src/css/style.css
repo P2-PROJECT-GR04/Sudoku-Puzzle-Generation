@@ -1,8 +1,9 @@
 :root {
-    --cream: #FFF1D3;
-    --peach: #FFB090;
-    --pink: #CA5995;
-    --purple: #C8A2C8;
+    --cream: #fff1d3;
+    --peach: #ffb090;
+    --pink: #ca5995;
+    --purple: #c8a2c8;
+    --lightpurple: #c8a2c888;
     --text-dark: #221d24;
 }
 
@@ -49,8 +50,7 @@
 }
 
 .sudoku-cell:has(.marked-assoc) {
-    background-color: var(--cream)
-    
+    background-color: var(--cream);
 }
 
 .sudoku-candidates {
@@ -77,32 +77,35 @@
     margin: 0;
 }
 
-.numpad-cell {
-    width: 100px;
-    height: 70px;
+.interactable-btn {
     border: none;
     border-radius: 15px;
-    background: #ffb090;
     color: #2b1b2f;
     font-size: 1.4rem;
     font-weight: bold;
     cursor: pointer;
-    box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
     transition: all 0.15s ease;
 }
 
-.numpad-cell:hover {
-    transform: translateY(-5px);
-    background: #CA5995;
+.numpad-cell {
+    width: 100px;
+    height: 70px;
+    background: #ffb090;
+}
+
+.interactable-btn:hover {
+    transform: translateY(-3px);
+    background: #ca5995;
     color: white;
 }
 
-.numpad-cell:active {
+.interactable-btn:active {
     transform: scale(0.95);
 }
 
-.numpad-cell.active {
-    background: #B57EDC;
+.interactable-btn.active {
+    background: #b57edc;
     color: white;
 }
 .numpad-cell.del-btn {
@@ -131,7 +134,7 @@
 h1 {
     margin-top: 20px;
     margin-bottom: 10px;
-    font-family: "Playwrite IE", cursive;
+    font-family: 'Playwrite IE', cursive;
     font-size: 3rem;
     font-weight: 400;
     letter-spacing: 2px;
@@ -141,8 +144,8 @@ body {
     margin: 0;
     min-height: 100vh;
     display: flex;
-    justify-content: center;  
-    align-items: center;      
+    justify-content: center;
+    align-items: center;
     background-color: #f7f4f6;
 }
 
@@ -158,17 +161,42 @@ main {
     align-items: center;
     justify-content: center;
     gap: 20px;
+
+    border-top-width: 1rem;
+    padding-top: 1rem;
 }
 
- #notes-mode-btn {
-        display: block;
-        margin: 10px auto;
-        padding: 10px 24px;
-        font-size: 1em;
-        cursor: pointer;
-        background: #ddd;
-    }
+#notes-mode-btn {
+    display: block;
+    margin: 10px auto;
+    padding: 10px 24px;
+    font-size: 1em;
+    cursor: pointer;
+    background: #ddd;
+    font-size: 1.4rem;
+    font-weight: bold;
+    border-radius: 15px;
+    border: none;
+}
 
 #notes-mode-btn.notes-active {
-        background: #4CAF50;
-    }
+    background: #4caf50;
+}
+
+#sudoku-section {
+    display: flex;
+    flex-direction: column;
+}
+
+#pauseBtn {
+    background-color: var(--lightpurple);
+}
+
+#resumeBtn {
+    background-color: var(--lightpurple);
+}
+
+.timer {
+    font-size: 1.4rem;
+    font-weight: bold;
+}

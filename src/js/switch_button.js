@@ -5,6 +5,7 @@ let noteMode = false
 
 function createSwitchButton() {
     const button = document.createElement('button')
+    button.classList.add('interactable-btn')
     button.id = 'notes-mode-btn'
     button.textContent = 'Notes Mode: OFF'
 
@@ -23,8 +24,8 @@ function createSwitchButton() {
         }
     })
 
-    const wrapper = document.getElementById('wrapper')
-    wrapper.parentNode.insertBefore(button, wrapper)
+    const wrapper = document.getElementById('numpad-wrap')
+    wrapper.prepend(button)
 }
 
 function toggleCandidate(cell, num) {
