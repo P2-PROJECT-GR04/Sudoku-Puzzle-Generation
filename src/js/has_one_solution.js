@@ -1,4 +1,5 @@
-import { Sudoku, Cell } from './sudoku.js'
+import { Sudoku } from './sudoku.js'
+import { Cell } from './cell.js'
 import { find_candidates_for_cell } from './check-hint.js'
 
 /**
