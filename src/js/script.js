@@ -85,6 +85,8 @@ if (!state.isPaused) {
  * @param {number[]} coord - The coordinate for the cell to mark, given with [r,c]
  */
 export function mark_cell(sudoku, coord) {
+    if (state.isPaused) return
+
     if (sudoku.marked_cell != null)
         sudoku.mark_cell(sudoku.marked_cell[0], sudoku.marked_cell[1], false)
     // sudoku.grid[sudoku.marked_cell[0]][sudoku.marked_cell[1]].set_marked(false)
@@ -120,6 +122,7 @@ export function mark_cell(sudoku, coord) {
  * @param {number | null} num - The new value of the cell
  */
 export function set_cell(sudoku, r, c, num) {
+    if (state.isPaused) return
     if (!sudoku.grid[r][c].is_hint) {
         console.log(`Setting (${r}, ${c}) to ${num}`)
         sudoku.grid[r][c].num = num
@@ -168,4 +171,3 @@ document.addEventListener('keydown', (e) => {
         mark_cell(sudoku, [newR, newC])
     }
 })
-

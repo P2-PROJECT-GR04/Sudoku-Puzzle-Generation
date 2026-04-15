@@ -55,11 +55,11 @@ export function updateState(state) {
 
     // Save time
     if (state.time != null) {
-        urlParams.set('time', state.time)
+        urlParams.set('t', Math.round(state.time / 1000))
     }
 
     // Saves pause state
-     urlParams.set('paused', state.isPaused ? '1' : '0')
+    urlParams.set('p', state.isPaused ? '1' : '0')
 
     // Only update the bar if the state has changed
     // urlParams.toString() is the url parameters, without the ?, while
@@ -95,11 +95,12 @@ export function getState() {
         sudoku_state = decodeSudoku(rand, uri_decoded)
     }
 
-     // Restores the timer time
-    let time = Number(urlParams.get('time')) || 0
+    // Restores the timer time
+    let time_secs = Number(urlParams.get('t')) || 0
+    let time = time_secs * 1000
 
     // Restores the pause state
-    let isPaused = urlParams.get('paused') === '1'
+    let isPaused = urlParams.get('p') === '1'
 
     return new State(sudoku_state, rand, time, isPaused)
 }
