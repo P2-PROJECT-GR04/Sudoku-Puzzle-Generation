@@ -3,6 +3,7 @@
     --peach: #ffb090;
     --pink: #ca5995;
     --purple: #c8a2c8;
+    --lightpurple: #c8a2c888;
     --text-dark: #221d24;
 }
 
@@ -177,4 +178,17 @@ main {
 
 #notes-mode-btn.notes-active {
     background: #4caf50;
+}
+
+#sudoku-section {
+    display: flex;
+    flex-direction: column;
+}
+
+#pauseBtn {
+    background-color: var(--lightpurple);
+}
+
+#resumeBtn {
+    background-color: var(--lightpurple);
 }
