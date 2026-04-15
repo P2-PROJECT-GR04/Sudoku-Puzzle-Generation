@@ -28,6 +28,8 @@ function createSwitchButton() {
 }
 
 function toggleCandidate(cell, num) {
+    if (state.isPaused) return
+
     if (cell.candidates.includes(num)) {
         cell.candidates = cell.candidates.filter((n) => n !== num)
     } else {
