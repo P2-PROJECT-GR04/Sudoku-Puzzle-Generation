@@ -8,17 +8,30 @@
         <link rel="stylesheet" href="./css/style.css" />
         <link rel="icon" href="./favicon.ico" type="image/x-icon" />
     </head>
-    <body style="background-color: #f7f4f6;">
+    <body style="background-color: #f7f4f6">
         <main id="gameArea">
             <h1>SODUKU</h1>
-            <button id="pauseBtn">Pause</button>
-            <button id="resumeBtn" style="display: none">Resume</button>
+            <button class="interactable-btn" id="pauseBtn">Pause</button>
+            <button
+                class="interactable-btn"
+                id="resumeBtn"
+                style="display: none"
+            >
+                Resume
+            </button>
             <p>Timer: <span id="timerDisplay">00:00.000</span></p>
 
             <div id="wrapper">
-                <button id="gen-sudoku-button">New sudoku</button>
-                <div class="sudoku-grid" id="sudoku"></div>
-                <table id="sudoku-numpad"></table>
+                <div id="sudoku-section">
+                    <button class="interactable-btn" id="gen-sudoku-button">
+                        New sudoku
+                    </button>
+                    <div class="sudoku-grid" id="sudoku"></div>
+                </div>
+
+                <div id="numpad-wrap">
+                    <table id="sudoku-numpad"></table>
+                </div>
             </div>
         </main>
         <script src="./js/script.js" type="module"></script>
