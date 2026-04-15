@@ -1,9 +1,10 @@
 import { draw_sudoku } from './draw_sudoku.js'
 import { mark_cell, set_cell } from './script.js'
-import { check_board, Sudoku } from './sudoku.js'
-import { show_hint } from './check-hint.js'
+import { Sudoku } from './sudoku.js'
+import { find_candidates_for_grid } from './check-hint.js'
 import { reapplyBlur } from './timer_function.js'
 import { state } from './state.js'
+import { has_one_solution } from './has_one_solution.js'
 
 /**
  * Creates a numpad and inserts it into the HTMl document.
@@ -72,11 +73,15 @@ export function createNumpad(sudoku) {
         }
         if (numpadValue == 'Check board') {
             console.log('Checking board')
-            check_board(state.sudoku)
+            if (has_one_solution(state.sudoku)) {
+                console.log('this has one solution')
+            } else {
+                console.log('no solution of more solutions')
+            }
         }
         if (numpadValue == 'Show hint') {
             console.log('Show hints')
-            show_hint(state.sudoku)
+            find_candidates_for_grid(state.sudoku)
         }
         draw_sudoku(state.sudoku)
         reapplyBlur()
