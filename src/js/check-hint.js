@@ -1,3 +1,8 @@
+/**
+ * Calculates and sets all the candidates for all the cells in a Sudoku grid
+ * @modifies {sudoku}
+ * @param {Sudoku} sudoku
+ */
 export function find_candidates_for_grid(sudoku) {
     for (let r = 0; r < sudoku.size; r++) {
         for (let c = 0; c < sudoku.size; c++) {
@@ -14,7 +19,6 @@ export function find_candidates_for_grid(sudoku) {
                 for (let s = 1; s <= sudoku.size; s++) {
                     candidates.push(s)
                 }
-                //console.log(candidates)
                 for (let inner_r = 0; inner_r < sudoku.size; inner_r++) {
                     //This checks the row of a cell
                     if (
@@ -22,18 +26,12 @@ export function find_candidates_for_grid(sudoku) {
                             Number(sudoku.grid[inner_r][c].num)
                         ) != -1
                     ) {
-                        /*console.log(
-                            candidates[
-                                candidates.indexOf(sudoku.grid[inner_r][c].num)
-                            ]
-                        )*/
                         candidates.splice(
                             candidates.indexOf(
                                 Number(sudoku.grid[inner_r][c].num)
                             ),
                             1
                         )
-                        //console.log(candidates)
                     }
                 }
                 for (let inner_c = 0; inner_c < sudoku.size; inner_c++) {
@@ -43,18 +41,12 @@ export function find_candidates_for_grid(sudoku) {
                             Number(sudoku.grid[r][inner_c].num)
                         ) != -1
                     ) {
-                        /*console.log(
-                            candidates[
-                                candidates.indexOf(sudoku.grid[r][inner_c].num)
-                            ]
-                        )*/
                         candidates.splice(
                             candidates.indexOf(
                                 Number(sudoku.grid[r][inner_c].num)
                             ),
                             1
                         )
-                        //console.log(candidates)
                     }
                 }
                 //Now checks the correct region
@@ -85,13 +77,18 @@ export function find_candidates_for_grid(sudoku) {
                 }
                 sudoku.grid[r][c].candidates = [] //Reset the candidates for the cell
                 sudoku.grid[r][c].candidates = candidates //Here the candidates we've found is getting into the cell class in the sudoku
-                //console.log(r, c)
-                //console.log(sudoku.grid[r][c].candidates)
             }
         }
     }
 }
 
+/**
+ * Calculates and sets the candidates for a specific cell
+ * @modifies {sudoku}
+ * @param {Sudoku} sudoku
+ * @param {number} r - The row of the cell
+ * @param {number} c - The column of the cell
+ */
 export function find_candidates_for_cell(sudoku, r, c) {
     let candidates = []
     if (sudoku.grid[r][c].num == null) {
@@ -105,35 +102,22 @@ export function find_candidates_for_cell(sudoku, r, c) {
         for (let s = 1; s <= sudoku.size; s++) {
             candidates.push(s)
         }
-        //console.log(candidates)
         for (let inner_r = 0; inner_r < sudoku.size; inner_r++) {
             //This checks the row of a cell
             if (candidates.indexOf(Number(sudoku.grid[inner_r][c].num)) != -1) {
-                /*console.log(
-                            candidates[
-                                candidates.indexOf(sudoku.grid[inner_r][c].num)
-                            ]
-                        )*/
                 candidates.splice(
                     candidates.indexOf(Number(sudoku.grid[inner_r][c].num)),
                     1
                 )
-                //console.log(candidates)
             }
         }
         for (let inner_c = 0; inner_c < sudoku.size; inner_c++) {
             //This checks the colum of a cell
             if (candidates.indexOf(Number(sudoku.grid[r][inner_c].num)) != -1) {
-                /*console.log(
-                            candidates[
-                                candidates.indexOf(sudoku.grid[r][inner_c].num)
-                            ]
-                        )*/
                 candidates.splice(
                     candidates.indexOf(Number(sudoku.grid[r][inner_c].num)),
                     1
                 )
-                //console.log(candidates)
             }
         }
         //Now checks the correct region
@@ -154,7 +138,6 @@ export function find_candidates_for_cell(sudoku, r, c) {
                         ),
                         1
                     )
-                    //console.log(candidates)
                 }
             }
         }
