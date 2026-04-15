@@ -161,6 +161,9 @@ main {
     align-items: center;
     justify-content: center;
     gap: 20px;
+
+    border-top-width: 1rem;
+    padding-top: 1rem;
 }
 
 #notes-mode-btn {
@@ -191,4 +194,9 @@ main {
 
 #resumeBtn {
     background-color: var(--lightpurple);
+}
+
+.timer {
+    font-size: 1.4rem;
+    font-weight: bold;
 }
