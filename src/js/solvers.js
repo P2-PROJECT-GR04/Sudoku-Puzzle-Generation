@@ -92,6 +92,9 @@ function hidden_pair(sudoku) {
                                             .candidates,
                                         candidateFind
                                     )
+                                    if (found == -1) {
+                                        continue
+                                    }
                                     commonCandidates.push(found)
                                     sudoku.grid[r][c].candidates =
                                         commonCandidates
