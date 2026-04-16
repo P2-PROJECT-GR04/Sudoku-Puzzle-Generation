@@ -96,12 +96,11 @@ function hidden_pair(sudoku) {
                                         continue
                                     }
                                     commonCandidates.push(found)
-                                    sudoku.grid[r][c].candidates =
-                                        commonCandidates
-                                    sudoku.grid[inner_r][inner_c].candidates =
-                                        commonCandidates
-                                    return true
                                 }
+                                sudoku.grid[r][c].candidates = commonCandidates
+                                sudoku.grid[inner_r][inner_c].candidates =
+                                    commonCandidates
+                                return true
                             }
                         }
                     }
@@ -138,7 +137,7 @@ function binarySearch(array, target) {
     let right = array.length - 1
     while (left <= right) {
         const mid = Math.floor((left + right) / 2)
-        if (array[mid] === target) return mid
+        if (array[mid] == target) return mid
         if (array[mid] < target) left = mid + 1
         else right = mid - 1
     }
