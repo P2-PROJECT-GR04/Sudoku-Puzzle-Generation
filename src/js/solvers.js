@@ -9,14 +9,14 @@ function get_units(sudoku) {
         for (let c = 0; c < sudoku.size; c++) unit.push([r, c])
         units.push(unit)
     }
-
+    /*
    // checks for columns
     for (let c = 0; c < sudoku.size; c++) {
         const unit = []
         for (let r = 0; r < sudoku.size; r++) unit.push([r, c])
         units.push(unit)
     }
-
+    */
     /* 
     Checks for region (3x3)
     Outer loops
@@ -105,7 +105,7 @@ function naked_pair(sudoku) {
 
                         if (
                             otherCell.num == null &&
-                            samePair(cell.candidates, otherCell.candidates)
+                            Samecandidates(cell.candidates, otherCell.candidates)
                         ) {
 
                             const pair = [...cell.candidates]
