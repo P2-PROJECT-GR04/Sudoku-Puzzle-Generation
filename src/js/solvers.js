@@ -30,7 +30,10 @@ function get_units(sudoku) {
             */
             for (let r = 0; r < sudoku.region_height; r++) {
                 for (let c = 0; c < sudoku.region_width; c++) {
-                    unit.push([b * sudoku.region_height + r, d * sudoku.region_width + c])
+                    unit.push([
+                        b * sudoku.region_height + r,
+                        d * sudoku.region_width + c,
+                    ])
                 }
             }
             units.push(unit)
@@ -48,10 +51,13 @@ function naked_single(sudoku) {
     // Find an instance of a naked single
     // Update the board
     // Return true, or false if no naked single was found
-        for (let r = 0; r < sudoku.size; r++) {
+    for (let r = 0; r < sudoku.size; r++) {
         for (let c = 0; c < sudoku.size; c++) {
-            if (sudoku.grid[r][c].num == null && sudoku.grid[r][c].candidates.length == 1) {
-            sudoku.grid[r][c].num = sudoku.grid[r][c].candidates[0]
+            if (
+                sudoku.grid[r][c].num == null &&
+                sudoku.grid[r][c].candidates.length == 1
+            ) {
+                sudoku.grid[r][c].num = sudoku.grid[r][c].candidates[0]
                 return true
             }
         }
@@ -69,7 +75,7 @@ function naked_pair(sudoku) {
     // Update the board
     // Return true, or false if no naked pair was found
 
-    function Samecandidates(arr1, arr2) {
+    function same_candidates(arr1, arr2) {
         return (
             arr1.length === 2 &&
             arr2.length === 2 &&
@@ -81,13 +87,11 @@ function naked_pair(sudoku) {
     det gøre vi ved at se om den har et array længere end 2 
     hvis den har det returner den false da vi bruger && til arr1.length skal være lige med 2 fx. */
 
-     for (let r = 0; r < sudoku.size; r++) {
+    for (let r = 0; r < sudoku.size; r++) {
         for (let c = 0; c < sudoku.size; c++) {
-
             const cell = sudoku.grid[r][c]
 
             if (cell.num == null && cell.candidates.length === 2) {
-
                 let region_r_min =
                     Math.floor(r / sudoku.region_height) * sudoku.region_height
                 let region_r_max = region_r_min + sudoku.region_height
@@ -96,41 +100,65 @@ function naked_pair(sudoku) {
                     Math.floor(c / sudoku.region_width) * sudoku.region_width
                 let region_c_max = region_c_min + sudoku.region_width
 
-                for (let inner_r = region_r_min; inner_r < region_r_max; inner_r++) {
-                    for (let inner_c = region_c_min; inner_c < region_c_max; inner_c++) {
-
+                for (
+                    let inner_r = region_r_min;
+                    inner_r < region_r_max;
+                    inner_r++
+                ) {
+                    for (
+                        let inner_c = region_c_min;
+                        inner_c < region_c_max;
+                        inner_c++
+                    ) {
                         if (inner_r === r && inner_c === c) continue
 
                         const otherCell = sudoku.grid[inner_r][inner_c]
 
                         if (
                             otherCell.num == null &&
-                            Samecandidates(cell.candidates, otherCell.candidates)
+                            same_candidates(
+                                cell.candidates,
+                                otherCell.candidates
+                            )
                         ) {
-
                             const pair = [...cell.candidates]
 
-                            for (let remove_r = region_r_min; remove_r < region_r_max; remove_r++) {
-                                for (let remove_c = region_c_min; remove_c < region_c_max; remove_c++) {
-
+                            for (
+                                let remove_r = region_r_min;
+                                remove_r < region_r_max;
+                                remove_r++
+                            ) {
+                                for (
+                                    let remove_c = region_c_min;
+                                    remove_c < region_c_max;
+                                    remove_c++
+                                ) {
                                     if (
                                         (remove_r === r && remove_c === c) ||
-                                        (remove_r === inner_r && remove_c === inner_c)
+                                        (remove_r === inner_r &&
+                                            remove_c === inner_c)
                                     ) {
                                         continue
                                     }
 
-                                    const target = sudoku.grid[remove_r][remove_c]
+                                    const target =
+                                        sudoku.grid[remove_r][remove_c]
 
                                     if (target.num == null) {
-                                        const oldLength = target.candidates.length
+                                        const oldLength =
+                                            target.candidates.length
 
                                         target.candidates =
                                             target.candidates.filter(
-                                                n => n !== pair[0] && n !== pair[1]
+                                                (n) =>
+                                                    n !== pair[0] &&
+                                                    n !== pair[1]
                                             )
 
-                                        if (target.candidates.length !== oldLength) {
+                                        if (
+                                            target.candidates.length !==
+                                            oldLength
+                                        ) {
                                             return true
                                         }
                                     }
@@ -146,7 +174,6 @@ function naked_pair(sudoku) {
     return false
 }
 
-
 /**
  * Tries to solve a cell on the board with a hidden single
  * @modifies {sudoku}
@@ -160,25 +187,27 @@ function hidden_single(sudoku) {
 
     // Looks at one row, one column or one region (one at a time)
     for (const unit of get_units(sudoku)) {
-    const unsolved = unit.filter(([r, c]) => sudoku.grid[r][c].num === null) //Ignores already solved cells
+        const unsolved = unit.filter(([r, c]) => sudoku.grid[r][c].num === null) //Ignores already solved cells
 
         for (let d = 1; d <= sudoku.size; d++) {
-            const cells = unsolved.filter(([r, c]) => sudoku.grid[r][c].candidates.includes(d)) // Checks for candidates
+            const cells = unsolved.filter(([r, c]) =>
+                sudoku.grid[r][c].candidates.includes(d)
+            ) // Checks for candidates
 
             /*
             Hidden single condition
             If a number can go only be placed in unit
             */
             if (cells.length === 1) {
-            const [r, c] = cells[0]
-            sudoku.grid[r][c].num = d
-            sudoku.grid[r][c].candidates = []
-            return true
+                const [r, c] = cells[0]
+                sudoku.grid[r][c].num = d
+                sudoku.grid[r][c].candidates = []
+                return true
             }
         }
     }
     return false
-}   
+}
 
 /**
  * Tries to solve a cell on the board with a hidden pair
