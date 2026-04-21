@@ -344,7 +344,29 @@ function x_wing(sudoku) {
  * @modifies {sudoku}
  * @param {Sudoku} sudoku
  * @returns {boolean} True if it could find a y-wing, False if not */
-function y_wing(sudoku) {}
+function y_wing(sudoku) {
+    let cells = []
+    for (let r = 0; r < sudoku.size; r++) {
+        //Gets all the cells with 2 candidates into an array
+        for (let c = 0; c < sudoku.size; c++) {
+            if (sudoku.grid[r][c].candidates.length == 2) {
+                cells.push([r, c])
+            }
+        }
+    }
+    for (let pivot of cells) {
+        let see_cells = cells.filter((c) =>
+            can_see(sudoku, cells[pivot][0], cells[pivot][1], c[0], c[1])
+        )
+        let pairs = possible_pairs(see_cells)
+        let pivotCell = sudoku.grid[pivot[0]][pivot[1]]
+        for (let pair of pairs) {
+            let pairCells = pair.map((c) => sudoku.grid[c[0]][c[1]])
+            if (pairCells[0].candidates.includes(pivotCell.candidates[0])) {
+            }
+        }
+    }
+}
 
 /**
  * Tries to solve a cell on the board with a swordfish
@@ -385,4 +407,31 @@ function is_strong_link(sudoku, r1, c1, r2, c2) {
     }
 
     return out
+}
+
+function can_see(sudoku, r1, c1, r2, c2) {
+    if (r1 == r2 || c1 == c2) return true
+    let region_r1_min =
+        Math.floor(r1 / sudoku.region_height) * sudoku.region_height
+    let region_c1_min =
+        Math.floor(c1 / sudoku.region_width) * sudoku.region_width
+    let region_r2_min =
+        Math.floor(r2 / sudoku.region_height) * sudoku.region_height
+    let region_c2_min =
+        Math.floor(c2 / sudoku.region_width) * sudoku.region_width
+    if (region_r1_min == region_r2_min && region_c1_min == region_c2_min)
+        return true
+    return false
+}
+
+function possible_pairs(list) {
+    let pairs = []
+    for (let i = 0; i < list.length; i++) {
+        for (let j = i; j < list.length; j++) {
+            if (i == j) continue
+            pairs.add([list[i], list[j]])
+        }
+    }
+
+    return pairs
 }
