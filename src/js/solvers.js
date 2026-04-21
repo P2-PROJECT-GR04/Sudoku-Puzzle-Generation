@@ -1,5 +1,43 @@
 import { Sudoku } from './sudoku.js'
 
+function get_units(sudoku) {
+    const units = []
+
+    // Checks for rows
+    for (let r = 0; r < sudoku.size; r++) {
+        const unit = []
+        for (let c = 0; c < sudoku.size; c++) unit.push([r, c])
+        units.push(unit)
+    }
+
+   // checks for columns
+    for (let c = 0; c < sudoku.size; c++) {
+        const unit = []
+        for (let r = 0; r < sudoku.size; r++) unit.push([r, c])
+        units.push(unit)
+    }
+
+    /* 
+    Checks for region (3x3)
+    Outer loops
+    */
+    for (let b = 0; b < sudoku.region_height; b++) {
+        for (let d = 0; d < sudoku.region_width; d++) {
+            const unit = []
+            /* 
+            Checks each cells
+            Inner loop
+            */
+            for (let r = 0; r < sudoku.region_height; r++) {
+                for (let c = 0; c < sudoku.region_width; c++) {
+                    unit.push([b * sudoku.region_height + r, d * sudoku.region_width + c])
+                }
+            }
+            units.push(unit)
+        }
+    }
+    return units
+}
 /**
  * Tries to solve a cell on the board with a naked single
  * @modifies {sudoku}
@@ -110,16 +148,28 @@ function hidden_single(sudoku) {
     // Find an instance of a hidden single
     // Update the board
     // Return true, or false if no hidden single was found
-    for (let r = 0; r < sudoku.size; r++) {
-        for (let c = 0; c < sudoku.size; c++) {
-            if (sudoku.grid[r][c].num == null && sudoku.grid[r][c].candidates.length == 1) {
-            sudoku.grid[r][c].num = sudoku.grid[r][c].candidates[0]
-                return true
+
+    // Looks at one row, one column or one region (one at a time)
+    for (const unit of get_units(sudoku)) {
+    const unsolved = unit.filter(([r, c]) => sudoku.grid[r][c].num === null) //Ignores already solved cells
+
+        for (let d = 1; d <= sudoku.size; d++) {
+            const cells = unsolved.filter(([r, c]) => sudoku.grid[r][c].candidates.includes(d)) // Checks for candidates
+
+            /*
+            Hidden single condition
+            If a number can go only be placed in unit
+            */
+            if (cells.length === 1) {
+            const [r, c] = cells[0]
+            sudoku.grid[r][c].num = d
+            sudoku.grid[r][c].candidates = []
+            return true
             }
         }
     }
     return false
-}
+}   
 
 /**
  * Tries to solve a cell on the board with a hidden pair
