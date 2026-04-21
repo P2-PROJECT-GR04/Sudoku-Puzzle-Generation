@@ -48,6 +48,15 @@ function naked_single(sudoku) {
     // Find an instance of a naked single
     // Update the board
     // Return true, or false if no naked single was found
+        for (let r = 0; r < sudoku.size; r++) {
+        for (let c = 0; c < sudoku.size; c++) {
+            if (sudoku.grid[r][c].num == null && sudoku.grid[r][c].candidates.length == 1) {
+            sudoku.grid[r][c].num = sudoku.grid[r][c].candidates[0]
+                return true
+            }
+        }
+    }
+    return false
 }
 
 /**
