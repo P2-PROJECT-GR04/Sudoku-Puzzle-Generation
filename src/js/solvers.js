@@ -268,6 +268,7 @@ function hidden_pair(sudoku) {
                                     if (found == -1) {
                                         continue
                                     }
+                                    if (commonCandidates != null) return false
                                     commonCandidates.push(found)
                                 }
                                 sudoku.grid[r][c].candidates = commonCandidates
