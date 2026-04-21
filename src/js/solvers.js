@@ -21,7 +21,84 @@ function naked_pair(sudoku) {
     // Find an instance of a naked pair
     // Update the board
     // Return true, or false if no naked pair was found
+
+    function Samecandidates(arr1, arr2) {
+        return (
+            arr1.length === 2 &&
+            arr2.length === 2 &&
+            arr1[0] === arr2[0] &&
+            arr1[1] === arr2[1]
+        )
+    }
+    /* det her er bare en hjælpe funktion til at finde et de celler der kun har 2 kandidater 
+    det gøre vi ved at se om den har et array længere end 2 
+    hvis den har det returner den false da vi bruger && til arr1.length skal være lige med 2 fx. */
+
+     for (let r = 0; r < sudoku.size; r++) {
+        for (let c = 0; c < sudoku.size; c++) {
+
+            const cell = sudoku.grid[r][c]
+
+            if (cell.num == null && cell.candidates.length === 2) {
+
+                let region_r_min =
+                    Math.floor(r / sudoku.region_height) * sudoku.region_height
+                let region_r_max = region_r_min + sudoku.region_height
+
+                let region_c_min =
+                    Math.floor(c / sudoku.region_width) * sudoku.region_width
+                let region_c_max = region_c_min + sudoku.region_width
+
+                for (let inner_r = region_r_min; inner_r < region_r_max; inner_r++) {
+                    for (let inner_c = region_c_min; inner_c < region_c_max; inner_c++) {
+
+                        if (inner_r === r && inner_c === c) continue
+
+                        const otherCell = sudoku.grid[inner_r][inner_c]
+
+                        if (
+                            otherCell.num == null &&
+                            samePair(cell.candidates, otherCell.candidates)
+                        ) {
+
+                            const pair = [...cell.candidates]
+
+                            for (let remove_r = region_r_min; remove_r < region_r_max; remove_r++) {
+                                for (let remove_c = region_c_min; remove_c < region_c_max; remove_c++) {
+
+                                    if (
+                                        (remove_r === r && remove_c === c) ||
+                                        (remove_r === inner_r && remove_c === inner_c)
+                                    ) {
+                                        continue
+                                    }
+
+                                    const target = sudoku.grid[remove_r][remove_c]
+
+                                    if (target.num == null) {
+                                        const oldLength = target.candidates.length
+
+                                        target.candidates =
+                                            target.candidates.filter(
+                                                n => n !== pair[0] && n !== pair[1]
+                                            )
+
+                                        if (target.candidates.length !== oldLength) {
+                                            return true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return false
 }
+
 
 /**
  * Tries to solve a cell on the board with a hidden single
