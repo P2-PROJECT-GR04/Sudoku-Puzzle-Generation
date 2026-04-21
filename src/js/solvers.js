@@ -290,7 +290,56 @@ function hidden_pair(sudoku) {
  * @modifies {sudoku}
  * @param {Sudoku} sudoku
  * @returns {boolean} True if it could find an x-wing, False if not */
-function x_wing(sudoku) {}
+function x_wing(sudoku) {
+    for (let r = 0; r < sudoku.size; r++) {
+        for (let c = 0; c < sudoku.size; c++) {
+            if (sudoku.grid[r][c].is_collapsed()) continue
+
+            for (let r2 = r; r2 < sudoku.size; r2++) {
+                if (sudoku.grid[r2][c].is_collapsed()) continue
+                let left_strong_cands = is_strong_link(sudoku, r, c, r2, c)
+                if (left_strong_cands.length == 0) continue
+
+                for (let c2 = c; c2 < sudoku.size; c2++) {
+                    if (sudoku.grid[r][c2].is_collapsed()) continue
+                    if (sudoku.grid[r2][c2].is_collapsed()) continue
+                    let right_strong_cands = is_strong_link(
+                        sudoku,
+                        r,
+                        c2,
+                        r2,
+                        c2
+                    )
+                    if (right_strong_cands.length == 0) continue
+
+                    let candidate = null
+                    left_strong_cands.forEach((cand) => {
+                        if (right_strong_cands.includes(cand)) candidate = cand
+                    })
+
+                    // if no shared candidate
+                    if (candidate == null) continue
+
+                    // X-Wing is valid
+                    for (let r3 = 0; r3 < sudoku.size; r3++) {
+                        for (let c3 = 0; c3 < sudoku.size; c3++) {
+                            // Ignore the x-wing cells
+                            if ((r3 == r && r3 == c) || (r3 == r2 && c3 == c2))
+                                continue
+
+                            sudoku.grid[r3][c3].candidates = sudoku.grid[r3][
+                                c3
+                            ].filter((item) => item !== candidate)
+                        }
+                    }
+
+                    return true
+                }
+            }
+        }
+    }
+    return false
+}
 
 /**
  * Tries to solve a cell on the board with a y-wing
@@ -316,4 +365,26 @@ function binarySearch(array, target) {
         else right = mid - 1
     }
     return -1
+}
+
+function is_strong_link(sudoku, r1, c1, r2, c2) {
+    if (r1 == r2 && c1 == c2) return []
+
+    let out = sudoku.grid[r1][c1].candidates.filter((x) =>
+        sudoku.grid[r2][r3].candidates.includes(x)
+    )
+
+    if (r1 == r2) {
+        for (let c3 = 0; c3 < sudoku.size; c3++) {
+            out = out.filter((x) => !sudoku.grid[r1][c3].candidates.includes(x))
+        }
+    }
+
+    if (c1 == c2) {
+        for (let r3 = 0; r3 < sudoku.size; r3++) {
+            out = out.filter((x) => !sudoku.grid[r3][c1].candidates.includes(x))
+        }
+    }
+
+    return out
 }
