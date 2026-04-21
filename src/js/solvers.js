@@ -96,7 +96,7 @@ function naked_pair(sudoku) {
 
                         if (
                             otherCell.num == null &&
-                            samePair(cell.candidates, otherCell.candidates)
+                            Samecandidates(cell.candidates, otherCell.candidates)
                         ) {
 
                             const pair = [...cell.candidates]
