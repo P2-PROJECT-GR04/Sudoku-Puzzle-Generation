@@ -77,10 +77,10 @@ function naked_pair(sudoku) {
 
     function same_candidates(arr1, arr2) {
         return (
-            arr1.length === 2 &&
-            arr2.length === 2 &&
-            arr1[0] === arr2[0] &&
-            arr1[1] === arr2[1]
+            arr1.length == 2 &&
+            arr2.length == 2 &&
+            arr1[0] == arr2[0] &&
+            arr1[1] == arr2[1]
         )
     }
     /* det her er bare en hjælpe funktion til at finde et de celler der kun har 2 kandidater 
@@ -91,7 +91,7 @@ function naked_pair(sudoku) {
         for (let c = 0; c < sudoku.size; c++) {
             const cell = sudoku.grid[r][c]
 
-            if (cell.num == null && cell.candidates.length === 2) {
+            if (cell.num == null && cell.candidates.length == 2) {
                 let region_r_min =
                     Math.floor(r / sudoku.region_height) * sudoku.region_height
                 let region_r_max = region_r_min + sudoku.region_height
@@ -110,7 +110,7 @@ function naked_pair(sudoku) {
                         inner_c < region_c_max;
                         inner_c++
                     ) {
-                        if (inner_r === r && inner_c === c) continue
+                        if (inner_r == r && inner_c == c) continue
 
                         const otherCell = sudoku.grid[inner_r][inner_c]
 
@@ -134,9 +134,9 @@ function naked_pair(sudoku) {
                                     remove_c++
                                 ) {
                                     if (
-                                        (remove_r === r && remove_c === c) ||
-                                        (remove_r === inner_r &&
-                                            remove_c === inner_c)
+                                        (remove_r == r && remove_c == c) ||
+                                        (remove_r == inner_r &&
+                                            remove_c == inner_c)
                                     ) {
                                         continue
                                     }
@@ -151,12 +151,11 @@ function naked_pair(sudoku) {
                                         target.candidates =
                                             target.candidates.filter(
                                                 (n) =>
-                                                    n !== pair[0] &&
-                                                    n !== pair[1]
+                                                    n != pair[0] && n != pair[1]
                                             )
 
                                         if (
-                                            target.candidates.length !==
+                                            target.candidates.length !=
                                             oldLength
                                         ) {
                                             return true
