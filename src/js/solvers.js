@@ -265,9 +265,7 @@ function hidden_pair(sudoku) {
                                             .candidates,
                                         candidateFind
                                     )
-                                    if (found == -1) {
-                                        continue
-                                    }
+                                    if (found == -1) continue
                                     if (commonCandidates != null) return false
                                     commonCandidates.push(found)
                                 }
