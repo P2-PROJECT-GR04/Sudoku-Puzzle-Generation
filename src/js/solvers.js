@@ -362,10 +362,90 @@ function y_wing(sudoku) {
         let pivotCell = sudoku.grid[pivot[0]][pivot[1]]
         for (let pair of pairs) {
             let pairCells = pair.map((c) => sudoku.grid[c[0]][c[1]])
-            if (pairCells[0].candidates.includes(pivotCell.candidates[0])) {
+            if (
+                (pairCells[0].candidates.includes(pivotCell.candidates[0]) &&
+                    pairCells[1].candidates.includes(
+                        pivotCell.candidates[1]
+                    )) ||
+                (pairCells[1].candidates.includes(pivotCell.candidates[0]) &&
+                    pairCells[0].candidates.includes(pivotCell.candidates[1]))
+            ) {
+                if (
+                    !can_see(
+                        sudoku,
+                        pivot[0],
+                        pivot[1],
+                        pair[0][0],
+                        pair[0][1]
+                    ) ||
+                    !can_see(sudoku, pivot[0], pivot[1], pair[0][0], pair[0][1])
+                ) {
+                    countiue
+                }
+                const commonCandidate = pairCells[0].candidates.filter(
+                    (value) => pairCells[1].candidates.includes(value)
+                )[0]
+                if (commonCandidate == undefined) {
+                    countiue
+                }
+                let region_r1_min =
+                    Math.floor(pair[0][0] / sudoku.region_height) *
+                    sudoku.region_height
+                let region_c1_min =
+                    Math.floor(pair[0][1] / sudoku.region_width) *
+                    sudoku.region_width
+                let region_r2_min =
+                    Math.floor(pair[1][0] / sudoku.region_height) *
+                    sudoku.region_height
+                let region_c2_min =
+                    Math.floor(pair[1][1] / sudoku.region_width) *
+                    sudoku.region_width
+                if (
+                    region_r1_min == region_r2_min &&
+                    region_c1_min == region_c2_min
+                ) {
+                    let region_r_min = region_r1_min
+                    let region_c_min = region_c1_min
+                    let region_r_max = region_r_min + sudoku.region_height - 1
+                    let region_c_max = region_c_min + sudoku.region_width - 1
+                    for (
+                        let inner_r = region_r_min;
+                        inner_r < region_r_max;
+                        inner_r++
+                    ) {
+                        for (
+                            let inner_c = region_c_min;
+                            region_c_min < region_c_max;
+                            region_c_min++
+                        ) {
+                            if (inner_r == pivot[0] && inner_c == pivot[1]) {
+                                countiue
+                            }
+                            if (sudoku.grid[inner_r][inner_c].num == null) {
+                                sudoku.grid[inner_r][inner_c].candidates =
+                                    sudoku.grid[inner_r][
+                                        inner_c
+                                    ].candidates.filter(
+                                        (c) => c != commonCandidate
+                                    )
+                            }
+                        }
+                    }
+                } else {
+                    sudoku.grid[pair[0][0]][pair[1][1]].candidates =
+                        sudoku.grid[pair[0][0]][pair[1][1]].candidates.filter(
+                            (c) => c != commonCandidate
+                        )
+                    sudoku.grid[pair[1][0]][pair[0][1]].candidates =
+                        sudoku.grid[pair[1][0]][pair[0][1]].candidates.filter(
+                            (c) => c != commonCandidate
+                        )
+                }
+                return true
             }
         }
     }
+    return false
 }
 
 /**
