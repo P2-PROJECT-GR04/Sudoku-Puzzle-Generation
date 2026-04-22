@@ -56,7 +56,6 @@ export function createNumpad(sudoku) {
         })
         numpad.appendChild(tr)
     })
-
     numpad.onclick = (event) => {
         if (event.target.tagName !== 'BUTTON') return
         const numpadValue = event.target.textContent
