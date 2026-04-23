@@ -10,7 +10,9 @@ import { Cell } from './cell.js'
  * @property {number} region_height - The number of rows in a region
  * @property {Cell[][]} grid - The 2D-grid representing the cells of the Sudoku
  * @property {number[] | null} marked_cell - The cell that is currently marked by the user. This is null if no cell is marked
- * @property {(row: number, col: Number, is_marked: boolean) => void} mark_cell - Mark a given cell
+ * @property {(row: number, col: number, is_marked: boolean) => void} mark_cell - Mark a given cell
+ * @property {(row: number, col: number, fn: (r: number, c: number) => void) => void} forRegion - Run the given function `fn` on each cell in the region
+ * @property {(fn: (r: number, c: number) => void) => void} forCells - Run the given function `fn` on each cell in the grid
  */
 export class Sudoku {
     /**
@@ -52,6 +54,50 @@ export class Sudoku {
                     ) {
                         this.grid[r][c].is_assoc_marked = is_marked
                     }
+                }
+            }
+        }
+
+        this.transpose = () => {
+            let new_grid = []
+            for (let r = 0; r < this.size; r++) {
+                new_grid.push([])
+                for (let c = 0; c < this.size; c++) {
+                    new_grid[r].push(null)
+                }
+            }
+
+            for (let r = 0; r < this.size; r++) {
+                for (let c = 0; c < r; c++) {
+                    new_grid[c][r] = this.grid[r][c]
+                }
+            }
+
+            this.grid = new_grid
+
+            const tmp_width = this.region_width
+            this.region_width = this.region_height
+            this.region_height = tmp_width
+        }
+
+        this.forRegion = (r, c, fn) => {
+            let r_min = Math.floor(r / this.region_height) * this.region_height
+            let r_max = r_min + this.region_height
+
+            let c_min = Math.floor(c / this.region_width) * this.region_width
+            let c_max = c_min + this.region_width
+
+            for (let ri = r_min; ri < r_max; ri++) {
+                for (let ci = c_min; ci < c_max; ci++) {
+                    fn(ri, ci)
+                }
+            }
+        }
+
+        this.forCells = (fn) => {
+            for (let r = 0; r < this.size; r++) {
+                for (let c = 0; c < this.size; c++) {
+                    fn(r, c)
                 }
             }
         }
