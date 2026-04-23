@@ -5,6 +5,7 @@
     --purple: #c8a2c8;
     --lightpurple: #c8a2c888;
     --text-dark: #221d24;
+    --light-gray: rgb(127, 127, 127);
 }
 
 .sudoku-grid {
@@ -200,3 +201,25 @@ main {
     font-size: 1.4rem;
     font-weight: bold;
 }
+
+.hidden {
+    display: none;
+}
+
+.difficulty-btn {
+    background-color: var(--light-gray);
+    margin: 0.625rem;
+    padding: 0.625rem 1.5rem;
+    cursor: pointer;
+    font-size: 1.4rem;
+    font-weight: bold;
+    border-radius: 0.9375rem;
+    border: none;
+
+    }
+ .difficulty-btn {
+  transform: scale(1.08);
+    background: #ca5995;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+ }
