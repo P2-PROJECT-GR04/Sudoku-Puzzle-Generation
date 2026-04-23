@@ -1,7 +1,5 @@
 import { Sudoku } from './sudoku.js'
 
-function get_units(sudoku) {
-    const units = []
 
     // Checks for rows
     for (let r = 0; r < sudoku.size; r++) {
@@ -180,9 +178,18 @@ function naked_pair(sudoku) {
  * @returns {boolean} True if it could find a hidden single, False if not
  */
 function hidden_single(sudoku) {
-    // Find an instance of a hidden single
-    // Update the board
-    // Return true, or false if no hidden single was found
+    // Loop over every cell on the board
+    for (let r = 0; r < sudoku.size; r++) {
+        for (let c = 0; c < sudoku.size; c++) {
+            // Only look at unsolved cells
+            if (sudoku.grid[r][c].num == null) {
+                // Find the top-left corner of the box this cell belongs to
+                let region_r_min =
+                    Math.floor(r / sudoku.region_height) * sudoku.region_height
+                let region_r_max = region_r_min + sudoku.region_height
+                let region_c_min =
+                    Math.floor(c / sudoku.region_width) * sudoku.region_width
+                let region_c_max = region_c_min + sudoku.region_width
 
     // Looks at one row, one column or one region (one at a time)
     for (const unit of get_units(sudoku)) {
