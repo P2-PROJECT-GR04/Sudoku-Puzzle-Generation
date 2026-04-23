@@ -8,8 +8,23 @@
         <link rel="stylesheet" href="./css/style.css" />
         <link rel="icon" href="./favicon.ico" type="image/x-icon" />
     </head>
+    
     <body style="background-color: #f7f4f6">
-        <main id="gameArea">
+
+       <!-- Hovedmenuen -->
+        <main id="mainMenu" class="hidden">
+            <h1>SUDOKU</h1>
+            <p>Choose difficulty</p>
+
+            <div class="difficulty-menu">
+                <button id="easy" class="difficulty-btn">Easy</button>
+                <button id="medium" class="difficulty-btn">Medium</button>
+                <button id="hard" class="difficulty-btn">Hard</button>
+            </div>
+        </main>
+
+        <!-- SUDOKUEN -->
+        <main id="gameArea" class="hidden">
             <h1>SUDOKU</h1>
             <p class="timer">Timer: <span id="timerDisplay">00:00.000</span></p>
             <button class="interactable-btn" id="pauseBtn">Pause</button>
