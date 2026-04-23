@@ -36,9 +36,9 @@ import { Sudoku } from './sudoku.js'
             }
             units.push(unit)
         }
+        return units
     }
-    return units
-}
+
 /**
  * Tries to solve a cell on the board with a naked single
  * @modifies {sudoku}
@@ -178,37 +178,48 @@ function naked_pair(sudoku) {
  * @returns {boolean} True if it could find a hidden single, False if not
  */
 function hidden_single(sudoku) {
+        // Find an instance of a hidden single
+    // Update the board
+    // Return true, or false if no hidden single was found
+
     // Loop over every cell on the board
     for (let r = 0; r < sudoku.size; r++) {
         for (let c = 0; c < sudoku.size; c++) {
             // Only look at unsolved cells
             if (sudoku.grid[r][c].num == null) {
-                // Find the top-left corner of the box this cell belongs to
                 let region_r_min =
                     Math.floor(r / sudoku.region_height) * sudoku.region_height
-                let region_r_max = region_r_min + sudoku.region_height
+                let region_r_max = region_r_min + sudoku.region_height -1
                 let region_c_min =
                     Math.floor(c / sudoku.region_width) * sudoku.region_width
-                let region_c_max = region_c_min + sudoku.region_width
+                let region_c_max = region_c_min + sudoku.region_width -1
 
-    // Looks at one row, one column or one region (one at a time)
-    for (const unit of get_units(sudoku)) {
-        const unsolved = unit.filter(([r, c]) => sudoku.grid[r][c].num === null) //Ignores already solved cells
+                // Check for all unsolved cells in the same region (3x3)
+                const otherCellsCandidates = new Set()
+                for (let inner_r = region_r_min; inner_r < region_r_max; inner_r++) {
+                    for (let inner_c = region_c_min; inner_c < region_c_max; inner_c++) {
+                        
+                        // skip the focused cell itself
+                        if (inner_r == r && inner_c == c) 
+                            continue
+                        if (sudoku.grid[inner_r][inner_c].num == null) {
+                            for (const cand of sudoku.grid[inner_r][inner_c].candidates) {
+                                otherCellsCandidates.add(cand)
+                            }
+                        }
+                    }
+                }
 
-        for (let d = 1; d <= sudoku.size; d++) {
-            const cells = unsolved.filter(([r, c]) =>
-                sudoku.grid[r][c].candidates.includes(d)
-            ) // Checks for candidates
+                const focusedCellCandidates = new Set(sudoku.grid[r][c].candidates)
 
-            /*
-            Hidden single condition
-            If a number can go only be placed in unit
-            */
-            if (cells.length === 1) {
-                const [r, c] = cells[0]
-                sudoku.grid[r][c].num = d
-                sudoku.grid[r][c].candidates = []
-                return true
+                // Check if any candidate in this cell does not appear in any other cell same region (3x3)
+                for (const d of focusedCellCandidates) {
+                    if (!otherCellsCandidates.has(d)) {
+                        sudoku.grid[r][c].num = d
+                        sudoku.grid[r][c].candidates = []
+                        return true
+                    }
+                }
             }
         }
     }
