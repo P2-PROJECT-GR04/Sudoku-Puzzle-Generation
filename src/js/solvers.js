@@ -1,44 +1,6 @@
 import { Sudoku } from './sudoku.js'
 
 
-    // Checks for rows
-    for (let r = 0; r < sudoku.size; r++) {
-        const unit = []
-        for (let c = 0; c < sudoku.size; c++) unit.push([r, c])
-        units.push(unit)
-    }
-    /*
-   // checks for columns
-    for (let c = 0; c < sudoku.size; c++) {
-        const unit = []
-        for (let r = 0; r < sudoku.size; r++) unit.push([r, c])
-        units.push(unit)
-    }
-    */
-    /* 
-    Checks for region (3x3)
-    Outer loops
-    */
-    for (let b = 0; b < sudoku.region_height; b++) {
-        for (let d = 0; d < sudoku.region_width; d++) {
-            const unit = []
-            /* 
-            Checks each cells
-            Inner loop
-            */
-            for (let r = 0; r < sudoku.region_height; r++) {
-                for (let c = 0; c < sudoku.region_width; c++) {
-                    unit.push([
-                        b * sudoku.region_height + r,
-                        d * sudoku.region_width + c,
-                    ])
-                }
-            }
-            units.push(unit)
-        }
-        return units
-    }
-
 /**
  * Tries to solve a cell on the board with a naked single
  * @modifies {sudoku}
