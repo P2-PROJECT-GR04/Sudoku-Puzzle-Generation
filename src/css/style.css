@@ -202,10 +202,6 @@ main {
     font-weight: bold;
 }
 
-.hidden {
-    display: none;
-}
-
 .difficulty-btn {
     background-color: var(--light-gray);
     margin: 0.625rem;
@@ -216,7 +212,7 @@ main {
     border-radius: 0.9375rem;
     border: none;
 
-    }
+}
  .difficulty-btn {
   transform: scale(1.08);
     background: #ca5995;
