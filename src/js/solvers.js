@@ -1,6 +1,5 @@
 import { Sudoku } from './sudoku.js'
 
-
 /**
  * Tries to solve a cell on the board with a naked single
  * @modifies {sudoku}
@@ -140,7 +139,7 @@ function naked_pair(sudoku) {
  * @returns {boolean} True if it could find a hidden single, False if not
  */
 function hidden_single(sudoku) {
-        // Find an instance of a hidden single
+    // Find an instance of a hidden single
     // Update the board
     // Return true, or false if no hidden single was found
 
@@ -149,30 +148,22 @@ function hidden_single(sudoku) {
         for (let c = 0; c < sudoku.size; c++) {
             // Only look at unsolved cells
             if (sudoku.grid[r][c].num == null) {
-                let region_r_min =
-                    Math.floor(r / sudoku.region_height) * sudoku.region_height
-                let region_r_max = region_r_min + sudoku.region_height -1
-                let region_c_min =
-                    Math.floor(c / sudoku.region_width) * sudoku.region_width
-                let region_c_max = region_c_min + sudoku.region_width -1
-
                 // Check for all unsolved cells in the same region (3x3)
                 const otherCellsCandidates = new Set()
-                for (let inner_r = region_r_min; inner_r < region_r_max; inner_r++) {
-                    for (let inner_c = region_c_min; inner_c < region_c_max; inner_c++) {
-                        
-                        // skip the focused cell itself
-                        if (inner_r == r && inner_c == c) 
-                            continue
-                        if (sudoku.grid[inner_r][inner_c].num == null) {
-                            for (const cand of sudoku.grid[inner_r][inner_c].candidates) {
-                                otherCellsCandidates.add(cand)
-                            }
+                sudoku.forRegion(r, c, (inner_r, inner_c) => {
+                    // skip the focused cell itself (return continues inside this block)
+                    if (inner_r == r && inner_c == c) return
+                    if (sudoku.grid[inner_r][inner_c].num == null) {
+                        for (const cand of sudoku.grid[inner_r][inner_c]
+                            .candidates) {
+                            otherCellsCandidates.add(cand)
                         }
                     }
-                }
+                })
 
-                const focusedCellCandidates = new Set(sudoku.grid[r][c].candidates)
+                const focusedCellCandidates = new Set(
+                    sudoku.grid[r][c].candidates
+                )
 
                 // Check if any candidate in this cell does not appear in any other cell same region (3x3)
                 for (const d of focusedCellCandidates) {
@@ -269,52 +260,70 @@ function hidden_pair(sudoku) {
  * @param {Sudoku} sudoku
  * @returns {boolean} True if it could find an x-wing, False if not */
 function x_wing(sudoku) {
-    for (let r = 0; r < sudoku.size; r++) {
-        for (let c = 0; c < sudoku.size; c++) {
-            if (sudoku.grid[r][c].is_collapsed()) continue
+    let x_wing_solve = () => {
+        for (let r = 0; r < sudoku.size; r++) {
+            for (let c = 0; c < sudoku.size; c++) {
+                if (sudoku.grid[r][c].is_collapsed()) continue
 
-            for (let r2 = r; r2 < sudoku.size; r2++) {
-                if (sudoku.grid[r2][c].is_collapsed()) continue
-                let left_strong_cands = is_strong_link(sudoku, r, c, r2, c)
-                if (left_strong_cands.length == 0) continue
+                for (let r2 = r; r2 < sudoku.size; r2++) {
+                    if (sudoku.grid[r2][c].is_collapsed()) continue
+                    let left_strong_cands = is_strong_link(sudoku, r, c, r2, c)
+                    if (left_strong_cands.length == 0) continue
 
-                for (let c2 = c; c2 < sudoku.size; c2++) {
-                    if (sudoku.grid[r][c2].is_collapsed()) continue
-                    if (sudoku.grid[r2][c2].is_collapsed()) continue
-                    let right_strong_cands = is_strong_link(
-                        sudoku,
-                        r,
-                        c2,
-                        r2,
-                        c2
-                    )
-                    if (right_strong_cands.length == 0) continue
+                    for (let c2 = c; c2 < sudoku.size; c2++) {
+                        if (sudoku.grid[r][c2].is_collapsed()) continue
+                        if (sudoku.grid[r2][c2].is_collapsed()) continue
+                        let right_strong_cands = is_strong_link(
+                            sudoku,
+                            r,
+                            c2,
+                            r2,
+                            c2
+                        )
+                        if (right_strong_cands.length == 0) continue
 
-                    let candidate = null
-                    left_strong_cands.forEach((cand) => {
-                        if (right_strong_cands.includes(cand)) candidate = cand
-                    })
+                        let candidate = null
+                        left_strong_cands.forEach((cand) => {
+                            if (right_strong_cands.includes(cand))
+                                candidate = cand
+                        })
 
-                    // if no shared candidate
-                    if (candidate == null) continue
+                        // if no shared candidate
+                        if (candidate == null) continue
 
-                    // X-Wing is valid
-                    for (let r3 = 0; r3 < sudoku.size; r3++) {
-                        for (let c3 = 0; c3 < sudoku.size; c3++) {
-                            // Ignore the x-wing cells
-                            if ((r3 == r && r3 == c) || (r3 == r2 && c3 == c2))
-                                continue
+                        // X-Wing is valid
+                        for (let r3 = 0; r3 < sudoku.size; r3++) {
+                            for (let c3 = 0; c3 < sudoku.size; c3++) {
+                                // Ignore the x-wing cells
+                                if (
+                                    (r3 == r && r3 == c) ||
+                                    (r3 == r2 && c3 == c2)
+                                )
+                                    continue
 
-                            sudoku.grid[r3][c3].candidates = sudoku.grid[r3][
-                                c3
-                            ].filter((item) => item !== candidate)
+                                sudoku.grid[r3][c3].candidates = sudoku.grid[
+                                    r3
+                                ][c3].filter((item) => item !== candidate)
+                            }
                         }
-                    }
 
-                    return true
+                        return true
+                    }
                 }
             }
         }
+    }
+
+    // Check if it can find an xwing, if not, transpose and try again
+    if (x_wing_solve()) {
+        return true
+    } else {
+        sudoku.transpose()
+        if (x_wing_solve()) {
+            sudoku.transpose()
+            return true
+        }
+        sudoku.transpose()
     }
     return false
 }
@@ -399,7 +408,7 @@ function y_wing(sudoku) {
                             region_c_min++
                         ) {
                             if (inner_r == pivot[0] && inner_c == pivot[1]) {
-                                countiue
+                                continue
                             }
                             if (sudoku.grid[inner_r][inner_c].num == null) {
                                 sudoku.grid[inner_r][inner_c].candidates =
@@ -433,7 +442,61 @@ function y_wing(sudoku) {
  * @modifies {sudoku}
  * @param {Sudoku} sudoku
  * @returns {boolean} True if it could find a swordfish, False if not */
-function swordfish(sudoku) {}
+function swordfish(sudoku) {
+    let swordfish_solver = () => {
+        for (let r = 0; r < sudoku.size; r++) {
+            for (let cand = 0; cand < sudoku.size; cand++) {
+                let columns = []
+                for (let c = 0; c < sudoku.size; c++) {
+                    if (sudoku.grid[r][c].candidates.includes(cand)) {
+                        columns.push(c)
+                    }
+                }
+
+                if (columns.length != 3) continue
+
+                let rows = []
+                for (let r2 = r + 1; r2 < sudoku.size; r2++) {
+                    if (!sudoku.grid[r2][columns[0]].candidates.includes(cand))
+                        continue
+                    if (!sudoku.grid[r2][columns[1]].candidates.includes(cand))
+                        continue
+                    if (!sudoku.grid[r2][columns[2]].candidates.includes(cand))
+                        continue
+
+                    rows.push(r2)
+                }
+
+                if (rows.length != 3) continue
+
+                for (let col = 0; col < sudoku.size; col++) {
+                    if (columns.includes(col)) continue
+
+                    for (let row of rows) {
+                        sudoku.grid[row][col].candidates = sudoku.grid[row][
+                            col
+                        ].candidates.filter((c) => c != cand)
+                    }
+                }
+                return true
+            }
+        }
+        return false
+    }
+
+    if (swordfish_solver()) {
+        return true
+    } else {
+        sudoku.transpose()
+        if (swordfish_solver()) {
+            sudoku.transpose()
+            return true
+        }
+        sudoku.transpose()
+    }
+
+    return false
+}
 
 function binarySearch(array, target) {
     let left = 0
