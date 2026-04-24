@@ -24,23 +24,27 @@
                 Resume
             </button>
 
-            <div id="wrapper">
-                <div id="sudoku-section">
-                    <button class="interactable-btn" id="gen-sudoku-button">
-                        New sudoku
-                    </button>
-                    <div class="sudoku-grid" id="sudoku"></div>
-                </div>
+         <div id="wrapper">
 
-                <div id="numpad-wrap">
-                    <table id="sudoku-numpad"></table>
-                </div>
-            </div>
-                <button id="easy" class="difficulty-btn">Easy</button>
-                <button id="medium" class="difficulty-btn">Medium</button>
-                <button id="hard" class="difficulty-btn">Hard</button>  
-              
-            </div>
+    <div id="difficulty-buttons">
+        <button id="easy" class="difficulty-btn">Easy</button>
+        <button id="medium" class="difficulty-btn">Medium</button>
+        <button id="hard" class="difficulty-btn">Hard</button>
+    </div>
+
+    <div id="sudoku-section">
+        <button class="interactable-btn" id="gen-sudoku-button">
+            New sudoku
+        </button>
+        <div class="sudoku-grid" id="sudoku"></div>
+    </div>
+
+    <div id="numpad-wrap">
+        <table id="sudoku-numpad"></table>
+    </div>
+
+</div>
+           
         </main>
         <script src="./js/script.js" type="module"></script>
         <script src="./js/sudoku.js" type="module"></script>
