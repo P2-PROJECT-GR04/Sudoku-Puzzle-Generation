@@ -148,7 +148,7 @@ describe('Y-Wing', () => {
             [8, null, 2, null, 6, 3, 4, 5, null],
             [6, null, 5, 4, null, 8, null, null, null],
             [null, null, 3, 9, 8, null, 5, 6, 4],
-            [null, 5, 8, 6, null, 4, null, 9, null],
+            [null, 5, 8, 6, 7, 4, null, 9, null],
             [9, 4, 6, null, null, 5, 8, null, null],
             [5, 2, 7, 3, 1, 6, 9, 4, 8],
             [3, 8, 1, 2, 4, 9, 6, 7, 5],
@@ -159,12 +159,16 @@ describe('Y-Wing', () => {
         expect(sudoku).not.toBeNull()
         find_candidates_for_grid(sudoku)
 
-        expect(sudoku.grid[4][6].candidates).toEqual([2, 3, 7])
+        expect(sudoku.grid[4][6].candidates).toEqual([2, 3])
+
+        expect(sudoku.grid[0][0].candidates).toEqual([1, 7])
+        expect(sudoku.grid[4][0].candidates).toEqual([1, 2])
+        expect(sudoku.grid[0][6].candidates).toEqual([2, 7])
 
         let result = solvers.y_wing(sudoku)
         expect(result).toBe(true)
 
-        expect(sudoku.grid[4][6].candidates).toEqual([3, 7])
+        expect(sudoku.grid[4][6].candidates).toEqual([3])
     })
 })
 

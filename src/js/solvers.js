@@ -347,92 +347,144 @@ export function y_wing(sudoku) {
         let see_cells = cells.filter((c) =>
             can_see(sudoku, pivot[0], pivot[1], c[0], c[1])
         )
-        let pairs = possible_pairs(see_cells).filter((p) => p[0] != pivot && p[1] != pivot)
+        let pairs = possible_pairs(see_cells).filter(
+            (p) => p[0] != pivot && p[1] != pivot
+        )
         let pivotCell = sudoku.grid[pivot[0]][pivot[1]]
         for (let pair of pairs) {
             let pairCells = pair.map((c) => sudoku.grid[c[0]][c[1]])
             if (
-                (pairCells[0].candidates.includes(pivotCell.candidates[0]) &&
-                    pairCells[1].candidates.includes(
-                        pivotCell.candidates[1]
-                    )) ||
-                (pairCells[1].candidates.includes(pivotCell.candidates[0]) &&
-                    pairCells[0].candidates.includes(pivotCell.candidates[1]))
+                !(
+                    (pairCells[0].candidates.includes(
+                        pivotCell.candidates[0]
+                    ) &&
+                        pairCells[1].candidates.includes(
+                            pivotCell.candidates[1]
+                        )) ||
+                    (pairCells[1].candidates.includes(
+                        pivotCell.candidates[0]
+                    ) &&
+                        pairCells[0].candidates.includes(
+                            pivotCell.candidates[1]
+                        ))
+                )
+            )
+                continue
+
+            let has_removed = false
+
+            if (
+                !can_see(sudoku, pivot[0], pivot[1], pair[0][0], pair[0][1]) ||
+                !can_see(sudoku, pivot[0], pivot[1], pair[1][0], pair[1][1])
+            )
+                continue
+
+            const commonCandidate = pairCells[0].candidates.filter((value) =>
+                pairCells[1].candidates.includes(value)
+            )[0]
+
+            if (
+                commonCandidate == undefined ||
+                pivotCell.candidates.includes(commonCandidate)
             ) {
-                if (
-                    !can_see(
-                        sudoku,
-                        pivot[0],
-                        pivot[1],
-                        pair[0][0],
-                        pair[0][1]
-                    ) ||
-                    !can_see(sudoku, pivot[0], pivot[1], pair[0][0], pair[0][1])
+                continue
+            }
+            let region_r1_min =
+                Math.floor(pair[0][0] / sudoku.region_height) *
+                sudoku.region_height
+            let region_c1_min =
+                Math.floor(pair[0][1] / sudoku.region_width) *
+                sudoku.region_width
+            let region_r2_min =
+                Math.floor(pair[1][0] / sudoku.region_height) *
+                sudoku.region_height
+            let region_c2_min =
+                Math.floor(pair[1][1] / sudoku.region_width) *
+                sudoku.region_width
+
+            if (
+                region_r1_min == region_r2_min &&
+                region_c1_min == region_c2_min
+            ) {
+                let region_r_min = region_r1_min
+                let region_c_min = region_c1_min
+                let region_r_max = region_r_min + sudoku.region_height - 1
+                let region_c_max = region_c_min + sudoku.region_width - 1
+                for (
+                    let inner_r = region_r_min;
+                    inner_r < region_r_max;
+                    inner_r++
                 ) {
-                    continue
-                }
-                const commonCandidate = pairCells[0].candidates.filter(
-                    (value) => pairCells[1].candidates.includes(value)
-                )[0]
-                if (commonCandidate == undefined || pivotCell.candidates.includes(commonCandidate)) {
-                    continue
-                }
-                let region_r1_min =
-                    Math.floor(pair[0][0] / sudoku.region_height) *
-                    sudoku.region_height
-                let region_c1_min =
-                    Math.floor(pair[0][1] / sudoku.region_width) *
-                    sudoku.region_width
-                let region_r2_min =
-                    Math.floor(pair[1][0] / sudoku.region_height) *
-                    sudoku.region_height
-                let region_c2_min =
-                    Math.floor(pair[1][1] / sudoku.region_width) *
-                    sudoku.region_width
-                if (
-                    region_r1_min == region_r2_min &&
-                    region_c1_min == region_c2_min
-                ) {
-                    let region_r_min = region_r1_min
-                    let region_c_min = region_c1_min
-                    let region_r_max = region_r_min + sudoku.region_height - 1
-                    let region_c_max = region_c_min + sudoku.region_width - 1
                     for (
-                        let inner_r = region_r_min;
-                        inner_r < region_r_max;
-                        inner_r++
+                        let inner_c = region_c_min;
+                        region_c_min < region_c_max;
+                        region_c_min++
                     ) {
-                        for (
-                            let inner_c = region_c_min;
-                            region_c_min < region_c_max;
-                            region_c_min++
+                        if (
+                            (inner_r == pivot[0] && inner_c == pivot[1]) ||
+                            (inner_r == pair[0][0] && inner_c == pair[0][1]) ||
+                            (inner_r == pair[1][0] && inner_c == pair[1][1])
                         ) {
-                            if (inner_r == pivot[0] && inner_c == pivot[1]) {
-                                continue
-                            }
-                            if (sudoku.grid[inner_r][inner_c].num == null) {
-                                sudoku.grid[inner_r][inner_c].candidates =
-                                    sudoku.grid[inner_r][
-                                        inner_c
-                                    ].candidates.filter(
-                                        (c) => c != commonCandidate
-                                    )
-                            }
+                            continue
+                        }
+                        if (sudoku.grid[inner_r][inner_c].num == null) {
+                            let prev_len =
+                                sudoku.grid[inner_r][inner_c].candidates.length
+
+                            sudoku.grid[inner_r][inner_c].candidates =
+                                sudoku.grid[inner_r][inner_c].candidates.filter(
+                                    (c) => c != commonCandidate
+                                )
+
+                            if (
+                                prev_len !=
+                                sudoku.grid[inner_r][inner_c].candidates.length
+                            )
+                                has_removed = true
                         }
                     }
-                } else {
-                    console.log(`removing ${commonCandidate}, with pincers (${pair[0][0]}; ${pair[0][1]}) and (${pair[1][0]}; ${pair[1][1]})`)
+                }
+            } else {
+                if (
+                    (pivot[0] != pair[0][0] || pivot[1] != pair[1][1]) &&
+                    (pair[0][0] != pair[0][0] || pair[0][1] != pair[1][1]) &&
+                    (pair[1][0] != pair[0][0] || pair[1][1] != pair[1][1])
+                ) {
+                    let prev_len =
+                        sudoku.grid[pair[0][0]][pair[1][1]].candidates.length
+
                     sudoku.grid[pair[0][0]][pair[1][1]].candidates =
                         sudoku.grid[pair[0][0]][pair[1][1]].candidates.filter(
                             (c) => c != commonCandidate
                         )
+
+                    if (
+                        prev_len !=
+                        sudoku.grid[pair[0][0]][pair[1][1]].candidates.length
+                    )
+                        has_removed = true
+                }
+
+                if ((pivot[0] != pair[1][0] || pivot[1] != pair[0][1]) &&
+                    (pair[0][0] != pair[1][0] || pair[0][1] != pair[0][1]) &&
+                    (pair[1][0] != pair[1][0] || pair[1][1] != pair[0][1])
+                ) {
+                    let prev_len =
+                        sudoku.grid[pair[1][0]][pair[0][1]].candidates.length
+
                     sudoku.grid[pair[1][0]][pair[0][1]].candidates =
                         sudoku.grid[pair[1][0]][pair[0][1]].candidates.filter(
                             (c) => c != commonCandidate
                         )
+
+                    if (
+                        prev_len !=
+                        sudoku.grid[pair[1][0]][pair[0][1]].candidates.length
+                    )
+                        has_removed = true
                 }
-                return true
             }
+            if (has_removed) return true
         }
     }
     return false
@@ -457,7 +509,7 @@ export function swordfish(sudoku) {
                 if (columns.length != 3) continue
 
                 let rows = []
-                for (let r2 = r + 1; r2 < sudoku.size; r2++) {
+                for (let r2 = r; r2 < sudoku.size; r2++) {
                     if (!sudoku.grid[r2][columns[0]].candidates.includes(cand))
                         continue
                     if (!sudoku.grid[r2][columns[1]].candidates.includes(cand))
@@ -470,15 +522,19 @@ export function swordfish(sudoku) {
 
                 if (rows.length != 3) continue
 
-                for (let col = 0; col < sudoku.size; col++) {
-                    if (columns.includes(col)) continue
+                for (let row = 0; row < sudoku.size; row++) {
+                    if (rows.includes(row)) continue
 
-                    for (let row of rows) {
+                    for (let col of columns) {
                         sudoku.grid[row][col].candidates = sudoku.grid[row][
                             col
                         ].candidates.filter((c) => c != cand)
                     }
                 }
+
+                console.log(
+                    `Removing ${cand}, withs rows: ${rows} and cols: ${columns}`
+                )
                 return true
             }
         }
