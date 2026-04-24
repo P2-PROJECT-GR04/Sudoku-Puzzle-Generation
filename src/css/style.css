@@ -203,15 +203,9 @@ main {
 }
 
 #difficulty-buttons {
-    position: fixed;
-    left: 2rem;
-    top: 50%;
-    transform: translateY(-50%);
-
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    margin-right: -1rem;
 }
 
 .difficulty-btn {
@@ -231,5 +225,5 @@ main {
     transform: scale(1.08);
     background: #ca5995;
     color: white;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
