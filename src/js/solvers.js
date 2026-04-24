@@ -6,7 +6,7 @@ import { Sudoku } from './sudoku.js'
  * @param {Sudoku} sudoku
  * @returns {boolean} True if it could find a naked single, False if not
  */
-function naked_single(sudoku) {
+export function naked_single(sudoku) {
     // Find an instance of a naked single
     // Update the board
     // Return true, or false if no naked single was found
@@ -29,7 +29,7 @@ function naked_single(sudoku) {
  * @modifies {sudoku}
  * @param {Sudoku} sudoku
  * @returns {boolean} True if it could find a naked pair, False if not */
-function naked_pair(sudoku) {
+export function naked_pair(sudoku) {
     // Find an instance of a naked pair
     // Update the board
     // Return true, or false if no naked pair was found
@@ -138,7 +138,7 @@ function naked_pair(sudoku) {
  * @param {Sudoku} sudoku
  * @returns {boolean} True if it could find a hidden single, False if not
  */
-function hidden_single(sudoku) {
+export function hidden_single(sudoku) {
     // Find an instance of a hidden single
     // Update the board
     // Return true, or false if no hidden single was found
@@ -184,7 +184,7 @@ function hidden_single(sudoku) {
  * @modifies {sudoku}
  * @param {Sudoku} sudoku
  * @returns {boolean} True if it could find a hidden pair, False if not */
-function hidden_pair(sudoku) {
+export function hidden_pair(sudoku) {
     // Find an instance of a hidden pair
     // Update the board
     // Return true, or false if no hidden pair was found
@@ -259,14 +259,14 @@ function hidden_pair(sudoku) {
  * @modifies {sudoku}
  * @param {Sudoku} sudoku
  * @returns {boolean} True if it could find an x-wing, False if not */
-function x_wing(sudoku) {
+export function x_wing(sudoku) {
     let x_wing_solve = () => {
         for (let r = 0; r < sudoku.size; r++) {
             for (let c = 0; c < sudoku.size; c++) {
-                if (sudoku.grid[r][c].is_collapsed()) continue
+                if (sudoku.grid[r][c].num != null) continue
 
                 for (let r2 = r; r2 < sudoku.size; r2++) {
-                    if (sudoku.grid[r2][c].is_collapsed()) continue
+                    if (sudoku.grid[r2][c].num != null) continue
                     let left_strong_cands = is_strong_link(sudoku, r, c, r2, c)
                     if (left_strong_cands.length == 0) continue
 
@@ -333,7 +333,7 @@ function x_wing(sudoku) {
  * @modifies {sudoku}
  * @param {Sudoku} sudoku
  * @returns {boolean} True if it could find a y-wing, False if not */
-function y_wing(sudoku) {
+export function y_wing(sudoku) {
     let cells = []
     for (let r = 0; r < sudoku.size; r++) {
         //Gets all the cells with 2 candidates into an array
@@ -345,9 +345,9 @@ function y_wing(sudoku) {
     }
     for (let pivot of cells) {
         let see_cells = cells.filter((c) =>
-            can_see(sudoku, cells[pivot][0], cells[pivot][1], c[0], c[1])
+            can_see(sudoku, pivot[0], pivot[1], c[0], c[1])
         )
-        let pairs = possible_pairs(see_cells)
+        let pairs = possible_pairs(see_cells).filter((p) => p[0] != pivot && p[1] != pivot)
         let pivotCell = sudoku.grid[pivot[0]][pivot[1]]
         for (let pair of pairs) {
             let pairCells = pair.map((c) => sudoku.grid[c[0]][c[1]])
@@ -369,13 +369,13 @@ function y_wing(sudoku) {
                     ) ||
                     !can_see(sudoku, pivot[0], pivot[1], pair[0][0], pair[0][1])
                 ) {
-                    countiue
+                    continue
                 }
                 const commonCandidate = pairCells[0].candidates.filter(
                     (value) => pairCells[1].candidates.includes(value)
                 )[0]
-                if (commonCandidate == undefined) {
-                    countiue
+                if (commonCandidate == undefined || pivotCell.candidates.includes(commonCandidate)) {
+                    continue
                 }
                 let region_r1_min =
                     Math.floor(pair[0][0] / sudoku.region_height) *
@@ -421,6 +421,7 @@ function y_wing(sudoku) {
                         }
                     }
                 } else {
+                    console.log(`removing ${commonCandidate}, with pincers (${pair[0][0]}; ${pair[0][1]}) and (${pair[1][0]}; ${pair[1][1]})`)
                     sudoku.grid[pair[0][0]][pair[1][1]].candidates =
                         sudoku.grid[pair[0][0]][pair[1][1]].candidates.filter(
                             (c) => c != commonCandidate
@@ -442,7 +443,7 @@ function y_wing(sudoku) {
  * @modifies {sudoku}
  * @param {Sudoku} sudoku
  * @returns {boolean} True if it could find a swordfish, False if not */
-function swordfish(sudoku) {
+export function swordfish(sudoku) {
     let swordfish_solver = () => {
         for (let r = 0; r < sudoku.size; r++) {
             for (let cand = 0; cand < sudoku.size; cand++) {
@@ -514,7 +515,7 @@ function is_strong_link(sudoku, r1, c1, r2, c2) {
     if (r1 == r2 && c1 == c2) return []
 
     let out = sudoku.grid[r1][c1].candidates.filter((x) =>
-        sudoku.grid[r2][r3].candidates.includes(x)
+        sudoku.grid[r2][c2].candidates.includes(x)
     )
 
     if (r1 == r2) {
@@ -552,7 +553,7 @@ function possible_pairs(list) {
     for (let i = 0; i < list.length; i++) {
         for (let j = i; j < list.length; j++) {
             if (i == j) continue
-            pairs.add([list[i], list[j]])
+            pairs.push([list[i], list[j]])
         }
     }
 
