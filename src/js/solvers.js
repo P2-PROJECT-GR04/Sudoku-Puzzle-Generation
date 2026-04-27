@@ -52,7 +52,7 @@ export function naked_pair(sudoku) {
 
             if (cell.num == null && cell.candidates.length == 2) {
                 const pair = [...cell.candidates]
-                let has_removed =false;
+                let has_removed = false;
 
                 let region_r_min =
                     Math.floor(r / sudoku.region_height) * sudoku.region_height
@@ -194,8 +194,9 @@ export function naked_pair(sudoku) {
                         }
                     }
                 }
-                if (has_removed)
+                if (has_removed) {
                     return true;
+                }
             }
         }
     }
