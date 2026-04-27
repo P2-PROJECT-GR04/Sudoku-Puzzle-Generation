@@ -42,9 +42,9 @@ export function naked_pair(sudoku) {
             arr1[1] == arr2[1]
         )
     }
-    /* det her er bare en hjælpe funktion til at finde et de celler der kun har 2 kandidater 
-    det gøre vi ved at se om den har et array længere end 2 
-    hvis den har det returner den false da vi bruger && til arr1.length skal være lige med 2 fx. */
+    /* This is just a helper function to find cells with exactly 2 candidates. 
+    We do this by checking the array length; if it is greater than 2, 
+    it returns false, as we require arr1.length to be exactly 2. */
 
     for (let r = 0; r < sudoku.size; r++) {
         for (let c = 0; c < sudoku.size; c++) {
@@ -82,7 +82,6 @@ export function naked_pair(sudoku) {
                                 otherCell.candidates
                             )
                         ) {
-                            
                             for (
                                 let remove_r = region_r_min;
                                 remove_r < region_r_max;
@@ -128,48 +127,67 @@ export function naked_pair(sudoku) {
                 }
                 // Checking and solving in column:
                 for (let col_check = 0; col_check < sudoku.size; col_check++) {
-                    
                     if (cell == sudoku.grid[r][col_check]) continue
 
                     const otherCol = sudoku.grid[r][col_check]
 
-                    if (otherCol.num == null && 
-                        same_candidates(
-                            cell.candidates,
-                            otherCol.candidates
-                        ) 
+                    if (
+                        otherCol.num == null &&
+                        same_candidates(cell.candidates, otherCol.candidates)
                     ) {
-                        for (let remove_col = 0; remove_col < sudoku.size; remove_col++){
-                            const target_col = sudoku.grid[r][remove_col];
-                            if (target_col == otherCol || target_col == cell) continue
+                        for (
+                            let remove_col = 0;
+                            remove_col < sudoku.size;
+                            remove_col++
+                        ) {
+                            const target_col = sudoku.grid[r][remove_col]
+                            if (target_col == otherCol || target_col == cell)
+                                continue
                             if (target_col.num == null) {
                                 const oldLengt_c = target_col.candidates.length
-                            
-                                target_col.candidates = target_col.candidates.filter((n) => n != pair[0] && n != pair[1])
-                            
-                            if (target_col.candidates.length != oldLengt_c) {
-                                return true
+
+                                target_col.candidates =
+                                    target_col.candidates.filter(
+                                        (n) => n != pair[0] && n != pair[1]
+                                    )
+
+                                if (
+                                    target_col.candidates.length != oldLengt_c
+                                ) {
+                                    return true
+                                }
                             }
-                        }
                         }
                     }
                 }
                 // Checking and solving in rows
                 for (let row_check = 0; row_check < sudoku.size; row_check++) {
-
-                    const otherRow = sudoku.grid[row_check][c];
+                    const otherRow = sudoku.grid[row_check][c]
                     if (otherRow == cell) continue
-                    if (otherRow.num == null && same_candidates(cell.candidates, otherRow.candidates)) {
-                        for (let remove_row = 0; remove_row < sudoku.size; remove_row++) {
-                            const target_row = sudoku.grid[remove_row][c];
-                            if (target_row == otherRow || target_row == cell) continue
+                    if (
+                        otherRow.num == null &&
+                        same_candidates(cell.candidates, otherRow.candidates)
+                    ) {
+                        for (
+                            let remove_row = 0;
+                            remove_row < sudoku.size;
+                            remove_row++
+                        ) {
+                            const target_row = sudoku.grid[remove_row][c]
+                            if (target_row == otherRow || target_row == cell)
+                                continue
                             if (target_row.num == null) {
-                                const oldLength_r = target_row.candidates.length;
+                                const oldLength_r = target_row.candidates.length
 
-                                target_row.candidates = target_row.candidates.filter((n) => n != pair[0] && n != pair[1])
+                                target_row.candidates =
+                                    target_row.candidates.filter(
+                                        (n) => n != pair[0] && n != pair[1]
+                                    )
 
-                            if (target_row.candidates.length != oldLength_r) {
-                                return true
+                                if (
+                                    target_row.candidates.length != oldLength_r
+                                ) {
+                                    return true
                                 }
                             }
                         }
@@ -239,7 +257,10 @@ export function hidden_pair(sudoku) {
     // Return true, or false if no hidden pair was found
     for (let r = 0; r < sudoku.size; r++) {
         for (let c = 0; c < sudoku.size; c++) {
-            if (sudoku.grid[r][c].num == null && sudoku.grid[r][c].candidates.length > 2) {
+            if (
+                sudoku.grid[r][c].num == null &&
+                sudoku.grid[r][c].candidates.length > 2
+            ) {
                 let region_r_min =
                     Math.floor(r / sudoku.region_height) * sudoku.region_height
                 let region_r_max = region_r_min + sudoku.region_height - 1
@@ -514,7 +535,8 @@ export function y_wing(sudoku) {
                         has_removed = true
                 }
 
-                if ((pivot[0] != pair[1][0] || pivot[1] != pair[0][1]) &&
+                if (
+                    (pivot[0] != pair[1][0] || pivot[1] != pair[0][1]) &&
                     (pair[0][0] != pair[1][0] || pair[0][1] != pair[0][1]) &&
                     (pair[1][0] != pair[1][0] || pair[1][1] != pair[0][1])
                 ) {
