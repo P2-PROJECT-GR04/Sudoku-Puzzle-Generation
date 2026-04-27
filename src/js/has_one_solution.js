@@ -1,5 +1,4 @@
-import { Sudoku } from './sudoku.js'
-import { Cell } from './cell.js'
+import { Sudoku, deepCopy } from './sudoku.js'
 import { find_candidates_for_cell } from './check-hint.js'
 
 /**
@@ -120,22 +119,4 @@ function lowest_candidates(sudoku) {
         }
     }
     return currentLowest
-}
-
-/**
- * Deep copies a given Sudoku
- * @param {Sudoku} sudoku - The sudoku to copy
- * @returns {Sudoku} The copied sudoku
- */
-function deepCopy(sudoku) {
-    let new_sudoku = new Sudoku(sudoku.region_width, sudoku.region_height)
-
-    for (let r = 0; r < sudoku.size; r++) {
-        for (let c = 0; c < sudoku.size; c++) {
-            new_sudoku.grid[r][c] = new Cell(sudoku.grid[r][c].num)
-            new_sudoku.grid[r][c].candidates = [...sudoku.grid[r][c].candidates]
-        }
-    }
-
-    return new_sudoku
 }

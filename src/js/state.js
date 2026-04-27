@@ -1,6 +1,7 @@
 import { Rng } from './rand.js'
-import { make_solved_grid, remove_cells, Sudoku } from './sudoku.js'
+import { make_solved_grid, Sudoku } from './sudoku.js'
 import { Cell } from './cell.js'
+import { EASY, removeCells } from './remove_cells.js'
 
 /**
  * Holds the state of the game.
@@ -8,12 +9,16 @@ import { Cell } from './cell.js'
  * Please use the global `state` variable instead of creating a new one
  * @class
  * @property {Sudoku | null} sudoku - The current Sudoku board
+ * @property {number} difficulty - The difficulty of the sudoku (0=easy, 1=medium, 2=hard)
  * @property {number | null} seed - The seed of the current game
- * @property {Rng} - The random number generator made from the current seed
+ * @property {Rng} rand - The random number generator made from the current seed
+ * @property {number} time - The current time on the timer in ms
+ * @property {isPaused} isPaused - If the game is paused or not
  */
 export class State {
-    constructor(sudoku, rand, time, isPaused) {
+    constructor(sudoku, difficulty, rand, time, isPaused) {
         this.sudoku = sudoku
+        this.difficulty = difficulty
         this.seed = rand.seed
         this.rand = rand
         this.time = time
@@ -53,6 +58,8 @@ export function updateState(state) {
         urlParams.set('state', uri_encoded)
     }
 
+    urlParams.set('d', state.difficulty)
+
     // Save time
     if (state.time != null) {
         urlParams.set('t', Math.round(state.time / 1000))
@@ -87,12 +94,15 @@ export function getState() {
 
     let rand = new Rng(seed)
 
+    let difficulty = urlParams.get('d')
+    if (difficulty == null) difficulty = EASY
+
     let sudoku_state = urlParams.get('state')
 
     if (sudoku_state != null) {
         // Decode URL hex characters (e.g. %20) to normal characters before decoding the sudoku
         let uri_decoded = decodeURI(sudoku_state)
-        sudoku_state = decodeSudoku(rand, uri_decoded)
+        sudoku_state = decodeSudoku(rand, difficulty, uri_decoded)
     }
 
     // Restores the timer time
@@ -102,7 +112,7 @@ export function getState() {
     // Restores the pause state
     let isPaused = urlParams.get('p') === '1'
 
-    return new State(sudoku_state, rand, time, isPaused)
+    return new State(sudoku_state, difficulty, rand, time, isPaused)
 }
 
 /**
@@ -111,7 +121,7 @@ export function getState() {
  * @param {string} text - The encoded sudoku
  * @returns {Sudoku|null} The decoded sudoku, or null on error
  */
-function decodeSudoku(rand, text) {
+function decodeSudoku(rand, difficulty, text) {
     rand = new Rng(rand.seed)
 
     let width = Number(text[0])
@@ -172,7 +182,7 @@ function decodeSudoku(rand, text) {
 
     let sudoku = new Sudoku(width, height)
     make_solved_grid(sudoku, rand)
-    remove_cells(sudoku, rand)
+    removeCells(rand, sudoku, difficulty)
 
     for (let r = 0; r < sudoku.size; r++) {
         for (let c = 0; c < sudoku.size; c++) {
