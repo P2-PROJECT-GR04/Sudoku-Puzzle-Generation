@@ -65,10 +65,6 @@ function newSudoku() {
 }
 
 document
-    .getElementById('gen-sudoku-button')
-    .addEventListener('click', newSudoku)
-
-document
     .getElementById('easy')
     .addEventListener('click', newSudoku)
 
