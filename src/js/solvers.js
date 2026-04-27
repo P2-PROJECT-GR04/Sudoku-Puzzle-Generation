@@ -52,6 +52,7 @@ export function naked_pair(sudoku) {
 
             if (cell.num == null && cell.candidates.length == 2) {
                 const pair = [...cell.candidates]
+                let has_removed =false;
 
                 let region_r_min =
                     Math.floor(r / sudoku.region_height) * sudoku.region_height
@@ -117,7 +118,7 @@ export function naked_pair(sudoku) {
                                             target.candidates.length !=
                                             oldLength
                                         ) {
-                                            return true
+                                            has_removed = true
                                         }
                                     }
                                 }
@@ -154,7 +155,7 @@ export function naked_pair(sudoku) {
                                 if (
                                     target_col.candidates.length != oldLengt_c
                                 ) {
-                                    return true
+                                    has_removed = true;
                                 }
                             }
                         }
@@ -187,12 +188,14 @@ export function naked_pair(sudoku) {
                                 if (
                                     target_row.candidates.length != oldLength_r
                                 ) {
-                                    return true
+                                    has_removed = true;
                                 }
                             }
                         }
                     }
                 }
+                if (has_removed)
+                    return true;
             }
         }
     }
@@ -616,9 +619,6 @@ export function swordfish(sudoku) {
                     }
                 }
 
-                console.log(
-                    `Removing ${cand}, withs rows: ${rows} and cols: ${columns}`
-                )
                 return true
             }
         }

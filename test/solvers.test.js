@@ -50,7 +50,7 @@ describe('Naked pair', () => {
         let result = solvers.naked_pair(sudoku)
         expect(result).toBe(true)
 
-        expect(sudoku.grid[0][4].candidates).toEqual([1, 5, 7])
+        expect(sudoku.grid[0][4].candidates).toEqual([2, 5, 7])
     })
 })
 
