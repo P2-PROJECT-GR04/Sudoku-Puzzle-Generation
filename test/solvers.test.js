@@ -45,16 +45,12 @@ describe('Naked pair', () => {
         expect(sudoku).not.toBeNull()
         find_candidates_for_grid(sudoku)
 
-        expect(sudoku.grid[0][4].candidates).toEqual(
-            expect.arrayContaining([2, 6])
-        )
+        expect(sudoku.grid[0][4].candidates).toEqual([1, 2, 5, 6, 7])
 
         let result = solvers.naked_pair(sudoku)
         expect(result).toBe(true)
 
-        expect(sudoku.grid[0][4].candidates).toEqual(
-            expect.not.arrayContaining([2, 6])
-        )
+        expect(sudoku.grid[0][4].candidates).toEqual([1, 5, 7])
     })
 })
 

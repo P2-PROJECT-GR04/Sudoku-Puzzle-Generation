@@ -335,12 +335,13 @@ export function x_wing(sudoku) {
             for (let c = 0; c < sudoku.size; c++) {
                 if (sudoku.grid[r][c].num != null) continue
 
-                for (let r2 = r; r2 < sudoku.size; r2++) {
+                for (let r2 = r + 1; r2 < sudoku.size; r2++) {
                     if (sudoku.grid[r2][c].num != null) continue
+
                     let left_strong_cands = is_strong_link(sudoku, r, c, r2, c)
                     if (left_strong_cands.length == 0) continue
 
-                    for (let c2 = c; c2 < sudoku.size; c2++) {
+                    for (let c2 = c + 1; c2 < sudoku.size; c2++) {
                         if (sudoku.grid[r][c2].is_collapsed()) continue
                         if (sudoku.grid[r2][c2].is_collapsed()) continue
                         let right_strong_cands = is_strong_link(
@@ -352,6 +353,7 @@ export function x_wing(sudoku) {
                         )
                         if (right_strong_cands.length == 0) continue
 
+
                         let candidate = null
                         left_strong_cands.forEach((cand) => {
                             if (right_strong_cands.includes(cand))
@@ -361,23 +363,34 @@ export function x_wing(sudoku) {
                         // if no shared candidate
                         if (candidate == null) continue
 
+
+                        let has_removed = false;
+
                         // X-Wing is valid
                         for (let r3 = 0; r3 < sudoku.size; r3++) {
                             for (let c3 = 0; c3 < sudoku.size; c3++) {
                                 // Ignore the x-wing cells
                                 if (
-                                    (r3 == r && r3 == c) ||
+                                    (r3 == r && c3 == c) ||
+                                    (r3 == r2 && c3 == c) ||
+                                    (r3 == r && c3 == c2) ||
                                     (r3 == r2 && c3 == c2)
                                 )
                                     continue
 
+                                let prev_len = sudoku.grid[r3][c3].candidates.length
                                 sudoku.grid[r3][c3].candidates = sudoku.grid[
                                     r3
-                                ][c3].filter((item) => item !== candidate)
+                                ][c3].candidates.filter((item) => item !== candidate)
+
+                                if (prev_len != sudoku.grid[r3][c3].candidates.length) {
+                                    has_removed = true
+                                }
                             }
                         }
 
-                        return true
+                        if (has_removed)
+                            return true
                     }
                 }
             }
@@ -647,12 +660,14 @@ function is_strong_link(sudoku, r1, c1, r2, c2) {
 
     if (r1 == r2) {
         for (let c3 = 0; c3 < sudoku.size; c3++) {
+            if (c3 == c1 || c3 == c2) continue;
             out = out.filter((x) => !sudoku.grid[r1][c3].candidates.includes(x))
         }
     }
 
     if (c1 == c2) {
         for (let r3 = 0; r3 < sudoku.size; r3++) {
+            if (r3 == r1 || r3 == r2) continue;
             out = out.filter((x) => !sudoku.grid[r3][c1].candidates.includes(x))
         }
     }
