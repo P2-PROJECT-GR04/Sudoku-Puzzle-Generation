@@ -148,26 +148,46 @@ function hidden_single(sudoku) {
         for (let c = 0; c < sudoku.size; c++) {
             // Only look at unsolved cells
             if (sudoku.grid[r][c].num == null) {
-                // Check for all unsolved cells in the same region (3x3)
-                const otherCellsCandidates = new Set()
+                
+                // Checks for region
+                const regionCandidates = new Set()
                 sudoku.forRegion(r, c, (inner_r, inner_c) => {
                     // skip the focused cell itself (return continues inside this block)
                     if (inner_r == r && inner_c == c) return
                     if (sudoku.grid[inner_r][inner_c].num == null) {
                         for (const cand of sudoku.grid[inner_r][inner_c]
                             .candidates) {
-                            otherCellsCandidates.add(cand)
+                            regionCandidates.add(cand)
                         }
                     }
                 })
-
+                // Checks for row
+                const rowCandidates = new Set()
+                for (let r2 = 0; r2 < sudoku.size; r2++ ) {
+                    if (r2 == r)
+                        continue
+                    if (sudoku.grid[r2][c].num == null) {
+                        for (const cand of sudoku.grid[r2][c].candidates)
+                            rowCandidates.add(cand)
+                    }
+                }
+                // Checks for column
+                const colCandidates = new Set()
+                for (let c2 = 0; c2 < sudoku.size; c2++) {
+                    if (c2 == c)
+                        continue
+                    if (sudoku.grid[r][c2].num == null) {
+                        for (const cand of sudoku.grid[r][c2].candidates)
+                            colCandidates.add(cand)
+                    }
+                }
                 const focusedCellCandidates = new Set(
                     sudoku.grid[r][c].candidates
                 )
 
                 // Check if any candidate in this cell does not appear in any other cell same region (3x3)
                 for (const d of focusedCellCandidates) {
-                    if (!otherCellsCandidates.has(d)) {
+                    if (!regionCandidates.has(d) || !rowCandidates.has(d) || !colCandidates.has(d)) {
                         sudoku.grid[r][c].num = d
                         sudoku.grid[r][c].candidates = []
                         return true
