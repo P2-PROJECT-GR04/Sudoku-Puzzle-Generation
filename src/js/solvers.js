@@ -42,9 +42,9 @@ export function naked_pair(sudoku) {
             arr1[1] == arr2[1]
         )
     }
-    /* det her er bare en hjælpe funktion til at finde et de celler der kun har 2 kandidater 
-    det gøre vi ved at se om den har et array længere end 2 
-    hvis den har det returner den false da vi bruger && til arr1.length skal være lige med 2 fx. */
+    /* This is just a helper function to find cells with exactly 2 candidates. 
+    We do this by checking the array length; if it is greater than 2, 
+    it returns false, as we require arr1.length to be exactly 2. */
 
     for (let r = 0; r < sudoku.size; r++) {
         for (let c = 0; c < sudoku.size; c++) {
@@ -52,6 +52,7 @@ export function naked_pair(sudoku) {
 
             if (cell.num == null && cell.candidates.length == 2) {
                 const pair = [...cell.candidates]
+                let has_removed = false;
 
                 let region_r_min =
                     Math.floor(r / sudoku.region_height) * sudoku.region_height
@@ -82,7 +83,6 @@ export function naked_pair(sudoku) {
                                 otherCell.candidates
                             )
                         ) {
-                            
                             for (
                                 let remove_r = region_r_min;
                                 remove_r < region_r_max;
@@ -118,7 +118,7 @@ export function naked_pair(sudoku) {
                                             target.candidates.length !=
                                             oldLength
                                         ) {
-                                            return true
+                                            has_removed = true
                                         }
                                     }
                                 }
@@ -128,52 +128,74 @@ export function naked_pair(sudoku) {
                 }
                 // Checking and solving in column:
                 for (let col_check = 0; col_check < sudoku.size; col_check++) {
-                    
                     if (cell == sudoku.grid[r][col_check]) continue
 
                     const otherCol = sudoku.grid[r][col_check]
 
-                    if (otherCol.num == null && 
-                        same_candidates(
-                            cell.candidates,
-                            otherCol.candidates
-                        ) 
+                    if (
+                        otherCol.num == null &&
+                        same_candidates(cell.candidates, otherCol.candidates)
                     ) {
-                        for (let remove_col = 0; remove_col < sudoku.size; remove_col++){
-                            const target_col = sudoku.grid[r][remove_col];
-                            if (target_col == otherCol || target_col == cell) continue
+                        for (
+                            let remove_col = 0;
+                            remove_col < sudoku.size;
+                            remove_col++
+                        ) {
+                            const target_col = sudoku.grid[r][remove_col]
+                            if (target_col == otherCol || target_col == cell)
+                                continue
                             if (target_col.num == null) {
                                 const oldLengt_c = target_col.candidates.length
-                            
-                                target_col.candidates = target_col.candidates.filter((n) => n != pair[0] && n != pair[1])
-                            
-                            if (target_col.candidates.length != oldLengt_c) {
-                                return true
+
+                                target_col.candidates =
+                                    target_col.candidates.filter(
+                                        (n) => n != pair[0] && n != pair[1]
+                                    )
+
+                                if (
+                                    target_col.candidates.length != oldLengt_c
+                                ) {
+                                    has_removed = true;
+                                }
                             }
-                        }
                         }
                     }
                 }
                 // Checking and solving in rows
                 for (let row_check = 0; row_check < sudoku.size; row_check++) {
-
-                    const otherRow = sudoku.grid[row_check][c];
+                    const otherRow = sudoku.grid[row_check][c]
                     if (otherRow == cell) continue
-                    if (otherRow.num == null && same_candidates(cell.candidates, otherRow.candidates)) {
-                        for (let remove_row = 0; remove_row < sudoku.size; remove_row++) {
-                            const target_row = sudoku.grid[remove_row][c];
-                            if (target_row == otherRow || target_row == cell) continue
+                    if (
+                        otherRow.num == null &&
+                        same_candidates(cell.candidates, otherRow.candidates)
+                    ) {
+                        for (
+                            let remove_row = 0;
+                            remove_row < sudoku.size;
+                            remove_row++
+                        ) {
+                            const target_row = sudoku.grid[remove_row][c]
+                            if (target_row == otherRow || target_row == cell)
+                                continue
                             if (target_row.num == null) {
-                                const oldLength_r = target_row.candidates.length;
+                                const oldLength_r = target_row.candidates.length
 
-                                target_row.candidates = target_row.candidates.filter((n) => n != pair[0] && n != pair[1])
+                                target_row.candidates =
+                                    target_row.candidates.filter(
+                                        (n) => n != pair[0] && n != pair[1]
+                                    )
 
-                            if (target_row.candidates.length != oldLength_r) {
-                                return true
+                                if (
+                                    target_row.candidates.length != oldLength_r
+                                ) {
+                                    has_removed = true;
                                 }
                             }
                         }
                     }
+                }
+                if (has_removed) {
+                    return true;
                 }
             }
         }
@@ -364,12 +386,13 @@ export function x_wing(sudoku) {
             for (let c = 0; c < sudoku.size; c++) {
                 if (sudoku.grid[r][c].num != null) continue
 
-                for (let r2 = r; r2 < sudoku.size; r2++) {
+                for (let r2 = r + 1; r2 < sudoku.size; r2++) {
                     if (sudoku.grid[r2][c].num != null) continue
+
                     let left_strong_cands = is_strong_link(sudoku, r, c, r2, c)
                     if (left_strong_cands.length == 0) continue
 
-                    for (let c2 = c; c2 < sudoku.size; c2++) {
+                    for (let c2 = c + 1; c2 < sudoku.size; c2++) {
                         if (sudoku.grid[r][c2].is_collapsed()) continue
                         if (sudoku.grid[r2][c2].is_collapsed()) continue
                         let right_strong_cands = is_strong_link(
@@ -381,6 +404,7 @@ export function x_wing(sudoku) {
                         )
                         if (right_strong_cands.length == 0) continue
 
+
                         let candidate = null
                         left_strong_cands.forEach((cand) => {
                             if (right_strong_cands.includes(cand))
@@ -390,23 +414,34 @@ export function x_wing(sudoku) {
                         // if no shared candidate
                         if (candidate == null) continue
 
+
+                        let has_removed = false;
+
                         // X-Wing is valid
                         for (let r3 = 0; r3 < sudoku.size; r3++) {
                             for (let c3 = 0; c3 < sudoku.size; c3++) {
                                 // Ignore the x-wing cells
                                 if (
-                                    (r3 == r && r3 == c) ||
+                                    (r3 == r && c3 == c) ||
+                                    (r3 == r2 && c3 == c) ||
+                                    (r3 == r && c3 == c2) ||
                                     (r3 == r2 && c3 == c2)
                                 )
                                     continue
 
+                                let prev_len = sudoku.grid[r3][c3].candidates.length
                                 sudoku.grid[r3][c3].candidates = sudoku.grid[
                                     r3
-                                ][c3].filter((item) => item !== candidate)
+                                ][c3].candidates.filter((item) => item !== candidate)
+
+                                if (prev_len != sudoku.grid[r3][c3].candidates.length) {
+                                    has_removed = true
+                                }
                             }
                         }
 
-                        return true
+                        if (has_removed)
+                            return true
                     }
                 }
             }
@@ -564,7 +599,8 @@ export function y_wing(sudoku) {
                         has_removed = true
                 }
 
-                if ((pivot[0] != pair[1][0] || pivot[1] != pair[0][1]) &&
+                if (
+                    (pivot[0] != pair[1][0] || pivot[1] != pair[0][1]) &&
                     (pair[0][0] != pair[1][0] || pair[0][1] != pair[0][1]) &&
                     (pair[1][0] != pair[1][0] || pair[1][1] != pair[0][1])
                 ) {
@@ -631,9 +667,6 @@ export function swordfish(sudoku) {
                     }
                 }
 
-                console.log(
-                    `Removing ${cand}, withs rows: ${rows} and cols: ${columns}`
-                )
                 return true
             }
         }
@@ -675,12 +708,14 @@ function is_strong_link(sudoku, r1, c1, r2, c2) {
 
     if (r1 == r2) {
         for (let c3 = 0; c3 < sudoku.size; c3++) {
+            if (c3 == c1 || c3 == c2) continue;
             out = out.filter((x) => !sudoku.grid[r1][c3].candidates.includes(x))
         }
     }
 
     if (c1 == c2) {
         for (let r3 = 0; r3 < sudoku.size; r3++) {
+            if (r3 == r1 || r3 == r2) continue;
             out = out.filter((x) => !sudoku.grid[r3][c1].candidates.includes(x))
         }
     }

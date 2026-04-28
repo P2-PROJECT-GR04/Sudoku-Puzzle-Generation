@@ -249,19 +249,20 @@ export function check_board(sudoku) {
  * @returns {Sudoku | null}
  */
 export function sudoku_from_grid(width, height, grid) {
-    let new_grid = grid.map((row) => row.map((cell) => new Cell(cell)))
+    let new_grid = grid.map((row) =>
+        row.map((cell) => (cell != 0 ? new Cell(cell) : new Cell(null)))
+    )
 
     for (let row of new_grid) {
         if (row.length != new_grid.length) {
-            console.log(`Uneven. Expected row to have len ${new_grid.length}, got ${row.length}`)
+            console.log(
+                `Uneven. Expected row to have len ${new_grid.length}, got ${row.length}`
+            )
             return null
         }
     }
 
-    if (
-        new_grid.length != width * height
-    )
-        return null
+    if (new_grid.length != width * height) return null
 
     let sudoku = new Sudoku(width, height)
     sudoku.grid = new_grid
