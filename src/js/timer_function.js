@@ -77,7 +77,7 @@ export function pauseTimer() {
     })
 
     // Disables new sudoku button + numpad
-    document.getElementById("gen-sudoku-button").classList.add("disabled")
+    document.getElementById("difficulty-buttons").classList.add("disabled")
     document.getElementById("sudoku-numpad").classList.add("disabled")
 }
 
@@ -92,7 +92,7 @@ export function resumeTimer() {
     el.classList.remove("sudoku-number-blur"))
 
     // Re-enables new sudoku button + numpad
-    document.getElementById("gen-sudoku-button").classList.remove("disabled")
+    document.getElementById("difficulty-buttons").classList.remove("disabled")
     document.getElementById("sudoku-numpad").classList.remove("disabled")
 
     startTime = performance.now() - elapsedBeforePause
