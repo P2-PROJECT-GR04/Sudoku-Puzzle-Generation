@@ -63,7 +63,6 @@ export function pauseTimer() {
     if (state?.isPaused) 
         return
     state.isPaused = true
-    state.isPaused = true
     updateState(state)
 
     clearTimeout(timerId)
@@ -72,7 +71,7 @@ export function pauseTimer() {
 
     //Blurs all Numbers/Candidates
    document.querySelectorAll("#sudoku *").forEach(el => {
-    if (el.childNodes.length === 1 && el.childNodes[0].nodeType === 3) {
+    if (el.childNodes.length === 1 && el.childNodes[0].nodeType === 3) { //NodeType === 3 is "text nodes" in our context it's looking for numbers/Candiates
         el.classList.add("sudoku-number-blur")}
     })
 
