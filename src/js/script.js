@@ -65,8 +65,17 @@ function newSudoku() {
 }
 
 document
-    .getElementById('gen-sudoku-button')
+    .getElementById('easy')
     .addEventListener('click', newSudoku)
+
+document
+    .getElementById('medium')
+    .addEventListener('click', newSudoku)
+
+document
+    .getElementById('hard')
+    .addEventListener('click', newSudoku)
+    
 loadSudoku(state)
 
 if (!state.isPaused) {
