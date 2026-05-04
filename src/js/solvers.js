@@ -293,10 +293,15 @@ export function hidden_pair(sudoku) {
                             candidate1[0][1] == candidate2[0][1] &&
                             candidate1[1][0] == candidate2[1][0] &&
                             candidate1[1][1] == candidate2[1][1]) {
-                            const hiddenPair = [cand1, cand2]
-                            sudoku.grid[candidate1[0][0]][candidate1[0][1]].candidates = hiddenPair
-                            sudoku.grid[candidate1[1][0]][candidate1[1][1]].candidates = hiddenPair
+                            
+                            const oldLengt1 = sudoku.grid[candidate1[0][0]][candidate1[0][1]].candidates.length
+                            const oldLengt2 = sudoku.grid[candidate1[1][0]][candidate1[1][1]].candidates.length
+
+                            sudoku.grid[candidate1[0][0]][candidate1[0][1]].candidates = [cand1, cand2]
+                            sudoku.grid[candidate1[1][0]][candidate1[1][1]].candidates = [cand1, cand2]
+                            if (sudoku.grid[candidate1[0][0]][candidate1[0][1]].candidates.length < oldLengt1 || sudoku.grid[candidate1[1][0]][candidate1[1][1]].candidates.length < oldLengt2) {
                             has_removed = true
+                            }
                         }
                     }
                 }
@@ -320,10 +325,16 @@ export function hidden_pair(sudoku) {
                         const candidate1 = columnCandidateLocations[cand1]
                         const candidate2 = columnCandidateLocations[cand2]
                         if (candidate1[0] == candidate2[0] && candidate1[1] == candidate2[1]) {
-                            const hiddenPair = [cand1, cand2]
-                            sudoku.grid[r][candidate1[0]].candidates = hiddenPair
-                            sudoku.grid[r][candidate1[1]].candidates = hiddenPair
-                            has_removed = true
+                            
+                            const oldLengt1 = sudoku.grid[r][candidate1[0]].candidates.length
+                            const oldLengt2 = sudoku.grid[r][candidate1[1]].candidates.length
+
+                            sudoku.grid[r][candidate1[0]].candidates = [cand1, cand2]
+                            sudoku.grid[r][candidate1[1]].candidates = [cand1, cand2]
+
+                            if (sudoku.grid[r][candidate1[0]].candidates.length < oldLengt1 || sudoku.grid[r][candidate1[1]].candidates.length < oldLengt2) {
+                            has_removed = true 
+                            }
                         }
                     }
                 }
@@ -347,10 +358,16 @@ export function hidden_pair(sudoku) {
                         const candidate1 = rowCandidateLocations[cand1]
                         const candidate2 = rowCandidateLocations[cand2]
                         if (candidate1[0] == candidate2[0] && candidate1[1] == candidate2[1]) {
-                            const hiddenPair = [cand1, cand2]
-                            sudoku.grid[candidate1[0]][c].candidates = hiddenPair
-                            sudoku.grid[candidate1[1]][c].candidates = hiddenPair
+                            
+                            const oldLengt1 = sudoku.grid[candidate1[0]][c].candidates.length
+                            const oldLengt2 = sudoku.grid[candidate1[1]][c].candidates.length
+
+                            sudoku.grid[candidate1[0]][c].candidates = [cand1, cand2]
+                            sudoku.grid[candidate1[1]][c].candidates = [cand1, cand2]
+
+                            if (sudoku.grid[candidate1[0]][c].candidates.length < oldLengt1 || sudoku.grid[candidate1[1]][c].candidates.length < oldLengt2) {
                             has_removed = true
+                            }
                         }
                     }
                 }
