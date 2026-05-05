@@ -229,17 +229,35 @@ export function check_board(sudoku) {
     for (let r = 0; r < sudoku.size; r++) {
         for (let c = 0; c < sudoku.size; c++) {
             if (sudoku.grid[r][c].is_hint == false) {
-                if (sudoku.grid[r][c].num == sudoku.grid[r][c].solution) {
+                /*
+                console.log(
+                    'tjekker: ',
+                    r,
+                    c,
+                    'cell num:',
+                    sudoku.grid[r][c].num,
+                    'solution:',
+                    sudoku.grid[r][c].solution
+                )*/
+                if (
+                    sudoku.grid[r][c].num == sudoku.grid[r][c].solution &&
+                    sudoku.grid[r][c].solution != null
+                ) {
                     continue
+                }
+                if (sudoku.grid[r][c].solution == null) {
+                    alert('ERROR - Sudoku solution is null')
                 } else {
                     alert('ERROR - The Sudoku is not correct ):')
-                    return false
                 }
+                return false
             }
         }
     }
     stopTimer() // Temporary time stopper.
-    alert('Hurray! The Sudoku is correct!')
+    alert(
+        'Hurray! The Sudoku is correct and timer has stopped. You can start a new Sudoku by pressing one of the difficulties on the left side of the screen.'
+    )
     return true
 }
 
