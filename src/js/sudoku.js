@@ -267,6 +267,9 @@ export function sudoku_from_grid(width, height, grid) {
     let sudoku = new Sudoku(width, height)
     sudoku.grid = new_grid
     return sudoku
+}
+
+/*
  * Deep copies a given Sudoku
  * @param {Sudoku} sudoku - The sudoku to copy
  * @returns {Sudoku} The copied sudoku
