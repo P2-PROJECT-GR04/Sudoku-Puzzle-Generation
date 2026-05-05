@@ -257,6 +257,7 @@ export function deepCopy(sudoku) {
                 sudoku.grid[r][c].num,
                 sudoku.grid[r][c].is_hint
             )
+            new_sudoku.grid[r][c].solution = sudoku.grid[r][c].solution
             new_sudoku.grid[r][c].candidates = [...sudoku.grid[r][c].candidates]
         }
     }
