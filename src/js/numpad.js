@@ -1,6 +1,6 @@
 import { draw_sudoku } from './draw_sudoku.js'
 import { mark_cell, set_cell } from './script.js'
-import { Sudoku } from './sudoku.js'
+import { check_board, Sudoku } from './sudoku.js'
 import { find_candidates_for_grid } from './check-hint.js'
 import { reapplyBlur } from './timer_function.js'
 import { state } from './state.js'
@@ -74,11 +74,13 @@ export function createNumpad(sudoku) {
         }
         if (numpadValue == 'Check board') {
             console.log('Checking board')
-            if (has_one_solution(state.sudoku)) {
+            check_board(state.sudoku)
+            /*if (has_one_solution(state.sudoku)) {
                 console.log('this has one solution')
             } else {
                 console.log('no solution of more solutions')
             }
+            */
         }
         if (numpadValue == 'Show hint') {
             console.log('Show hints')
