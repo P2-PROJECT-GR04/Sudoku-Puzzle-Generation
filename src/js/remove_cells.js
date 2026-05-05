@@ -155,13 +155,8 @@ function removeEasy(rng, sudoku, careful = false) {
  */
 function removeMedium(rng, sudoku, careful = false) {
     let count = 0
-    let cellList = getHintList(sudoku)
-    if (cellList.length == 0) throw new Error('No more valid cells')
-
-    let cells = cellList.filter(
-        (cell) => cell.candidates.length >= 3 && cell.candidates.length <= 6
-    )
-    if (cells.length == 0) cells = cellList
+    let cells = getHintList(sudoku)
+    if (cells.length == 0) throw new Error('No more valid cells')
 
     let cell = rng.choice(cells)
 
