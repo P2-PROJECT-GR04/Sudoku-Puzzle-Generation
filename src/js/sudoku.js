@@ -242,3 +242,25 @@ export function check_board(sudoku) {
     alert('Hurray! The Sudoku is correct!')
     return true
 }
+
+/**
+ * Deep copies a given Sudoku
+ * @param {Sudoku} sudoku - The sudoku to copy
+ * @returns {Sudoku} The copied sudoku
+ */
+export function deepCopy(sudoku) {
+    let new_sudoku = new Sudoku(sudoku.region_width, sudoku.region_height)
+
+    for (let r = 0; r < sudoku.size; r++) {
+        for (let c = 0; c < sudoku.size; c++) {
+            new_sudoku.grid[r][c] = new Cell(
+                sudoku.grid[r][c].num,
+                sudoku.grid[r][c].is_hint
+            )
+            new_sudoku.grid[r][c].solution = sudoku.grid[r][c].solution
+            new_sudoku.grid[r][c].candidates = [...sudoku.grid[r][c].candidates]
+        }
+    }
+
+    return new_sudoku
+}
