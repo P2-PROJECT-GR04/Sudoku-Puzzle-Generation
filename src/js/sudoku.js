@@ -68,7 +68,7 @@ export class Sudoku {
             }
 
             for (let r = 0; r < this.size; r++) {
-                for (let c = 0; c < r; c++) {
+                for (let c = 0; c < this.size; c++) {
                     new_grid[c][r] = this.grid[r][c]
                 }
             }
@@ -244,6 +244,29 @@ export function check_board(sudoku) {
 }
 
 /**
+ * Creates a new sudoku from a NxN grid of numbers
+ * @param {(number | null)[][]} grid
+ * @returns {Sudoku | null}
+ */
+export function sudoku_from_grid(width, height, grid) {
+    let new_grid = grid.map((row) =>
+        row.map((cell) => (cell != 0 ? new Cell(cell) : new Cell(null)))
+    )
+
+    for (let row of new_grid) {
+        if (row.length != new_grid.length) {
+            console.log(
+                `Uneven. Expected row to have len ${new_grid.length}, got ${row.length}`
+            )
+            return null
+        }
+    }
+
+    if (new_grid.length != width * height) return null
+
+    let sudoku = new Sudoku(width, height)
+    sudoku.grid = new_grid
+    return sudoku
  * Deep copies a given Sudoku
  * @param {Sudoku} sudoku - The sudoku to copy
  * @returns {Sudoku} The copied sudoku
