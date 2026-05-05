@@ -1,7 +1,7 @@
 import { createNumpad } from './numpad.js'
 import { reapplyBlur, startTimer } from './timer_function.js'
 import { draw_sudoku } from './draw_sudoku.js'
-import { make_solved_grid, remove_cells, Sudoku } from './sudoku.js'
+import { make_solved_grid, Sudoku } from './sudoku.js'
 import { newSeed, Rng } from './rand.js'
 import { initState, State, state, updateState } from './state.js'
 import {
@@ -12,6 +12,7 @@ import {
     reapplyDisable,
     reapplyPauseButtons,
 } from './timer_function.js'
+import { removeCells, EASY, MEDIUM, HARD } from './remove_cells.js'
 
 initState()
 /**
@@ -31,7 +32,7 @@ function loadSudoku(state) {
         console.warn('No given state. Starting new board')
         state.sudoku = new Sudoku(3, 3)
         make_solved_grid(state.sudoku, rand)
-        remove_cells(state.sudoku, rand)
+        removeCells(rand, state.sudoku, state.difficulty)
     }
 
     createNumpad(state.sudoku)
@@ -43,10 +44,12 @@ function loadSudoku(state) {
 /**
  * Create a new random Sudoku and update the state
  * @modifies {state}
+ * @param {Difficulty} difficulty
  */
-function newSudoku() {
+function newSudoku(difficulty) {
     state.seed = newSeed()
     state.rand = new Rng(state.seed)
+    state.difficulty = difficulty
 
     //Resets the timer when new sudokus are made.
     resetTimer()
@@ -57,25 +60,21 @@ function newSudoku() {
 
     createNumpad(state.sudoku)
 
-    remove_cells(state.sudoku, state.rand)
+    removeCells(state.rand, state.sudoku, difficulty)
 
     draw_sudoku(state.sudoku)
     updateState(state)
     reapplyBlur()
 }
 
-document
-    .getElementById('easy')
-    .addEventListener('click', newSudoku)
+document.getElementById('easy').addEventListener('click', () => newSudoku(EASY))
 
 document
     .getElementById('medium')
-    .addEventListener('click', newSudoku)
+    .addEventListener('click', () => newSudoku(MEDIUM))
 
-document
-    .getElementById('hard')
-    .addEventListener('click', newSudoku)
-    
+document.getElementById('hard').addEventListener('click', () => newSudoku(HARD))
+
 loadSudoku(state)
 
 if (!state.isPaused) {
