@@ -159,6 +159,7 @@ main {
 
 #wrapper {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: center;
     gap: 1rem;
@@ -227,4 +228,13 @@ main {
     background: #ca5995;
     color: white;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+#helper-text {
+    flex-basis: 100%;
+    text-align: center;
+    margin-top: 40px;
+    font-weight: normal;
+    font-size: 0.9rem;
+    line-height: 1.5;
 }
