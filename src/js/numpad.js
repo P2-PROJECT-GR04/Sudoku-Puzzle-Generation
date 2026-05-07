@@ -95,14 +95,14 @@ export function createNumpad(sudoku) {
         if (state.sudoku.marked_cell != null) {
             if (event.key === 'Delete' || event.key === 'Backspace') {
                 let cell = state.sudoku.marked_cell
-                mark_cell(state.sudoku, null)
+                //mark_cell(state.sudoku, null)
                 set_cell(state.sudoku, cell[0], cell[1], null)
             } else {
                 let num = Number.parseInt(event.key)
                 if (isNaN(num) || num == 0 || num > state.sudoku.size) return
 
                 let cell = state.sudoku.marked_cell
-                mark_cell(state.sudoku, null)
+                //mark_cell(state.sudoku, null)
                 set_cell(state.sudoku, cell[0], cell[1], event.key)
             }
         }

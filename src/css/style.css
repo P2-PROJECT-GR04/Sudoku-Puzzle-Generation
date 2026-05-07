@@ -47,7 +47,7 @@
 }
 
 .sudoku-cell:has(.marked) {
-    background-color: var(--purple);
+    background-color: var(--purple) !important;
 }
 
 .sudoku-cell:has(.marked-assoc) {
