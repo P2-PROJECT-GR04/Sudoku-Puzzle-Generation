@@ -1,4 +1,5 @@
 import { find_candidates_for_cell } from './check-hint.js'
+import { grade } from './difficulty_grader.js'
 import { has_one_solution } from './has_one_solution.js'
 import { Rng } from './rand.js'
 import { deepCopy, Sudoku } from './sudoku.js'
@@ -23,12 +24,15 @@ export const HARD = 2
 /** @type {DifficultyRange[]} */
 const ranges = [
     // Easy
-    { min: 45, max: 50 },
+    { min: 2.5, max: 4.0 },
     // Medium
-    { min: 50, max: 55 },
+    { min: 4.0, max: 6.0 },
     // Hard
-    { min: 69, max: 73 },
+    { min: 6.0, max: 10.0 },
 ]
+
+// A Minimal Sudoku needs to have between 39 and 20 hints [https://www.sudokuwiki.org/Sudoku_Creation_and_Grading.pdf]
+const minimal_range = { min: 42, max: 71 }
 
 /**
  * Removes cells so that the outputted Sudoku is solvable, with only one solution, and that it fits the given difficulty
@@ -43,21 +47,46 @@ export function removeCells(rng, sudoku, difficulty) {
     let currentSudoku = deepCopy(sudoku)
     let currentGrade = 0
     let currentTries = 0
+    let currentRemoved = 0
 
     let prevEmpty = 0
+    let unsolvable_counter = 0
 
     let iter = 0
     while (true) {
         iter += 1
+        if (unsolvable_counter >= 40) {
+            currentSudoku = deepCopy(sudoku)
+            currentGrade = 0
+            currentTries = 0
+            currentRemoved = 0
 
-        let careful = currentTries > 2
-        let count = removeIteration(rng, currentSudoku, difficulty, careful)
-        currentGrade += count
+            prevEmpty = 0
+            unsolvable_counter = 0
+        }
+
+        const careful = Math.abs(currentRemoved - minimal_range.max) <= 10
+        const count = removeIteration(rng, currentSudoku, difficulty, careful)
+        currentRemoved += count
+
+        console.log(`== (REMOVED: ${currentRemoved})`)
+        let is_solvable = has_one_solution(currentSudoku)
+        if (is_solvable) {
+            unsolvable_counter = 0
+            currentGrade = grade(currentSudoku)
+        } else {
+            unsolvable_counter += 1
+            console.log(`# NOT SOLVABLE (${unsolvable_counter}); SKIPPING`)
+        }
 
         if (
-            !has_one_solution(currentSudoku) ||
+            !is_solvable ||
             currentGrade >= range.max ||
+            currentRemoved >= minimal_range.max ||
             count == 0
+            // (currentGrade >= range.min &&
+            //     currentGrade < range.max &&
+            //     currentRemoved < minimal_range.min)
         ) {
             let emptyCells = getEmptyCellList(currentSudoku)
             if (prevEmpty == emptyCells.length) {
@@ -67,39 +96,42 @@ export function removeCells(rng, sudoku, difficulty) {
                 prevEmpty = emptyCells.length
             }
 
-            let times = currentTries > 2 ? 2 : 1
+            // let times = currentTries > 2 ? 2 : 1
+            //
+            // for (let i = 0; i < times; i++) {
+            let cell = rng.choice(emptyCells)
+            let r1 = cell.r
+            let c1 = cell.c
 
-            for (let i = 0; i < times; i++) {
-                let cell = rng.choice(emptyCells)
-                let r1 = cell.r
-                let c1 = cell.c
+            currentSudoku.grid[r1][c1].num = currentSudoku.grid[r1][c1].solution
+            currentSudoku.grid[r1][c1].is_hint = true
 
-                currentSudoku.grid[r1][c1].num =
-                    currentSudoku.grid[r1][c1].solution
-                currentSudoku.grid[r1][c1].is_hint = true
+            currentRemoved -= 1
 
-                currentGrade -= 1
+            const max = currentSudoku.size - 1
 
-                const max = currentSudoku.size - 1
+            let r2 = max - cell.r
+            let c2 = max - cell.c
 
-                let r2 = max - cell.r
-                let c2 = max - cell.c
+            emptyCells = emptyCells.filter(
+                (c) => (c.r != r1 || c.c != c1) && (c.r != r2 || c.c != c2)
+            )
 
-                emptyCells = emptyCells.filter(
-                    (c) => (c.r != r1 || c.c != c1) && (c.r != r2 || c.c != c2)
-                )
-
-                if (currentSudoku.grid[r2][c2].num == null) {
-                    currentSudoku.grid[r2][c2].num =
-                        currentSudoku.grid[r2][c2].solution
-                    currentSudoku.grid[r2][c2].is_hint = true
-                    currentGrade -= 1
-                }
+            if (currentSudoku.grid[r2][c2].num == null) {
+                currentSudoku.grid[r2][c2].num =
+                    currentSudoku.grid[r2][c2].solution
+                currentSudoku.grid[r2][c2].is_hint = true
+                currentRemoved -= 1
             }
+            // }
             continue
         }
 
-        if (currentGrade >= range.min && currentGrade < range.max) {
+        if (
+            currentGrade >= range.min &&
+            currentGrade < range.max &&
+            currentRemoved >= minimal_range.min
+        ) {
             break
         }
     }
@@ -131,7 +163,7 @@ function removeEasy(rng, sudoku, careful = false) {
     let cells = cellList.filter(
         (cell) => cell.candidates.length > 0 && cell.candidates.length <= 3
     )
-    if (cells.length == 0) cells = [cellList[cellList - 1]]
+    if (cells.length == 0) cells = cellList
 
     let cell = rng.choice(cells)
 
@@ -158,12 +190,14 @@ function removeMedium(rng, sudoku, careful = false) {
     let cellList = getHintList(sudoku)
     if (cellList.length == 0) throw new Error('No more valid cells')
 
-    let cells = cellList.filter(
-        (cell) => cell.candidates.length >= 3 && cell.candidates.length <= 6
-    )
-    if (cells.length == 0) cells = cellList
+    // let cells = cellList.filter(
+    //     (cell) => cell.candidates.length >= 3 && cell.candidates.length <= 6
+    // )
+    // if (cells.length == 0) cells = cellList
+    //
+    // let cell = rng.choice(cells)
 
-    let cell = rng.choice(cells)
+    let cell = rng.choice(cellList)
 
     sudoku.grid[cell.r][cell.c].num = null
     sudoku.grid[cell.r][cell.c].is_hint = false
@@ -189,7 +223,7 @@ function removeHard(rng, sudoku, careful = false) {
     if (cellList.length == 0) throw new Error('No more valid cells')
 
     let cells = cellList.filter(
-        (cell) => cell.candidates.length >= 6 && cell.candidates.length <= 9
+        (cell) => cell.candidates.length >= 4 && cell.candidates.length <= 9
     )
     if (cells.length == 0) cells = [...cellList]
 

@@ -129,6 +129,7 @@ export function update_candidates(sudoku) {
  * @returns {number} The difficulty grade
  */
 export function grade(sudoku) {
+    console.log('=== GRADING ===')
     // work on a copy so we dont modify the original board
     let currentSudoku = deepCopy(sudoku)
     let gradeScore = 0
@@ -147,6 +148,7 @@ export function grade(sudoku) {
                 console.warn('Grader: unsolvable with no history - aborting')
                 break
             }
+            console.log('# BACKTRACKING')
             const last = history.pop()
             currentSudoku = last.sudoku
             gradeScore = last.grade
@@ -172,43 +174,50 @@ export function grade(sudoku) {
 
         if (naked_single(currentSudoku)) {
             update_candidates(currentSudoku) // places a number, refresh needed
+            console.log('NAKED SINGLE')
             gradeScore += 0.1
             continue
         }
 
         if (naked_pair(currentSudoku)) {
             // only eliminates candidates, no refresh needed
-            gradeScore += 0.2
+            console.log('NAKED PAIR')
+            gradeScore += 0.4
             continue
         }
 
         if (hidden_single(currentSudoku)) {
             update_candidates(currentSudoku) // places a number, refresh needed
-            gradeScore += 0.2
+            console.log('HIDDEN SINGLE')
+            gradeScore += 0.3
             continue
         }
 
         if (hidden_pair(currentSudoku)) {
             // only eliminates candidates, no refresh needed
-            gradeScore += 0.2
+            console.log('HIDDEN PAIR')
+            gradeScore += 0.5
             continue
         }
 
         if (x_wing(currentSudoku)) {
             // only eliminates candidates, no refresh needed
-            gradeScore += 0.5
+            console.log('X-WING')
+            gradeScore += 1.4
             continue
         }
 
         if (y_wing(currentSudoku)) {
             // only eliminates candidates, no refresh needed
-            gradeScore += 0.6
+            console.log('Y-WING')
+            gradeScore += 1.6
             continue
         }
 
         if (swordfish(currentSudoku)) {
             // only eliminates candidates, no refresh needed
-            gradeScore += 0.6
+            console.log('SWORDFISH')
+            gradeScore += 1.8
             continue
         }
 
@@ -216,6 +225,8 @@ export function grade(sudoku) {
         // find best cell first so we can store it in history
         const bestCell = findBestCell(currentSudoku)
         if (bestCell == null) break // no valid cell found, board is stuck
+
+        console.log('GUESSING')
 
         const firstCandidate =
             currentSudoku.grid[bestCell.r][bestCell.c].candidates[0]
@@ -229,8 +240,10 @@ export function grade(sudoku) {
         })
         guess(currentSudoku, bestCell, firstCandidate) // pass cell and candidate
         update_candidates(currentSudoku) // refresh after placing a number
-        gradeScore += 1.0
+        gradeScore += 3.5
     }
+
+    console.log(`# SCORE = ${gradeScore}`)
 
     return gradeScore // number to be used as a threshold in remove_cells
 }
