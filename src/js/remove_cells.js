@@ -126,7 +126,10 @@ export function removeCells(rng, sudoku, difficulty) {
 
             // let times = currentTries > 2 ? 2 : 1
             //
-            for (let i = 0; i < 2; i++) {
+            let times = 2
+            if (emptyCells.length <= 5) times += 1
+
+            for (let i = 0; i < times; i++) {
                 let cells = emptyCells.filter((x) => x.candidates.length >= 7)
                 if (cells.length == 0) cells = emptyCells
 
