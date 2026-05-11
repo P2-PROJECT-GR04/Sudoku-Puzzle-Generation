@@ -146,7 +146,7 @@ export function grade(sudoku) {
         if (is_unsolvable(currentSudoku)) {
             if (history.length == 0) {
                 console.warn('Grader: unsolvable with no history - aborting')
-                break
+                return -1
             }
             console.log('# BACKTRACKING')
             const last = history.pop()
@@ -175,7 +175,7 @@ export function grade(sudoku) {
         if (naked_single(currentSudoku)) {
             update_candidates(currentSudoku) // places a number, refresh needed
             console.log('NAKED SINGLE')
-            gradeScore += 0.1
+            gradeScore += 0.05
             continue
         }
 

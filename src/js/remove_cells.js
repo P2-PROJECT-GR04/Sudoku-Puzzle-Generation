@@ -24,15 +24,15 @@ export const HARD = 2
 /** @type {DifficultyRange[]} */
 const ranges = [
     // Easy
-    { min: 2.5, max: 4.0 },
+    { min: 2.0, max: 2.5 },
     // Medium
-    { min: 4.0, max: 6.0 },
+    { min: 2.5, max: 3.5 },
     // Hard
-    { min: 6.0, max: 10.0 },
+    { min: 3.0, max: 10.0 },
 ]
 
 // A Minimal Sudoku needs to have between 39 and 20 hints [https://www.sudokuwiki.org/Sudoku_Creation_and_Grading.pdf]
-const minimal_range = { min: 42, max: 71 }
+const minimal_range = { min: 42, max: 61 }
 
 /**
  * Removes cells so that the outputted Sudoku is solvable, with only one solution, and that it fits the given difficulty
@@ -51,6 +51,20 @@ export function removeCells(rng, sudoku, difficulty) {
 
     let prevEmpty = 0
     let unsolvable_counter = 0
+
+    // let start
+    // if (difficulty == EASY) {
+    //     start = minimal_range.min
+    // } else if (difficulty == MEDIUM) {
+    //     start = minimal_range.min + 5
+    // } else if (difficulty == HARD) {
+    //     start = minimal_range.min + 10
+    // }
+    //
+    // while (currentRemoved < start) {
+    //     const count = removeIteration(rng, currentSudoku, difficulty, false)
+    //     currentRemoved += count
+    // }
 
     let iter = 0
     while (true) {
@@ -71,9 +85,23 @@ export function removeCells(rng, sudoku, difficulty) {
 
         console.log(`== (REMOVED: ${currentRemoved})`)
         let is_solvable = has_one_solution(currentSudoku)
-        if (is_solvable) {
-            unsolvable_counter = 0
+        if (
+            is_solvable &&
+            currentRemoved >= minimal_range.min &&
+            currentRemoved < minimal_range.max
+        ) {
             currentGrade = grade(currentSudoku)
+        }
+
+        if (
+            is_solvable ||
+            (currentRemoved >= minimal_range.min &&
+                currentRemoved < minimal_range.max)
+        ) {
+            if (!is_solvable)
+                console.log(`# NOT SOLVABLE (${unsolvable_counter}); SKIPPING`)
+
+            unsolvable_counter = 0
         } else {
             unsolvable_counter += 1
             console.log(`# NOT SOLVABLE (${unsolvable_counter}); SKIPPING`)
@@ -98,32 +126,36 @@ export function removeCells(rng, sudoku, difficulty) {
 
             // let times = currentTries > 2 ? 2 : 1
             //
-            // for (let i = 0; i < times; i++) {
-            let cell = rng.choice(emptyCells)
-            let r1 = cell.r
-            let c1 = cell.c
+            for (let i = 0; i < 2; i++) {
+                let cells = emptyCells.filter((x) => x.candidates.length >= 7)
+                if (cells.length == 0) cells = emptyCells
 
-            currentSudoku.grid[r1][c1].num = currentSudoku.grid[r1][c1].solution
-            currentSudoku.grid[r1][c1].is_hint = true
+                let cell = rng.choice(cells)
+                let r1 = cell.r
+                let c1 = cell.c
 
-            currentRemoved -= 1
+                currentSudoku.grid[r1][c1].num =
+                    currentSudoku.grid[r1][c1].solution
+                currentSudoku.grid[r1][c1].is_hint = true
 
-            const max = currentSudoku.size - 1
-
-            let r2 = max - cell.r
-            let c2 = max - cell.c
-
-            emptyCells = emptyCells.filter(
-                (c) => (c.r != r1 || c.c != c1) && (c.r != r2 || c.c != c2)
-            )
-
-            if (currentSudoku.grid[r2][c2].num == null) {
-                currentSudoku.grid[r2][c2].num =
-                    currentSudoku.grid[r2][c2].solution
-                currentSudoku.grid[r2][c2].is_hint = true
                 currentRemoved -= 1
+
+                const max = currentSudoku.size - 1
+
+                let r2 = max - cell.r
+                let c2 = max - cell.c
+
+                emptyCells = emptyCells.filter(
+                    (c) => (c.r != r1 || c.c != c1) && (c.r != r2 || c.c != c2)
+                )
+
+                if (currentSudoku.grid[r2][c2].num == null) {
+                    currentSudoku.grid[r2][c2].num =
+                        currentSudoku.grid[r2][c2].solution
+                    currentSudoku.grid[r2][c2].is_hint = true
+                    currentRemoved -= 1
+                }
             }
-            // }
             continue
         }
 
@@ -173,9 +205,11 @@ function removeEasy(rng, sudoku, careful = false) {
 
     if (!careful) {
         const max = sudoku.size - 1
-        sudoku.grid[max - cell.r][max - cell.c].num = null
-        sudoku.grid[max - cell.r][max - cell.c].is_hint = false
-        count += 1
+        if (sudoku.grid[max - cell.r][max - cell.c].num != null) {
+            sudoku.grid[max - cell.r][max - cell.c].num = null
+            sudoku.grid[max - cell.r][max - cell.c].is_hint = false
+            count += 1
+        }
     }
 
     return count
@@ -205,9 +239,11 @@ function removeMedium(rng, sudoku, careful = false) {
 
     if (!careful) {
         const max = sudoku.size - 1
-        sudoku.grid[max - cell.r][max - cell.c].num = null
-        sudoku.grid[max - cell.r][max - cell.c].is_hint = false
-        count += 1
+        if (sudoku.grid[max - cell.r][max - cell.c].num != null) {
+            sudoku.grid[max - cell.r][max - cell.c].num = null
+            sudoku.grid[max - cell.r][max - cell.c].is_hint = false
+            count += 1
+        }
     }
 
     return count
@@ -235,9 +271,11 @@ function removeHard(rng, sudoku, careful = false) {
 
     if (!careful) {
         const max = sudoku.size - 1
-        sudoku.grid[max - cell.r][max - cell.c].num = null
-        sudoku.grid[max - cell.r][max - cell.c].is_hint = false
-        count += 1
+        if (sudoku.grid[max - cell.r][max - cell.c].num != null) {
+            sudoku.grid[max - cell.r][max - cell.c].num = null
+            sudoku.grid[max - cell.r][max - cell.c].is_hint = false
+            count += 1
+        }
     }
 
     return count
