@@ -52,20 +52,6 @@ export function removeCells(rng, sudoku, difficulty) {
     let prevEmpty = 0
     let unsolvable_counter = 0
 
-    // let start
-    // if (difficulty == EASY) {
-    //     start = minimal_range.min
-    // } else if (difficulty == MEDIUM) {
-    //     start = minimal_range.min + 5
-    // } else if (difficulty == HARD) {
-    //     start = minimal_range.min + 10
-    // }
-    //
-    // while (currentRemoved < start) {
-    //     const count = removeIteration(rng, currentSudoku, difficulty, false)
-    //     currentRemoved += count
-    // }
-
     let iter = 0
     while (true) {
         iter += 1
