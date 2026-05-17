@@ -124,15 +124,8 @@ export function getState() {
 function decodeSudoku(rand, difficulty, text) {
     rand = new Rng(rand.seed)
 
-    let width = Number(text[0])
-    if (!Number.isInteger(width) || width == 0) return null
-
-    if (text[1] != 'x') return null
-
-    let height = Number(text[2])
-    if (!Number.isInteger(height) || height == 0) return null
-
-    text = text.slice(3) // Remove size data
+    let width = 3
+    let height = 3
 
     let nums = []
 
@@ -205,8 +198,6 @@ function decodeSudoku(rand, difficulty, text) {
  */
 function encodeSudoku(sudoku) {
     let encoded = ''
-    encoded += `${sudoku.region_width}x${sudoku.region_height}`
-
     let numbers = ''
     let empty_cells = 0
 
