@@ -136,7 +136,7 @@ describe('Hidden pair', () => {
         let result = solvers.hidden_pair(sudoku)
         expect(result).toBe(true)
 
-        expect(sudoku.grid[0][7].candidates).toEqual([6,7])
+        expect(sudoku.grid[0][7].candidates).toEqual([6, 7])
     })
 })
 
