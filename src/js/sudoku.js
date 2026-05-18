@@ -263,6 +263,8 @@ export function check_board(sudoku) {
 
 /**
  * Creates a new sudoku from a NxN grid of numbers
+ * @param {number} width
+ * @param {number} height
  * @param {(number | null)[][]} grid
  * @returns {Sudoku | null}
  */
@@ -285,6 +287,28 @@ export function sudoku_from_grid(width, height, grid) {
     let sudoku = new Sudoku(width, height)
     sudoku.grid = new_grid
     return sudoku
+}
+
+/**
+ * Creates a new sudoku from a NxN grid of numbers
+ * @param {Sudoku} sudoku
+ * @returns {number[][]}
+ */
+export function grid_from_sudoku(sudoku) {
+    let grid = []
+
+    for (let r = 0; r < sudoku.size; r++) {
+        grid.push([])
+        for (let c = 0; c < sudoku.size; c++) {
+            if (sudoku.grid[r][c].num != null) {
+                grid[r].push(sudoku.grid[r][c].num)
+            } else {
+                grid[r].push(0)
+            }
+        }
+    }
+
+    return grid
 }
 
 /*

@@ -245,7 +245,8 @@ export function grade(sudoku) {
 
     console.log(`# SCORE = ${gradeScore}`)
 
-    return gradeScore // number to be used as a threshold in remove_cells
+    // Sometimes the score is something like 1.89999999..., so here we round it to 1.9
+    return Math.round(gradeScore * 10) / 10
 }
 
 // Difficulty indexing idea? Dont know about actual number to use here?
