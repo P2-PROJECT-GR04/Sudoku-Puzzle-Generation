@@ -8,11 +8,10 @@
         <link rel="stylesheet" href="./css/style.css" />
         <link rel="icon" href="./favicon.ico" type="image/x-icon" />
     </head>
-    
-    <body style="background-color: #f7f4f6">
 
+    <body style="background-color: #f7f4f6">
         <!-- SUDOKUEN -->
-        <main id="gameArea" >
+        <main id="gameArea">
             <h1>SUDOKU</h1>
             <p class="timer">Timer: <span id="timerDisplay">00:00.000</span></p>
             <button class="interactable-btn" id="pauseBtn">Pause</button>
@@ -24,27 +23,36 @@
                 Resume
             </button>
 
-         <div id="wrapper">
+            <div id="wrapper">
+                <div id="difficulty-buttons">
+                    <button id="easy" class="difficulty-btn">Easy</button>
+                    <button id="medium" class="difficulty-btn">Medium</button>
+                    <button id="hard" class="difficulty-btn">Hard</button>
+                </div>
 
-    <div id="difficulty-buttons">
-        <button id="easy" class="difficulty-btn">Easy</button>
-        <button id="medium" class="difficulty-btn">Medium</button>
-        <button id="hard" class="difficulty-btn">Hard</button>
-    </div>
+                <div id="sudoku-section">
+                    <div class="sudoku-grid" id="sudoku" data-1p-ignore></div>
+                    <div id="loading">
+                        <span class="loading-label">Loading...</span>
+                    </div>
+                </div>
 
-    <div id="sudoku-section">
-        <div class="sudoku-grid" id="sudoku" data-1p-ignore></div>
-        <div id="loading">
-            <span class="loading-label">Loading...</span>
-        </div>
-    </div>
-
-    <div id="numpad-wrap">
-        <table id="sudoku-numpad"></table>
-    </div>
-
-</div>
-           
+                <div id="numpad-wrap">
+                    <table id="sudoku-numpad"></table>
+                </div>
+                <h2 id="helper-text">
+                    How to Play: Select a difficulty level to start. Select a
+                    cell and enter numbers using your keyboard or the on-screen
+                    numpad. Use the arrow keys to navigate between cells. You
+                    can pause the game at any time by clicking the Pause button.
+                    To remove a number, click the DEL button or press the
+                    Backspace key. You can quickly toggle Notes Mode on and off
+                    by pressing the Tab key. If you need help, click "Show Hint"
+                    to reveal all possible candidates for the current board.
+                    Once you have finished the puzzle, click "Check Board" to
+                    validate your solution.
+                </h2>
+            </div>
         </main>
         <script src="./js/script.js" type="module"></script>
         <script src="./js/sudoku.js" type="module"></script>

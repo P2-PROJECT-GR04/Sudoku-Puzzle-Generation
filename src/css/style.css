@@ -47,7 +47,7 @@
 }
 
 .sudoku-cell:has(.marked) {
-    background-color: var(--purple);
+    background-color: var(--purple) !important;
 }
 
 .sudoku-cell:has(.marked-assoc) {
@@ -159,6 +159,7 @@ main {
 
 #wrapper {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: center;
     gap: 1rem;
@@ -246,4 +247,13 @@ main {
 
 #loading.is-loading .loading-label {
     display: block;
+}
+
+#helper-text {
+    flex-basis: 100%;
+    text-align: center;
+    margin-top: 40px;
+    font-weight: normal;
+    font-size: 0.9rem;
+    line-height: 1.5;
 }
