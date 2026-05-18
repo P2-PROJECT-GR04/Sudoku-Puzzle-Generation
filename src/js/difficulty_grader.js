@@ -1,5 +1,4 @@
-import { Sudoku, sudoku_from_grid } from './sudoku.js'
-import { Cell } from './cell.js'
+import { Sudoku, deepCopy } from './sudoku.js'
 import { find_candidates_for_grid } from './check-hint.js'
 import {
     naked_single,
@@ -10,24 +9,6 @@ import {
     y_wing,
     swordfish,
 } from './solvers.js'
-
-/**
- * Deep copies a Sudoku board
- * @param {Sudoku} sudoku
- * @returns {Sudoku}
- */
-function deepCopy(sudoku) {
-    let new_sudoku = new Sudoku(sudoku.region_width, sudoku.region_height)
-
-    for (let r = 0; r < sudoku.size; r++) {
-        for (let c = 0; c < sudoku.size; c++) {
-            new_sudoku.grid[r][c] = new Cell(sudoku.grid[r][c].num)
-            new_sudoku.grid[r][c].candidates = [...sudoku.grid[r][c].candidates]
-        }
-    }
-
-    return new_sudoku
-}
 
 /**
  * Checks if the sudoku is fully solved (all cells have a number)
@@ -148,6 +129,7 @@ export function update_candidates(sudoku) {
  * @returns {number} The difficulty grade
  */
 export function grade(sudoku) {
+    console.log('=== GRADING ===')
     // work on a copy so we dont modify the original board
     let currentSudoku = deepCopy(sudoku)
     let gradeScore = 0
@@ -166,6 +148,7 @@ export function grade(sudoku) {
                 console.warn('Grader: unsolvable with no history - aborting')
                 return -1
             }
+            console.log('# BACKTRACKING')
             const last = history.pop()
             currentSudoku = last.sudoku
             gradeScore = last.grade
@@ -191,43 +174,50 @@ export function grade(sudoku) {
 
         if (naked_single(currentSudoku)) {
             update_candidates(currentSudoku) // places a number, refresh needed
-            gradeScore += 0.1
+            console.log('NAKED SINGLE')
+            gradeScore += 0.05
             continue
         }
 
         if (naked_pair(currentSudoku)) {
             // only eliminates candidates, no refresh needed
-            gradeScore += 0.2
+            console.log('NAKED PAIR')
+            gradeScore += 0.4
             continue
         }
 
         if (hidden_single(currentSudoku)) {
             update_candidates(currentSudoku) // places a number, refresh needed
-            gradeScore += 0.2
+            console.log('HIDDEN SINGLE')
+            gradeScore += 0.3
             continue
         }
 
         if (hidden_pair(currentSudoku)) {
             // only eliminates candidates, no refresh needed
-            gradeScore += 0.2
+            console.log('HIDDEN PAIR')
+            gradeScore += 0.5
             continue
         }
 
         if (x_wing(currentSudoku)) {
             // only eliminates candidates, no refresh needed
-            gradeScore += 0.5
+            console.log('X-WING')
+            gradeScore += 1.4
             continue
         }
 
         if (y_wing(currentSudoku)) {
             // only eliminates candidates, no refresh needed
-            gradeScore += 0.6
+            console.log('Y-WING')
+            gradeScore += 1.6
             continue
         }
 
         if (swordfish(currentSudoku)) {
             // only eliminates candidates, no refresh needed
-            gradeScore += 0.6
+            console.log('SWORDFISH')
+            gradeScore += 1.8
             continue
         }
 
@@ -235,6 +225,8 @@ export function grade(sudoku) {
         // find best cell first so we can store it in history
         const bestCell = findBestCell(currentSudoku)
         if (bestCell == null) break // no valid cell found, board is stuck
+
+        console.log('GUESSING')
 
         const firstCandidate =
             currentSudoku.grid[bestCell.r][bestCell.c].candidates[0]
@@ -248,8 +240,10 @@ export function grade(sudoku) {
         })
         guess(currentSudoku, bestCell, firstCandidate) // pass cell and candidate
         update_candidates(currentSudoku) // refresh after placing a number
-        gradeScore += 1.0
+        gradeScore += 3.5
     }
+
+    console.log(`# SCORE = ${gradeScore}`)
 
     // Sometimes the score is something like 1.89999999..., so here we round it to 1.9
     return Math.round(gradeScore * 10) / 10

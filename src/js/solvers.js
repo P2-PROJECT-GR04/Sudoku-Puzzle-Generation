@@ -640,6 +640,8 @@ export function swordfish(sudoku) {
     let swordfish_solver = () => {
         for (let r = 0; r < sudoku.size; r++) {
             for (let cand = 0; cand < sudoku.size; cand++) {
+                let has_removed = false
+
                 let columns = []
                 for (let c = 0; c < sudoku.size; c++) {
                     if (sudoku.grid[r][c].candidates.includes(cand)) {
@@ -665,15 +667,20 @@ export function swordfish(sudoku) {
 
                 for (let row = 0; row < sudoku.size; row++) {
                     if (rows.includes(row)) continue
-
                     for (let col of columns) {
+                        let prev_length = sudoku.grid[row][col].candidates.length
+
                         sudoku.grid[row][col].candidates = sudoku.grid[row][
                             col
                         ].candidates.filter((c) => c != cand)
+
+                        if (sudoku.grid[row][col].candidates.length != prev_length)
+                            has_removed = true
                     }
                 }
 
-                return true
+                if (has_removed)
+                    return true
             }
         }
         return false

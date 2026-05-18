@@ -20,7 +20,7 @@ initState()
  * @modifies {state}
  * @param {State} state - The state to use
  */
-function loadSudoku(state) {
+async function loadSudoku(state) {
     if (state.seed == null) {
         state.seed = newSeed()
         console.warn(`No given seed. New seed is ${state.seed}`)
@@ -32,7 +32,7 @@ function loadSudoku(state) {
         console.warn('No given state. Starting new board')
         state.sudoku = new Sudoku(3, 3)
         make_solved_grid(state.sudoku, rand)
-        removeCells(rand, state.sudoku, state.difficulty)
+        removeCellsAsync(rand, state.sudoku, state.difficulty)
     }
 
     createNumpad(state.sudoku)
@@ -46,7 +46,7 @@ function loadSudoku(state) {
  * @modifies {state}
  * @param {Difficulty} difficulty
  */
-function newSudoku(difficulty) {
+async function newSudoku(difficulty) {
     state.seed = newSeed()
     state.rand = new Rng(state.seed)
     state.difficulty = difficulty
@@ -60,11 +60,11 @@ function newSudoku(difficulty) {
 
     createNumpad(state.sudoku)
 
-    removeCells(state.rand, state.sudoku, difficulty)
-
-    draw_sudoku(state.sudoku)
-    updateState(state)
-    reapplyBlur()
+    removeCellsAsync(state.rand, state.sudoku, difficulty, () => {
+        draw_sudoku(state.sudoku)
+        updateState(state)
+        reapplyBlur()
+    })
 }
 
 document.getElementById('easy').addEventListener('click', () => newSudoku(EASY))
@@ -179,3 +179,22 @@ document.addEventListener('keydown', (e) => {
         mark_cell(sudoku, [newR, newC])
     }
 })
+
+/**
+ * Removes cells so that the outputted Sudoku is solvable, with only one solution, and that it fits the given difficulty
+ * @modifies {sudoku}
+ * @param {Rng} rng
+ * @param {Sudoku} sudoku
+ * @param {number} difficulty
+ */
+async function removeCellsAsync(sudoku, rand, difficulty, fn = () => {}) {
+    let elem = document.getElementById('loading')
+    console.log(`HTML: ${elem.innerText}`)
+    elem.className = 'is-loading'
+
+    setTimeout(() => {
+        removeCells(sudoku, rand, difficulty)
+        elem.className = 'not-loading'
+        fn()
+    }, 0)
+}
