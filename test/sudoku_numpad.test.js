@@ -25,17 +25,24 @@ jest.mock('../src/js/check-hint.js', () => ({
 
 // The numpad function gets initialized
 const { createNumpad } = require('../src/js/numpad.js')
+import { Rng } from '../src/js/rand.js'
+import { initState, state, State } from '../src/js/state.js'
 
 describe('createNumpad testing', () => {
+    // state = new State(null, null, new Rng(1), null, null)
+    initState()
     let sudokuMock
 
     beforeEach(() => {
         document.body.innerHTML = '<table id="sudoku-numpad"></table>'
 
-        sudokuMock = {
-            size: 9,
-            marked_cell: [0, 0],
-        }
+        // sudokuMock = {
+        //     size: 9,
+        //     marked_cell: [0, 0],
+        // }
+
+        sudokuMock = new sudokuFile.Sudoku(3, 3)
+        state.sudoku = sudokuMock
     })
 
     test('should call set_cell with "1" when button 1 is clicked', () => {

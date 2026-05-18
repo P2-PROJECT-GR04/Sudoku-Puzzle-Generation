@@ -10,7 +10,6 @@ import { EASY, removeCells } from './remove_cells.js'
  * @class
  * @property {Sudoku | null} sudoku - The current Sudoku board
  * @property {number} difficulty - The difficulty of the sudoku (0=easy, 1=medium, 2=hard)
- * @property {number | null} seed - The seed of the current game
  * @property {Rng} rand - The random number generator made from the current seed
  * @property {number} time - The current time on the timer in ms
  * @property {isPaused} isPaused - If the game is paused or not
