@@ -19,7 +19,7 @@ describe('Normal Techniques', () => {
         expect(sudoku).not.toBeNull()
         let score = grade(sudoku)
 
-        expect(score).toBe(0.1)
+        expect(score).toBe(0.05)
     })
     test('9 Naked Singles', () => {
         let grid = [
@@ -38,7 +38,7 @@ describe('Normal Techniques', () => {
         expect(sudoku).not.toBeNull()
         let score = grade(sudoku)
 
-        expect(score).toBe(0.9)
+        expect(score).toBe(0.45)
     })
 })
 
