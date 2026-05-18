@@ -13,8 +13,10 @@ import {
     reapplyPauseButtons,
 } from './timer_function.js'
 import { removeCells, EASY, MEDIUM, HARD } from './remove_cells.js'
+import { collectData } from './data_collection.js'
 
-initState()
+collectData()
+
 /**
  * Load a new Sudoku from a state
  * @modifies {state}
@@ -74,8 +76,6 @@ document
     .addEventListener('click', () => newSudoku(MEDIUM))
 
 document.getElementById('hard').addEventListener('click', () => newSudoku(HARD))
-
-loadSudoku(state)
 
 if (!state.isPaused) {
     startTimer()
