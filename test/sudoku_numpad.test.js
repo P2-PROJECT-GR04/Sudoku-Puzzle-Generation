@@ -20,7 +20,7 @@ jest.mock('../src/js/draw_sudoku.js', () => ({
 }))
 // For testing show-hint function being called
 jest.mock('../src/js/check-hint.js', () => ({
-    show_hint: jest.fn(),
+    find_candidates_for_grid: jest.fn(),
 }))
 
 // The numpad function gets initialized
@@ -42,6 +42,8 @@ describe('createNumpad testing', () => {
         // }
 
         sudokuMock = new sudokuFile.Sudoku(3, 3)
+        sudokuMock.size = 9
+        sudokuMock.marked_cell = [0, 0]
         state.sudoku = sudokuMock
     })
 
@@ -77,9 +79,10 @@ describe('createNumpad testing', () => {
         }
 
         // Check if the correct function has been called
-        expect(checkHint.show_hint).toHaveBeenCalledWith(sudokuMock)
-
-        expect(checkHint.show_hint).toHaveBeenCalledTimes(1)
+        expect(checkHint.find_candidates_for_grid).toHaveBeenCalledWith(
+            sudokuMock
+        )
+        expect(checkHint.find_candidates_for_grid).toHaveBeenCalledTimes(1)
     })
 
     test('should call check_board function, when button "Check board" is clicked', () => {
