@@ -94,7 +94,7 @@ export function removeCells(rng, sudoku, difficulty) {
         }
 
         if (
-            !is_solvable ||
+            (!is_solvable && currentRemoved >= minimal_range.min) ||
             currentGrade >= range.max ||
             currentRemoved >= minimal_range.max ||
             count == 0
@@ -116,6 +116,7 @@ export function removeCells(rng, sudoku, difficulty) {
             if (emptyCells.length <= 5) times += 1
 
             for (let i = 0; i < times; i++) {
+                if (emptyCells.length == 0) continue
                 let cells = emptyCells.filter((x) => x.candidates.length >= 7)
                 if (cells.length == 0) cells = emptyCells
 

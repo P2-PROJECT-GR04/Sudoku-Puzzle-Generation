@@ -15,7 +15,7 @@ import {
 import { removeCells, EASY, MEDIUM, HARD } from './remove_cells.js'
 import { collectData } from './data_collection.js'
 
-collectData()
+setTimeout(collectData, 2000)
 
 /**
  * Load a new Sudoku from a state

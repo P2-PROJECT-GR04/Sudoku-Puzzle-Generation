@@ -98,11 +98,11 @@ export function getState() {
 
     let sudoku_state = urlParams.get('state')
 
-    if (sudoku_state != null) {
-        // Decode URL hex characters (e.g. %20) to normal characters before decoding the sudoku
-        let uri_decoded = decodeURI(sudoku_state)
-        sudoku_state = decodeSudoku(rand, difficulty, uri_decoded)
-    }
+    // if (sudoku_state != null) {
+    //     // Decode URL hex characters (e.g. %20) to normal characters before decoding the sudoku
+    //     let uri_decoded = decodeURI(sudoku_state)
+    //     sudoku_state = decodeSudoku(rand, difficulty, uri_decoded)
+    // }
 
     // Restores the timer time
     let time_secs = Number(urlParams.get('t')) || 0

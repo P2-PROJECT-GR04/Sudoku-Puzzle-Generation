@@ -2,7 +2,7 @@ import { grade } from './difficulty_grader.js'
 import { newSeed, Rng } from './rand.js'
 import { EASY, MEDIUM, HARD, removeCells } from './remove_cells.js'
 import { state, initState } from './state.js'
-import { make_solved_grid, Sudoku } from './sudoku.js'
+import { grid_from_sudoku, make_solved_grid, Sudoku } from './sudoku.js'
 
 const TRIES = 100
 
@@ -15,13 +15,20 @@ export function collectData() {
 
     for (let diff of diffs) {
         data.push([])
+        console.debug(`TESTING: ${difficultyString(diff)}`)
         for (let i = 0; i < TRIES; i++) {
             state.seed = newSeed()
             state.rand = new Rng(state.seed)
+            state.difficulty = diff
 
             state.sudoku = new Sudoku(3, 3)
             make_solved_grid(state.sudoku, state.rand)
-            removeCells(state.sudoku, state.rand, diff)
+            console.info(`${difficultyString(diff)} (${i}):`)
+            console.info(grid_from_sudoku(state.sudoku))
+
+            console.debug(`(0; 0) = ${state.sudoku.grid[0][0].num}`)
+            console.debug(`size = ${state.sudoku.size}`)
+            removeCells(state.rand, state.sudoku, state.difficulty)
 
             let score = grade(state.sudoku)
 
@@ -30,6 +37,7 @@ export function collectData() {
             )
 
             data[diff].push(score)
+            state.sudoku = null
         }
     }
 
