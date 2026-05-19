@@ -13,8 +13,11 @@ import {
     reapplyPauseButtons,
 } from './timer_function.js'
 import { removeCells, EASY, MEDIUM, HARD } from './remove_cells.js'
+import { collect_data } from './collect_data.js'
 
-initState()
+collect_data(20)
+
+// initState()
 /**
  * Load a new Sudoku from a state
  * @modifies {state}
@@ -67,24 +70,24 @@ async function newSudoku(difficulty) {
     })
 }
 
-document.getElementById('easy').addEventListener('click', () => newSudoku(EASY))
+// document.getElementById('easy').addEventListener('click', () => newSudoku(EASY))
+//
+// document
+//     .getElementById('medium')
+//     .addEventListener('click', () => newSudoku(MEDIUM))
+//
+// document.getElementById('hard').addEventListener('click', () => newSudoku(HARD))
 
-document
-    .getElementById('medium')
-    .addEventListener('click', () => newSudoku(MEDIUM))
+// loadSudoku(state)
 
-document.getElementById('hard').addEventListener('click', () => newSudoku(HARD))
-
-loadSudoku(state)
-
-if (!state.isPaused) {
-    startTimer()
-} else {
-    updateTimerDisplayFromState()
-    reapplyBlur()
-    reapplyDisable()
-    reapplyPauseButtons()
-}
+// if (!state.isPaused) {
+//     startTimer()
+// } else {
+//     updateTimerDisplayFromState()
+//     reapplyBlur()
+//     reapplyDisable()
+//     reapplyPauseButtons()
+// }
 
 /**
  * Mark a cell in a sudoku
@@ -138,47 +141,47 @@ export function set_cell(sudoku, r, c, num) {
     updateState(state)
 }
 
-const pauseBtn = document.getElementById('pauseBtn')
-const resumeBtn = document.getElementById('resumeBtn')
+// const pauseBtn = document.getElementById('pauseBtn')
+// const resumeBtn = document.getElementById('resumeBtn')
 
-pauseBtn.addEventListener('click', () => {
-    pauseTimer()
-    pauseBtn.style.display = 'none'
-    resumeBtn.style.display = 'inline-block'
-})
+// pauseBtn.addEventListener('click', () => {
+//     pauseTimer()
+//     pauseBtn.style.display = 'none'
+//     resumeBtn.style.display = 'inline-block'
+// })
+//
+// resumeBtn.addEventListener('click', () => {
+//     resumeTimer()
+//     resumeBtn.style.display = 'none'
+//     pauseBtn.style.display = 'inline-block'
+// })
 
-resumeBtn.addEventListener('click', () => {
-    resumeTimer()
-    resumeBtn.style.display = 'none'
-    pauseBtn.style.display = 'inline-block'
-})
-
-document.addEventListener('keydown', (e) => {
-    const sudoku = state.sudoku
-    if (!sudoku || sudoku.marked_cell == null) return
-
-    const [r, c] = sudoku.marked_cell
-    const size = sudoku.size
-
-    const moves = {
-        ArrowUp: [-1, 0],
-        ArrowDown: [1, 0],
-        ArrowLeft: [0, -1],
-        ArrowRight: [0, 1],
-    }
-
-    const delta = moves[e.key]
-    if (!delta) return
-
-    e.preventDefault()
-
-    const newR = r + delta[0]
-    const newC = c + delta[1]
-
-    if (newR >= 0 && newR < size && newC >= 0 && newC < size) {
-        mark_cell(sudoku, [newR, newC])
-    }
-})
+// document.addEventListener('keydown', (e) => {
+//     const sudoku = state.sudoku
+//     if (!sudoku || sudoku.marked_cell == null) return
+//
+//     const [r, c] = sudoku.marked_cell
+//     const size = sudoku.size
+//
+//     const moves = {
+//         ArrowUp: [-1, 0],
+//         ArrowDown: [1, 0],
+//         ArrowLeft: [0, -1],
+//         ArrowRight: [0, 1],
+//     }
+//
+//     const delta = moves[e.key]
+//     if (!delta) return
+//
+//     e.preventDefault()
+//
+//     const newR = r + delta[0]
+//     const newC = c + delta[1]
+//
+//     if (newR >= 0 && newR < size && newC >= 0 && newC < size) {
+//         mark_cell(sudoku, [newR, newC])
+//     }
+// })
 
 /**
  * Removes cells so that the outputted Sudoku is solvable, with only one solution, and that it fits the given difficulty
@@ -187,13 +190,13 @@ document.addEventListener('keydown', (e) => {
  * @param {Sudoku} sudoku
  * @param {number} difficulty
  */
-async function removeCellsAsync(sudoku, rand, difficulty, fn = () => {}) {
+async function removeCellsAsync(rand, sudoku, difficulty, fn = () => {}) {
     let elem = document.getElementById('loading')
     console.log(`HTML: ${elem.innerText}`)
     elem.className = 'is-loading'
 
     setTimeout(() => {
-        removeCells(sudoku, rand, difficulty)
+        removeCells(rand, sudoku, difficulty)
         elem.className = 'not-loading'
         fn()
     }, 0)

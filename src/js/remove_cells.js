@@ -41,7 +41,7 @@ const minimal_range = { min: 42, max: 61 }
  * @param {Sudoku} sudoku
  * @param {number} difficulty
  */
-export function removeCells(rng, sudoku, difficulty) {
+export function removeCells(rng, sudoku, difficulty, iter_arr = null) {
     let range = ranges[difficulty]
 
     let currentSudoku = deepCopy(sudoku)
@@ -65,7 +65,8 @@ export function removeCells(rng, sudoku, difficulty) {
             unsolvable_counter = 0
         }
 
-        const careful = Math.abs(currentRemoved - minimal_range.max) <= 10
+        // const careful = Math.abs(currentRemoved - minimal_range.max) <= 10
+        const careful = false
         const count = removeIteration(rng, currentSudoku, difficulty, careful)
         currentRemoved += count
 
@@ -94,7 +95,7 @@ export function removeCells(rng, sudoku, difficulty) {
         }
 
         if (
-            !is_solvable ||
+            (!is_solvable && currentRemoved > minimal_range.min / 2) ||
             currentGrade >= range.max ||
             currentRemoved >= minimal_range.max ||
             count == 0
@@ -156,6 +157,8 @@ export function removeCells(rng, sudoku, difficulty) {
             break
         }
     }
+
+    if (iter_arr != null) iter_arr.push(iter)
 
     sudoku.grid = currentSudoku.grid
 }
