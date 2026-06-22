@@ -243,10 +243,11 @@ export function grade(sudoku) {
         gradeScore += 3.5
     }
 
-    console.log(`# SCORE = ${gradeScore}`)
+    const rounded_score = Math.round(gradeScore * 100) / 100
+    console.log(`# SCORE = ${rounded_score}`)
 
     // Sometimes the score is something like 1.89999999..., so here we round it to 1.9
-    return Math.round(gradeScore * 100) / 100
+    return rounded_score
 }
 
 // Difficulty indexing idea? Dont know about actual number to use here?

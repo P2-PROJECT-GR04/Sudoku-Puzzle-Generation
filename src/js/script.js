@@ -32,13 +32,16 @@ async function loadSudoku(state) {
         console.warn('No given state. Starting new board')
         state.sudoku = new Sudoku(3, 3)
         make_solved_grid(state.sudoku, rand)
-        removeCellsAsync(rand, state.sudoku, state.difficulty)
+        removeCellsAsync(rand, state.sudoku, state.difficulty, () => {
+            createNumpad(state.sudoku)
+            draw_sudoku(state.sudoku)
+            updateState(state)
+        })
+    } else {
+        createNumpad(state.sudoku)
+        draw_sudoku(state.sudoku)
+        updateState(state)
     }
-
-    createNumpad(state.sudoku)
-
-    draw_sudoku(state.sudoku)
-    updateState(state)
 }
 
 /**
